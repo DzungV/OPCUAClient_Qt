@@ -24,11 +24,13 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+
     void ClientConnect (int status);
 
 public slots:
     void UpdateTimerTick();
     void Clock();
+    void ReadData(UA_Client *client);
 
 private slots:
     void on_btnStart_clicked();
@@ -38,5 +40,6 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QTimer *timer;
+    QTimer *updatetimer;
 };
 #endif // MAINWINDOW_H

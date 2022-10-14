@@ -16,12 +16,11 @@ int nMode;
 bool bStatus;
 double dTemperature;
 double dValue;
+UA_Client *client = UA_Client_new();//create a OPC UA client
 
 std::string get_str_to_variant (UA_Variant *var)
 {
     auto str = (UA_String *)var->data;
-//    int l = var->arrayLength;
-//    for (int i; i< l; i++)
     return (char *)str->data;
 
 }
@@ -40,49 +39,29 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::ClientConnect(int status)
-{
-    UA_Client *client = UA_Client_new();
-    UA_ClientConfig_setDefault(UA_Client_getConfig(client));
+{    
     if (status==1)
-        UA_Client_connect(client, "opc.tcp://localhost:4880");
+    {
+        UA_ClientConfig_setDefault(UA_Client_getConfig(client));
+        UA_Client_connect(client, "opc.tcp://localhost:4880");  //connect to server
+        updatetimer = new QTimer(this);
+        connect(updatetimer, SIGNAL(timeout()),this,SLOT(UpdateTimerTick()));
+        updatetimer->start(100);
+    }
     else
+    {
+        disconnect(updatetimer, SIGNAL(timeout()),this,SLOT(UpdateTimerTick()));
         UA_Client_disconnect(client);
-    UA_Variant value;
-    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/LenName"), &value);
-    byte len = *(UA_Byte*)value.data;
+    }
 
-    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/Name"), &value);
-//    char sName = *(UA_String*)value.data;
-//    strName.sprintf("%s",sName);
-    sName = get_str_to_variant(&value);
 
-//    sName.length() = value.arrayLength;
-    QString strName = QString::fromStdString(sName);
-    strName.resize(len-1);
 
-    ui->lnERecv_Name->setText(strName);
-    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/Mode"), &value);
-    nMode = *(UA_Int32*)value.data ;
-    QString R1Mode = QString::number(nMode);
-    ui->lnERecv_Mode->setText(R1Mode);
-    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/Position"), &value);
-    dPosition = *(UA_Double*)value.data ;
-    QString R1Pos = QString::number(dPosition);
-    ui->lnERecv_Pos->setText(R1Pos);
-    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/Status"), &value);
-    bStatus = *(UA_Boolean*)value.data;
-    QString R1Status = QString::number(bStatus);
-    ui->lnERecv_Stt->setText(R1Status);
-    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/Temperature"), &value);
-    dTemperature = *(UA_Double*)value.data;
-    QString R1Temp = QString::number(dTemperature);
-    ui->lnERecv_Temp->setText(R1Temp);
+
 }
 
 void MainWindow::UpdateTimerTick()
 {
-
-
+    ReadData(client);
 }
 
 void MainWindow::Clock()
@@ -93,6 +72,39 @@ void MainWindow::Clock()
 
 
 
+}
+
+void MainWindow::ReadData(UA_Client *client)
+{
+    UA_Variant value;   //create a variable to receive data
+    // Get Name
+    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/LenName"), &value);
+    byte len = *(UA_Byte*)value.data; // Get length of the robot name
+    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/Name"), &value);
+    sName = get_str_to_variant(&value);
+    QString strName = QString::fromStdString(sName);
+    strName.resize(len-1);
+    ui->lnERecv_Name->setText(strName);
+    // Get Mode
+    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/Mode"), &value);
+    nMode = *(UA_Int32*)value.data ;
+    QString R1Mode = QString::number(nMode);
+    ui->lnERecv_Mode->setText(R1Mode);
+    //Get Position
+    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/Position"), &value);
+    dPosition = *(UA_Double*)value.data ;
+    QString R1Pos = QString::number(dPosition);
+    ui->lnERecv_Pos->setText(R1Pos);
+    //Get Status
+    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/Status"), &value);
+    bStatus = *(UA_Boolean*)value.data;
+    QString R1Status = QString::number(bStatus);
+    ui->lnERecv_Stt->setText(R1Status);
+    //Get Temperature
+    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/Temperature"), &value);
+    dTemperature = *(UA_Double*)value.data;
+    QString R1Temp = QString::number(dTemperature);
+    ui->lnERecv_Temp->setText(R1Temp);
 }
 
 
