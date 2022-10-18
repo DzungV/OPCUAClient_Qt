@@ -9,6 +9,7 @@
 #include <QDateTime>
 
 std::string sName;
+byte len;
 //QString strName;
 int nName;
 double dPosition;
@@ -21,7 +22,13 @@ UA_Client *client = UA_Client_new();//create a OPC UA client
 std::string get_str_to_variant (UA_Variant *var)
 {
     auto str = (UA_String *)var->data;
-    return (char *)str->data;
+    return ((char *)str->data);
+
+}
+int getlength (UA_Variant *var)
+{
+    auto str = (UA_String *)var->data;
+    return (str->length);
 
 }
 
@@ -78,12 +85,14 @@ void MainWindow::ReadData(UA_Client *client)
 {
     UA_Variant value;   //create a variable to receive data
     // Get Name
-    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/LenName"), &value);
-    byte len = *(UA_Byte*)value.data; // Get length of the robot name
+//    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/LenName"), &value);
+//    byte len = *(UA_Byte*)value.data; // Get length of the robot name
     UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/Name"), &value);
+
     sName = get_str_to_variant(&value);
+    len = getlength(&value);
     QString strName = QString::fromStdString(sName);
-    strName.resize(len-1);
+    strName.resize(len);
     ui->lnERecv_Name->setText(strName);
     // Get Mode
     UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/Mode"), &value);
