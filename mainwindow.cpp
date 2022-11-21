@@ -6,8 +6,10 @@
 #include <cstring>
 #include <string.h>
 #include <QComboBox>
-
-
+#include <QFile>
+#include <QTextStream>
+#include <QThread>
+#include <QMessageBox>
 #include <QDebug>
 #include <QDateTime>
 
@@ -23,21 +25,9 @@ double dyaw;
 double dtheta1;
 double dtheta2;
 double dtheta4;
+double dPosition;
 
 
-
-std::string strCmdJ1neg = "jogJ1_negativedir";
-std::string strCmdJ1pos = "jogJ1_positivedir";
-std::string strCmdJ1stop = "stopjogJ1";
-std::string strCmdJ2neg = "jogJ2_negativedir";
-std::string strCmdJ2pos = "jogJ2_positivedir";
-std::string strCmdJ2stop = "stopjogJ2";
-std::string strCmdJ3neg = "jogJ3_negativedir";
-std::string strCmdJ3pos = "jogJ3_positivedir";
-std::string strCmdJ3stop = "stopjogJ3";
-std::string strCmdJ4neg = "jogJ4_negativedir";
-std::string strCmdJ4pos = "jogJ4_positivedir";
-std::string strCmdJ4stop = "stopjogJ4";
 
 
 QString STX = "2";
@@ -73,6 +63,34 @@ int getlength (UA_Variant *var)
 {
     auto str = (UA_String *)var->data;
     return (str->length);
+
+}
+
+int checkprogsend (QString &strPackData)
+{
+    int chck = 0;
+    UA_Variant value;
+    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot2/Name"), &value);
+    sName = get_str_to_variant(&value);
+    len = getlength(&value);
+    QString strName = QString::fromStdString(sName);
+    strName.resize(len);
+    QString strToFind = ";";
+    QString Crc = strName.mid(strName.indexOf(strToFind)+strToFind.length()-1);
+    int nr = Crc.toInt();
+    QString cmd = strName.mid(1,6);
+    Crc = strPackData.mid(strPackData.indexOf(strToFind)+strToFind.length()-1);
+    int ns = Crc.toInt();
+    if (cmd == "ACK,OK")
+    {
+        if (nr == ns)
+            chck = 1;
+        else
+            chck = 0;
+    }
+    else
+        chck = 0;
+    return chck;
 
 }
 
@@ -136,26 +154,26 @@ void MainWindow::Clock()
 void MainWindow::ReadData(UA_Client *client)
 {
     UA_Variant value;   //create a variable to receive data
-    // Get Name
+//     Get Name
 //    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/LenName"), &value);
 //    byte len = *(UA_Byte*)value.data; // Get length of the robot name
-//    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/Name"), &value);
+//    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot2/Name"), &value);
 
 //    sName = get_str_to_variant(&value);
 //    len = getlength(&value);
 //    QString strName = QString::fromStdString(sName);
 //    strName.resize(len);
-//    ui->lnERecv_Name->setText(strName);
+//    ui->lnESend_Name->setText(strName);
 //    // Get Mode
 //    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/Mode"), &value);
 //    nMode = *(UA_Int32*)value.data ;
 //    QString R1Mode = QString::number(nMode);
 //    ui->lnERecv_Mode->setText(R1Mode);
 //    //Get Position
-//    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/Position"), &value);
-//    dPosition = *(UA_Double*)value.data ;
-//    QString R1Pos = QString::number(dPosition);
-//    ui->lnERecv_Pos->setText(R1Pos);
+    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/Position"), &value);
+    dPosition = *(UA_Double*)value.data ;
+    QString R1Pos = QString::number(dPosition);
+    ui->lnESend_Pos->setText(R1Pos);
 //    //Get Status
 //    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/Status"), &value);
 //    bStatus = *(UA_Boolean*)value.data;
@@ -244,7 +262,7 @@ void MainWindow::on_btnStop_clicked()
 void MainWindow::on_btnJ1_neg_pressed()
 {
 
-//    UA_Variant_setScalarCopy(myVariant, &strCmdJ1neg, &UA_TYPES[UA_TYPES_STRING]);
+
     no_joint = "1";
     direction = "-1";
     coords = ChooseCoords(coords);
@@ -285,7 +303,7 @@ void MainWindow::on_btnJ1_pos_pressed()
 {
 
     no_joint = "1";
-    direction = "1";
+    direction = "+1";
     coords = ChooseCoords(coords);
     StrPacketData = QString("%1JOGJ,%2,%3,%4%5").arg(STX,coords,no_joint,direction,ETX);
     protocol* ptr;
@@ -359,7 +377,7 @@ void MainWindow::on_btnJ2_neg_released()
 void MainWindow::on_btnJ2_pos_pressed()
 {
     no_joint = "2";
-    direction = "1";
+    direction = "+1";
     coords = ChooseCoords(coords);
     StrPacketData = QString("%1JOGJ,%2,%3,%4%5").arg(STX,coords,no_joint,direction,ETX);
     protocol* ptr;
@@ -433,7 +451,7 @@ void MainWindow::on_btnJ3_neg_released()
 void MainWindow::on_btnJ3_pos_pressed()
 {
     no_joint = "3";
-    direction = "1";
+    direction = "+1";
     coords = ChooseCoords(coords);
     StrPacketData = QString("%1JOGJ,%2,%3,%4%5").arg(STX,coords,no_joint,direction,ETX);
     protocol* ptr;
@@ -507,7 +525,7 @@ void MainWindow::on_btnJ4_neg_released()
 void MainWindow::on_btnJ4_pos_pressed()
 {
     no_joint = "4";
-    direction = "1";
+    direction = "+1";
     coords = ChooseCoords(coords);
     StrPacketData = QString("%1JOGJ,%2,%3,%4%5").arg(STX,coords,no_joint,direction,ETX);
     protocol* ptr;
@@ -568,7 +586,7 @@ void MainWindow::on_btnSVOFF_clicked()
     QByteArray bPackData = StrPacketData.toLocal8Bit();
     char *chPackData = bPackData.data();
     set_str_to_variant(myVariant,chPackData);
-    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot2/Name"), myVariant);
+    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/Name"), myVariant);
 
 }
 
@@ -590,5 +608,68 @@ void MainWindow::on_chbCoords_currentTextChanged(const QString &arg1)
         coords = "4";
 
 
+}
+
+
+void MainWindow::on_btnSendProg_clicked()
+{
+    int curline = 1;
+
+
+
+    QFile inputFile("lmove.txt");
+    if(!inputFile.exists())
+    {
+        ui->lnESend_Name->setText("File not found");
+        return;
+    }
+//    int line_count=0;
+//    inputFile.open(QIODevice::ReadOnly);
+//    QString line[100];
+//    QTextStream incnt(&inputFile);
+//    while( !incnt.atEnd())
+//        {
+//            line[line_count]=incnt.readLine();
+//            line_count++;
+//        }
+
+
+    if (inputFile.open(QIODevice::ReadOnly))
+    {
+
+//       QString linecnt = QString::number(line_count);
+       QTextStream in(&inputFile);
+       while (!in.atEnd())
+       {
+          QString line = in.readLine();
+          QString curlin= QString::number(curline);
+          StrPacketData = QString("%1ASMW,%2,%3%4").arg(STX,line,curlin,ETX);
+          protocol* ptr;
+          ptr = getprotocolPtr();
+          ptr->MakeCrcSVON(StrPacketData);
+          QByteArray bPackData = StrPacketData.toLocal8Bit();
+          char *chPackData = bPackData.data();
+          set_str_to_variant(myVariant,chPackData);
+          UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/Name"), myVariant);
+          int ncheck = checkprogsend(StrPacketData); // check if command sent
+          if (ncheck == 1)
+          {
+              QThread::msleep(50);
+              curline++;
+              continue;
+          }
+          else
+          {
+              QMessageBox::about(this, "Error", "Error Sending Program");
+          }
+
+       }
+       inputFile.close();
+    }
+    else
+    {
+        ui->lnESend_Name->setText("Error String");
+
+    }
 }
 

@@ -83,6 +83,8 @@ private slots:
 
     void on_chbCoords_currentTextChanged(const QString &arg1);
 
+    void on_btnSendProg_clicked();
+
 private:
     Ui::MainWindow *ui;
     QTimer *timer;
