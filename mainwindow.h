@@ -11,7 +11,7 @@
 #include <open62541/types_generated.h>
 #include <open62541/types.h>
 #include <stdlib.h>
-
+#include "QCodeEditor_Example.hpp"
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -25,6 +25,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
 
 
 
@@ -85,10 +86,24 @@ private slots:
 
     void on_btnSendProg_clicked();
 
+    void on_btnSpeed_low_clicked();
+
+    void on_btnSpeed_med_clicked();
+
+    void on_btnSpeed_high_clicked();
+
+    void on_btnSpeed_top_clicked();
+
+    void on_btnWriteProg_clicked();
+
+
+    void on_btnSaveProg_clicked();
+
 private:
     Ui::MainWindow *ui;
     QTimer *timer;
     QTimer *updatetimer;
+
 };
 #endif // MAINWINDOW_H
 

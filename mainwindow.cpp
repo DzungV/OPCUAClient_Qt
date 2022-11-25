@@ -12,6 +12,9 @@
 #include <QMessageBox>
 #include <QDebug>
 #include <QDateTime>
+#include <QWidget>
+#include <QFileDialog>
+//#include <SampleWidget.h>
 
 std::string sName;
 byte len;
@@ -38,12 +41,14 @@ QString servostt;
 QString direction;
 QString coords;
 QString StrPacketData;
+QString speed;
 
 double dd3;
 UA_Variant* myVariant = UA_Variant_new();
-
+UA_Variant value;
 
 UA_Client *client = UA_Client_new();//create a OPC UA client
+
 
 
 
@@ -57,7 +62,6 @@ std::string get_str_to_variant (UA_Variant *var)
 {
     auto str = (UA_String *)var->data;
     return ((char *)str->data);
-
 }
 int getlength (UA_Variant *var)
 {
@@ -70,15 +74,15 @@ int checkprogsend (QString &strPackData)
 {
     int chck = 0;
     UA_Variant value;
-    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot2/Name"), &value);
-    sName = get_str_to_variant(&value);
-    len = getlength(&value);
-    QString strName = QString::fromStdString(sName);
-    strName.resize(len);
+    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDAck"), &value);
+    std::string ACK = get_str_to_variant(&value);
+    int ACKlen = getlength(&value);
+    QString strACK = QString::fromStdString(ACK);
+    strACK.resize(ACKlen);
     QString strToFind = ";";
-    QString Crc = strName.mid(strName.indexOf(strToFind)+strToFind.length()-1);
+    QString Crc = strACK.mid(strACK.indexOf(strToFind)+strToFind.length()-1);
     int nr = Crc.toInt();
-    QString cmd = strName.mid(1,6);
+    QString cmd = strACK.mid(1,6);
     Crc = strPackData.mid(strPackData.indexOf(strToFind)+strToFind.length()-1);
     int ns = Crc.toInt();
     if (cmd == "ACK,OK")
@@ -117,8 +121,34 @@ void MainWindow::ClientConnect(int status)
 {    
     if (status==1)
     {
+
         UA_ClientConfig_setDefault(UA_Client_getConfig(client));
         UA_Client_connect(client, "opc.tcp://localhost:4880");  //connect to server
+
+//        // Send Start Message
+//        QString StartMsg = "Starting transmitting data";
+//        QByteArray bPackData = StartMsg.toLocal8Bit();
+//        char *chPackData = bPackData.data();
+//        set_str_to_variant(myVariant,chPackData);
+//        UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/StartMsg"), myVariant);
+//        // Get Reply from RBC
+//        int nrep = 0;
+//        while (nrep != 5)
+//        {
+//            UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/Startchar"), &value);
+//            nrep = *(UA_Int32*)value.data ;
+//        }
+//        QString strRecv;
+//        while (strRecv != "ACK,OK,READY")
+//        {
+//            UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/StartMsg"), &value);
+//            std::string Recv = get_str_to_variant(&value);
+//            int Recvlen = getlength(&value);
+//            strRecv = QString::fromStdString(Recv);
+//            strRecv.resize(Recvlen);
+//            ui->lnESend_Name->setText(strRecv);
+//        }
+        //Create update timer
         updatetimer = new QTimer(this);
         connect(updatetimer, SIGNAL(timeout()),this,SLOT(UpdateTimerTick()));
         updatetimer->start(10);
@@ -153,7 +183,7 @@ void MainWindow::Clock()
 
 void MainWindow::ReadData(UA_Client *client)
 {
-    UA_Variant value;   //create a variable to receive data
+       //create a variable to receive data
 //     Get Name
 //    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/LenName"), &value);
 //    byte len = *(UA_Byte*)value.data; // Get length of the robot name
@@ -170,10 +200,10 @@ void MainWindow::ReadData(UA_Client *client)
 //    QString R1Mode = QString::number(nMode);
 //    ui->lnERecv_Mode->setText(R1Mode);
 //    //Get Position
-    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/Position"), &value);
-    dPosition = *(UA_Double*)value.data ;
-    QString R1Pos = QString::number(dPosition);
-    ui->lnESend_Pos->setText(R1Pos);
+//    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/Position"), &value);
+//    dPosition = *(UA_Double*)value.data ;
+//    QString R1Pos = QString::number(dPosition);
+//    ui->lnESend_Pos->setText(R1Pos);
 //    //Get Status
 //    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/Status"), &value);
 //    bStatus = *(UA_Boolean*)value.data;
@@ -234,17 +264,32 @@ void MainWindow::ReadData(UA_Client *client)
     dtheta4 = *(UA_Double*)value.data ;
     QString R1theta4 = QString::number(dtheta4);
     ui->lnERecv_theta4->setText(R1theta4);
+    //CMDAck
+    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDAck"), &value);
+    sName = get_str_to_variant(&value);
+    len = getlength(&value);
+    QString strName = QString::fromStdString(sName);
+    strName.resize(len);
+    ui->lnESend_Name->setText(strName);
 }
 
 
 void MainWindow::on_btnStart_clicked()
 {
-    ClientConnect(1);
-    ui->lbSttMsg->setText("Logging Started and Connected to OPC Server");
-    timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()),this,SLOT(Clock()));
-    timer->start(1000);
-
+    QMessageBox::StandardButton ans = QMessageBox::question(this, "Caution", "Open the server first!!!",
+                                                            QMessageBox::Yes | QMessageBox::No);
+    if (ans == QMessageBox::Yes)
+    {
+        ClientConnect(1);
+        ui->lbSttMsg->setText("Logging Started and Connected to OPC Server");
+        timer = new QTimer(this);
+        connect(timer, SIGNAL(timeout()),this,SLOT(Clock()));
+        timer->start(1000);
+    }
+    else
+    {
+        ui->lbSttMsg->setText("Server is not open");
+    }
 
 
 }
@@ -266,17 +311,22 @@ void MainWindow::on_btnJ1_neg_pressed()
     no_joint = "1";
     direction = "-1";
     coords = ChooseCoords(coords);
-    StrPacketData = QString("%1JOGJ,%2,%3,%4%5").arg(STX,coords,no_joint,direction,ETX);
-    protocol* ptr;
-    ptr = getprotocolPtr();
-    ptr->MakeCrcSVON(StrPacketData);
+    if (coords == NULL)
+    QMessageBox::critical(this, "Notice", "Please Choose Coordinate");
+    else
+    {
+        StrPacketData = QString("%1JOGJ,%2,%3,%4%5").arg(STX,coords,no_joint,direction,ETX);
+        protocol* ptr;
+        ptr = getprotocolPtr();
+        ptr->MakeCrcSVON(StrPacketData);
 
-    QByteArray bPackData = StrPacketData.toLocal8Bit();
-    char *chPackData = bPackData.data();
-    set_str_to_variant(myVariant,chPackData);
+        QByteArray bPackData = StrPacketData.toLocal8Bit();
+        char *chPackData = bPackData.data();
+        set_str_to_variant(myVariant,chPackData);
+    }
 
 //    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/theta1"), myVariant);
-    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/Name"), myVariant);
+    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
 }
 
 
@@ -293,7 +343,7 @@ void MainWindow::on_btnJ1_neg_released()
     set_str_to_variant(myVariant,chPackData);
 
 //    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/theta1"), myVariant);
-    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/Name"), myVariant);
+    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
 
 
 }
@@ -305,17 +355,22 @@ void MainWindow::on_btnJ1_pos_pressed()
     no_joint = "1";
     direction = "+1";
     coords = ChooseCoords(coords);
-    StrPacketData = QString("%1JOGJ,%2,%3,%4%5").arg(STX,coords,no_joint,direction,ETX);
-    protocol* ptr;
-    ptr = getprotocolPtr();
-    ptr->MakeCrcSVON(StrPacketData);
+    if (coords == NULL)
+    QMessageBox::critical(this, "Notice", "Please Choose Coordinate");
+    else
+    {
+        StrPacketData = QString("%1JOGJ,%2,%3,%4%5").arg(STX,coords,no_joint,direction,ETX);
+        protocol* ptr;
+        ptr = getprotocolPtr();
+        ptr->MakeCrcSVON(StrPacketData);
 
-    QByteArray bPackData = StrPacketData.toLocal8Bit();
-    char *chPackData = bPackData.data();
-    set_str_to_variant(myVariant,chPackData);
+        QByteArray bPackData = StrPacketData.toLocal8Bit();
+        char *chPackData = bPackData.data();
+        set_str_to_variant(myVariant,chPackData);
+    }
 
 //    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/theta1"), myVariant);
-    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/Name"), myVariant);
+    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
 }
 
 
@@ -333,7 +388,7 @@ void MainWindow::on_btnJ1_pos_released()
     set_str_to_variant(myVariant,chPackData);
 
 //    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/theta1"), myVariant);
-    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/Name"), myVariant);
+    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
 }
 
 
@@ -342,16 +397,21 @@ void MainWindow::on_btnJ2_neg_pressed()
     no_joint = "2";
     direction = "-1";
     coords = ChooseCoords(coords);
-    StrPacketData = QString("%1JOGJ,%2,%3,%4%5").arg(STX,coords,no_joint,direction,ETX);
-    protocol* ptr;
-    ptr = getprotocolPtr();
-    ptr->MakeCrcSVON(StrPacketData);
+    if (coords == NULL)
+    QMessageBox::critical(this, "Notice", "Please Choose Coordinate");
+    else
+    {
+        StrPacketData = QString("%1JOGJ,%2,%3,%4%5").arg(STX,coords,no_joint,direction,ETX);
+        protocol* ptr;
+        ptr = getprotocolPtr();
+        ptr->MakeCrcSVON(StrPacketData);
 
-    QByteArray bPackData = StrPacketData.toLocal8Bit();
-    char *chPackData = bPackData.data();
-    set_str_to_variant(myVariant,chPackData);
+        QByteArray bPackData = StrPacketData.toLocal8Bit();
+        char *chPackData = bPackData.data();
+        set_str_to_variant(myVariant,chPackData);
 
-    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/theta2"), myVariant);
+        UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
+    }
 
 
 }
@@ -369,7 +429,7 @@ void MainWindow::on_btnJ2_neg_released()
     char *chPackData = bPackData.data();
     set_str_to_variant(myVariant,chPackData);
 
-    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/theta2"), myVariant);
+    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
 
 }
 
@@ -379,16 +439,21 @@ void MainWindow::on_btnJ2_pos_pressed()
     no_joint = "2";
     direction = "+1";
     coords = ChooseCoords(coords);
-    StrPacketData = QString("%1JOGJ,%2,%3,%4%5").arg(STX,coords,no_joint,direction,ETX);
-    protocol* ptr;
-    ptr = getprotocolPtr();
-    ptr->MakeCrcSVON(StrPacketData);
+    if (coords == NULL)
+    QMessageBox::critical(this, "Notice", "Please Choose Coordinate");
+    else
+    {
+        StrPacketData = QString("%1JOGJ,%2,%3,%4%5").arg(STX,coords,no_joint,direction,ETX);
+        protocol* ptr;
+        ptr = getprotocolPtr();
+        ptr->MakeCrcSVON(StrPacketData);
 
-    QByteArray bPackData = StrPacketData.toLocal8Bit();
-    char *chPackData = bPackData.data();
-    set_str_to_variant(myVariant,chPackData);
+        QByteArray bPackData = StrPacketData.toLocal8Bit();
+        char *chPackData = bPackData.data();
+        set_str_to_variant(myVariant,chPackData);
 
-    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/theta2"), myVariant);
+        UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
+    }
 
 
 }
@@ -407,7 +472,7 @@ void MainWindow::on_btnJ2_pos_released()
     char *chPackData = bPackData.data();
     set_str_to_variant(myVariant,chPackData);
 
-    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/theta2"), myVariant);
+    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
 }
 
 
@@ -416,17 +481,22 @@ void MainWindow::on_btnJ3_neg_pressed()
     no_joint = "3";
     direction = "-1";
     coords = ChooseCoords(coords);
-    StrPacketData = QString("%1JOGJ,%2,%3,%4%5").arg(STX,coords,no_joint,direction,ETX);
-    protocol* ptr;
-    ptr = getprotocolPtr();
-    ptr->MakeCrcSVON(StrPacketData);
+    if (coords == NULL)
+    QMessageBox::critical(this, "Notice", "Please Choose Coordinate");
+    else
+    {
+        StrPacketData = QString("%1JOGJ,%2,%3,%4%5").arg(STX,coords,no_joint,direction,ETX);
+        protocol* ptr;
+        ptr = getprotocolPtr();
+        ptr->MakeCrcSVON(StrPacketData);
 
-    QByteArray bPackData = StrPacketData.toLocal8Bit();
-    char *chPackData = bPackData.data();
-    set_str_to_variant(myVariant,chPackData);
+        QByteArray bPackData = StrPacketData.toLocal8Bit();
+        char *chPackData = bPackData.data();
+        set_str_to_variant(myVariant,chPackData);
 
-    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/theta3"), myVariant);
+        UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
 
+    }
 
 }
 
@@ -444,7 +514,7 @@ void MainWindow::on_btnJ3_neg_released()
     char *chPackData = bPackData.data();
     set_str_to_variant(myVariant,chPackData);
 
-    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/theta3"), myVariant);
+    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
 }
 
 
@@ -453,16 +523,21 @@ void MainWindow::on_btnJ3_pos_pressed()
     no_joint = "3";
     direction = "+1";
     coords = ChooseCoords(coords);
-    StrPacketData = QString("%1JOGJ,%2,%3,%4%5").arg(STX,coords,no_joint,direction,ETX);
-    protocol* ptr;
-    ptr = getprotocolPtr();
-    ptr->MakeCrcSVON(StrPacketData);
+    if (coords == NULL)
+    QMessageBox::critical(this, "Notice", "Please Choose Coordinate");
+    else
+    {
+        StrPacketData = QString("%1JOGJ,%2,%3,%4%5").arg(STX,coords,no_joint,direction,ETX);
+        protocol* ptr;
+        ptr = getprotocolPtr();
+        ptr->MakeCrcSVON(StrPacketData);
 
-    QByteArray bPackData = StrPacketData.toLocal8Bit();
-    char *chPackData = bPackData.data();
-    set_str_to_variant(myVariant,chPackData);
+        QByteArray bPackData = StrPacketData.toLocal8Bit();
+        char *chPackData = bPackData.data();
+        set_str_to_variant(myVariant,chPackData);
 
-    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/theta3"), myVariant);
+        UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
+    }
 
 
 }
@@ -480,7 +555,7 @@ void MainWindow::on_btnJ3_pos_released()
     char *chPackData = bPackData.data();
     set_str_to_variant(myVariant,chPackData);
 
-    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/theta3"), myVariant);
+    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
 
 }
 
@@ -490,16 +565,21 @@ void MainWindow::on_btnJ4_neg_pressed()
     no_joint = "4";
     direction = "-1";
     coords = ChooseCoords(coords);
-    StrPacketData = QString("%1JOGJ,%2,%3,%4%5").arg(STX,coords,no_joint,direction,ETX);
-    protocol* ptr;
-    ptr = getprotocolPtr();
-    ptr->MakeCrcSVON(StrPacketData);
+    if (coords == NULL)
+    QMessageBox::critical(this, "Notice", "Please Choose Coordinate");
+    else
+    {
+        StrPacketData = QString("%1JOGJ,%2,%3,%4%5").arg(STX,coords,no_joint,direction,ETX);
+        protocol* ptr;
+        ptr = getprotocolPtr();
+        ptr->MakeCrcSVON(StrPacketData);
 
-    QByteArray bPackData = StrPacketData.toLocal8Bit();
-    char *chPackData = bPackData.data();
-    set_str_to_variant(myVariant,chPackData);
+        QByteArray bPackData = StrPacketData.toLocal8Bit();
+        char *chPackData = bPackData.data();
+        set_str_to_variant(myVariant,chPackData);
 
-    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/theta4"), myVariant);
+        UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
+    }
 
 
 }
@@ -517,7 +597,7 @@ void MainWindow::on_btnJ4_neg_released()
     char *chPackData = bPackData.data();
     set_str_to_variant(myVariant,chPackData);
 
-    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/theta4"), myVariant);
+    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
 
 }
 
@@ -527,16 +607,23 @@ void MainWindow::on_btnJ4_pos_pressed()
     no_joint = "4";
     direction = "+1";
     coords = ChooseCoords(coords);
-    StrPacketData = QString("%1JOGJ,%2,%3,%4%5").arg(STX,coords,no_joint,direction,ETX);
-    protocol* ptr;
-    ptr = getprotocolPtr();
-    ptr->MakeCrcSVON(StrPacketData);
+    if (coords == NULL)
+    QMessageBox::critical(this, "Notice", "Please Choose Coordinate");
+    else
+    {
+        StrPacketData = QString("%1JOGJ,%2,%3,%4%5").arg(STX,coords,no_joint,direction,ETX);
+        protocol* ptr;
+        ptr = getprotocolPtr();
+        ptr->MakeCrcSVON(StrPacketData);
 
-    QByteArray bPackData = StrPacketData.toLocal8Bit();
-    char *chPackData = bPackData.data();
-    set_str_to_variant(myVariant,chPackData);
+        QByteArray bPackData = StrPacketData.toLocal8Bit();
+        char *chPackData = bPackData.data();
+        set_str_to_variant(myVariant,chPackData);
 
-    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/theta4"), myVariant);
+        UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
+
+    }
+
 
 
 }
@@ -554,7 +641,7 @@ void MainWindow::on_btnJ4_pos_released()
     char *chPackData = bPackData.data();
     set_str_to_variant(myVariant,chPackData);
 
-    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/theta4"), myVariant);
+    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
 }
 
 
@@ -569,7 +656,7 @@ void MainWindow::on_btnSVON_clicked()
     QByteArray bPackData = StrPacketData.toLocal8Bit();
     char *chPackData = bPackData.data();
     set_str_to_variant(myVariant,chPackData);
-    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/Name"), myVariant);
+    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
 
 
 }
@@ -586,7 +673,7 @@ void MainWindow::on_btnSVOFF_clicked()
     QByteArray bPackData = StrPacketData.toLocal8Bit();
     char *chPackData = bPackData.data();
     set_str_to_variant(myVariant,chPackData);
-    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/Name"), myVariant);
+    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
 
 }
 
@@ -606,6 +693,8 @@ void MainWindow::on_chbCoords_currentTextChanged(const QString &arg1)
         coords = "3";
     else if (arg1 == "User Coordinates")
         coords = "4";
+    else
+        QMessageBox::critical(this, "Notice", "Please Choose Coordinate");
 
 
 }
@@ -650,7 +739,7 @@ void MainWindow::on_btnSendProg_clicked()
           QByteArray bPackData = StrPacketData.toLocal8Bit();
           char *chPackData = bPackData.data();
           set_str_to_variant(myVariant,chPackData);
-          UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/Name"), myVariant);
+          UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
           int ncheck = checkprogsend(StrPacketData); // check if command sent
           if (ncheck == 1)
           {
@@ -660,7 +749,7 @@ void MainWindow::on_btnSendProg_clicked()
           }
           else
           {
-              QMessageBox::about(this, "Error", "Error Sending Program");
+              QMessageBox::critical(this, "Error", "Error Sending Program");
           }
 
        }
@@ -671,5 +760,125 @@ void MainWindow::on_btnSendProg_clicked()
         ui->lnESend_Name->setText("Error String");
 
     }
+}
+
+
+void MainWindow::on_btnSpeed_low_clicked()
+{
+    speed = "1";
+    StrPacketData = QString("%1SPED,%2%3").arg(STX,speed,ETX);
+    protocol* ptr;
+    ptr = getprotocolPtr();
+    ptr->MakeCrcSVON(StrPacketData);
+
+    QByteArray bPackData = StrPacketData.toLocal8Bit();
+    char *chPackData = bPackData.data();
+    set_str_to_variant(myVariant,chPackData);
+
+    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
+}
+
+
+void MainWindow::on_btnSpeed_med_clicked()
+{
+    speed = "2";
+    StrPacketData = QString("%1SPED,%2%3").arg(STX,speed,ETX);
+    protocol* ptr;
+    ptr = getprotocolPtr();
+    ptr->MakeCrcSVON(StrPacketData);
+
+    QByteArray bPackData = StrPacketData.toLocal8Bit();
+    char *chPackData = bPackData.data();
+    set_str_to_variant(myVariant,chPackData);
+
+    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
+}
+
+
+void MainWindow::on_btnSpeed_high_clicked()
+{
+    speed = "3";
+    StrPacketData = QString("%1SPED,%2%3").arg(STX,speed,ETX);
+    protocol* ptr;
+    ptr = getprotocolPtr();
+    ptr->MakeCrcSVON(StrPacketData);
+
+    QByteArray bPackData = StrPacketData.toLocal8Bit();
+    char *chPackData = bPackData.data();
+    set_str_to_variant(myVariant,chPackData);
+
+    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
+}
+
+
+void MainWindow::on_btnSpeed_top_clicked()
+{
+    speed = "4";
+    StrPacketData = QString("%1SPED,%2%3").arg(STX,speed,ETX);
+    protocol* ptr;
+    ptr = getprotocolPtr();
+    ptr->MakeCrcSVON(StrPacketData);
+
+    QByteArray bPackData = StrPacketData.toLocal8Bit();
+    char *chPackData = bPackData.data();
+    set_str_to_variant(myVariant,chPackData);
+
+    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
+}
+
+
+
+
+
+void MainWindow::on_btnWriteProg_clicked()
+{
+
+    using namespace kgl;
+    QCodeEditor_Example *editor = new QCodeEditor_Example;
+    // ## MainWindow::MainWindow
+
+//    setCentralWidget(editor);
+    ui->gridLayout->addWidget(editor);
+
+//    qDebug()<<editor->centralWidget();
+
+
+
+
+
+
+//    // ## MainWindow::MainWindow
+//    QCodeEditorDesign design;
+//    design.setLineColumnVisible(false);
+//    design.setEditorBackColor(0xff333333);
+//    design.setEditorTextColor(0xffdddddd);
+//    design.setEditorBorderColor(0xff999999);
+//    design.setEditorBorder(QMargins(1,1,1,1)); // l t r b
+//    editor->setDesign(design);
+
+
+//    QList<QSyntaxRule> rules =
+//    QSyntaxRules::loadFromFile(":/rule_cpp.xml", design);
+//    editor->setRules(rules);
+
+//    QStringList keywords = { "printf", "scanf" };
+//    editor->setKeywords(keywords);
+}
+
+void MainWindow::on_btnSaveProg_clicked()
+{
+
+//    QString currentFile = "";
+//    QString fileName = QFileDialog::getSaveFileName(editor, "Save as");
+//    QFile file(fileName);
+//    if(!file.open(QFile::WriteOnly | QFile::Text))
+//    {
+//        QMessageBox::warning(editor,"Warning","Cannot save file: "+file.errorString());
+//        return;
+//    }
+//    currentFile = fileName;
+//    QTextStream out(&file);
+//    auto a = ui->gridLayout->takeAt(1);
+
 }
 
