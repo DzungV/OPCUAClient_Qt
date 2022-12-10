@@ -45,7 +45,7 @@
      <rect>
       <x>20</x>
       <y>100</y>
-      <width>861</width>
+      <width>901</width>
       <height>591</height>
      </rect>
     </property>
@@ -57,12 +57,12 @@
       <rect>
        <x>10</x>
        <y>70</y>
-       <width>63</width>
+       <width>81</width>
        <height>20</height>
       </rect>
      </property>
      <property name="text">
-      <string>Name</string>
+      <string>Command</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_3">
@@ -122,7 +122,7 @@
       <rect>
        <x>10</x>
        <y>90</y>
-       <width>91</width>
+       <width>131</width>
        <height>26</height>
       </rect>
      </property>
@@ -170,7 +170,7 @@
     <widget class="QTabWidget" name="tabWidget">
      <property name="geometry">
       <rect>
-       <x>100</x>
+       <x>140</x>
        <y>20</y>
        <width>751</width>
        <height>561</height>
@@ -421,7 +421,7 @@
       <widget class="QPushButton" name="btnSendProg">
        <property name="geometry">
         <rect>
-         <x>500</x>
+         <x>540</x>
          <y>470</y>
          <width>131</width>
          <height>41</height>
@@ -444,28 +444,30 @@
         <string>Write a Program</string>
        </property>
       </widget>
-      <widget class="QWidget" name="gridLayoutWidget">
+      <widget class="QPlainTextEdit" name="plainTxtEdProg">
        <property name="geometry">
         <rect>
-         <x>20</x>
+         <x>10</x>
          <y>10</y>
-         <width>711</width>
-         <height>451</height>
+         <width>721</width>
+         <height>431</height>
         </rect>
        </property>
-       <layout class="QGridLayout" name="gridLayout"/>
+       <property name="plainText">
+        <string/>
+       </property>
       </widget>
-      <widget class="QPushButton" name="btnSaveProg">
+      <widget class="QPushButton" name="btnCompProg">
        <property name="geometry">
         <rect>
-         <x>270</x>
+         <x>280</x>
          <y>470</y>
-         <width>141</width>
+         <width>151</width>
          <height>41</height>
         </rect>
        </property>
        <property name="text">
-        <string>Save Program</string>
+        <string>Compile Program</string>
        </property>
       </widget>
      </widget>
@@ -474,9 +476,9 @@
    <widget class="QGroupBox" name="groupBox_2">
     <property name="geometry">
      <rect>
-      <x>890</x>
+      <x>930</x>
       <y>100</y>
-      <width>571</width>
+      <width>531</width>
       <height>591</height>
      </rect>
     </property>

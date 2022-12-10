@@ -11,9 +11,13 @@ INCLUDEPATH += include
 
 SOURCES += \
     QCodeEditor_Example.cpp \
+    code_editor.cpp \
+    files.cpp \
+    highlighter.cpp \
     main.cpp \
     mainwindow.cpp \
     protocol.cpp \
+    search.cpp \
     src/Design/QCodeEditorDesign.cpp \
     src/Design/QCodeEditorSheets.cpp \
     src/Design/QLineColumnPadding.cpp \
@@ -24,10 +28,16 @@ SOURCES += \
     src/Widgets/QCodeEditorHighlighter.cpp \
     src/Widgets/QCodeEditorLineWidget.cpp \
     src/Widgets/QCodeEditorPopup.cpp \
-    src/Widgets/QCodeEditorSlots.cpp
+    src/Widgets/QCodeEditorSlots.cpp \
+    utils/conversion.cpp \
+    utils/templates.cpp \
+    widgets/geisttextedit.cpp
 
 HEADERS += \
     QCodeEditor_Example.hpp \
+    code_editor.h \
+    files.h \
+    highlighter.h \
     include/KGL/Design/QCodeEditorDesign.hpp \
     include/KGL/Design/QCodeEditorSheets.hpp \
     include/KGL/Design/QLineColumnPadding.hpp \
@@ -39,9 +49,14 @@ HEADERS += \
     include/KGL/Widgets/QCodeEditorLineWidget.hpp \
     include/KGL/Widgets/QCodeEditorPopup.hpp \
     mainwindow.h \
-    protocol.h
+    protocol.h \
+    search.h \
+    utils/conversion.h \
+    utils/templates.h \
+    widgets/geisttextedit.h
 
 FORMS += \
+    code_editor.ui \
     mainwindow.ui
 
 # Default rules for deployment.
@@ -54,6 +69,7 @@ LIBS += -L"D:\Qt\5.15.2\msvc2015_64\lib" -lopen62541
 RESOURCES += \
     files/res.qrc
 
+#INCLUDEPATH += include/KGL/Widgets
 
 
 

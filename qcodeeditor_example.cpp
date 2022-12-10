@@ -24,6 +24,9 @@
 //  Included headers
 //
 #include "QCodeEditor_Example.hpp"
+#include <QFile>
+#include <QFileDialog>
+#include <QString>
 
 
 namespace kgl {
@@ -35,16 +38,28 @@ namespace kgl {
         QCodeEditorDesign design(":/design.xml");
         QList<QSyntaxRule> rules = QSyntaxRules::loadFromFile(":/rule_cpp.xml", design);
 
-        // Creates a new code editor, sets the rules and design, adds it to the form
-        m_Editor = new QCodeEditor(this);
-        m_Editor->setDesign(design);
-        m_Editor->setRules(rules);
-        m_Editor->setKeywords({ "printf", "scanf", "atoi", "mbtoa", "strlen", "memcpy", "memset" });
-        setCentralWidget(m_Editor);
 
-        // Connects the highlighter's onMatch signal to our printMatch slot
-        connect(m_Editor->highlighter(), SIGNAL(onMatch(QSyntaxRule,QString,QTextBlock)), this, SLOT(addMacro(QSyntaxRule,QString,QTextBlock)));
-        connect(m_Editor->highlighter(), SIGNAL(onRemove(QCodeEditorBlockData*)), this, SLOT(removeMacro(QCodeEditorBlockData*)));
+            // Creates a new code editor, sets the rules and design, adds it to the form
+            m_Editor = new QCodeEditor(this);
+            m_Editor->setDesign(design);
+            m_Editor->setRules(rules);
+            m_Editor->setKeywords({ "printf", "scanf", "atoi", "mbtoa", "strlen", "memcpy", "memset" });
+            setCentralWidget(m_Editor);
+
+    //            QString filepath = "D:/Study/NCKH/5_SIMULATION/opcuaqt/qtopcua/a";
+    //            QFile document("document.txt");
+    //            QTextStream writer(&document);
+    //            m_Editor->toPlainText();
+
+    //            writer.flush();
+    //            document.close();
+
+    //        QTextStream writer(&document);
+
+            // Connects the highlighter's onMatch signal to our printMatch slot
+            connect(m_Editor->highlighter(), SIGNAL(onMatch(QSyntaxRule,QString,QTextBlock)), this, SLOT(addMacro(QSyntaxRule,QString,QTextBlock)));
+            connect(m_Editor->highlighter(), SIGNAL(onRemove(QCodeEditorBlockData*)), this, SLOT(removeMacro(QCodeEditorBlockData*)));
+
 
 
     }

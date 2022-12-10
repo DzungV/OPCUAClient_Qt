@@ -14,7 +14,9 @@
 #include <QDateTime>
 #include <QWidget>
 #include <QFileDialog>
+#include <QPlainTextEdit>
 //#include <SampleWidget.h>
+#include <QProcess>
 
 std::string sName;
 byte len;
@@ -702,18 +704,16 @@ void MainWindow::on_chbCoords_currentTextChanged(const QString &arg1)
 
 void MainWindow::on_btnSendProg_clicked()
 {
+
     int curline = 1;
-
-
-
-    QFile inputFile("lmove.txt");
+    QFile inputFile("D:/Study/NCKH/5_SIMULATION/opcuaqt/qtopcua/debug/Compile/test/test.ASM");
     if(!inputFile.exists())
     {
         ui->lnESend_Name->setText("File not found");
         return;
     }
 //    int line_count=0;
-//    inputFile.open(QIODevice::ReadOnly);
+// // //   inputFile.open(QIODevice::ReadOnly);
 //    QString line[100];
 //    QTextStream incnt(&inputFile);
 //    while( !incnt.atEnd())
@@ -725,6 +725,7 @@ void MainWindow::on_btnSendProg_clicked()
 
     if (inputFile.open(QIODevice::ReadOnly))
     {
+        char *chPackData;
 
 //       QString linecnt = QString::number(line_count);
        QTextStream in(&inputFile);
@@ -737,20 +738,21 @@ void MainWindow::on_btnSendProg_clicked()
           ptr = getprotocolPtr();
           ptr->MakeCrcSVON(StrPacketData);
           QByteArray bPackData = StrPacketData.toLocal8Bit();
-          char *chPackData = bPackData.data();
+          chPackData = bPackData.data();
           set_str_to_variant(myVariant,chPackData);
           UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
           int ncheck = checkprogsend(StrPacketData); // check if command sent
-          if (ncheck == 1)
+          while (ncheck != 1)
           {
-              QThread::msleep(50);
-              curline++;
-              continue;
+              UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
+//              continue;
           }
-          else
-          {
-              QMessageBox::critical(this, "Error", "Error Sending Program");
-          }
+          QThread::msleep(50);
+          curline++;
+//          else
+//          {
+// //              QMessageBox::critical(this, "Error", "Error Sending Program");
+//          }
 
        }
        inputFile.close();
@@ -832,13 +834,24 @@ void MainWindow::on_btnSpeed_top_clicked()
 
 void MainWindow::on_btnWriteProg_clicked()
 {
+    QProcess *process = new QProcess(this);
+//    QString file = QDir::homepath + "/file.exe";
+    QString file = "D:/Study/NCKH/5_SIMULATION/Geist-master/build-Geist-Desktop_Qt_5_15_2_MinGW_64_bit-Debug/debug/Geist.exe" ;
+    process->start(file);
 
-    using namespace kgl;
-    QCodeEditor_Example *editor = new QCodeEditor_Example;
+
+//    ProgramWindow
+//    kgl::QCodeEditor_Example *editor = new kgl::QCodeEditor_Example;
+//    ui->plainTxtEdProg->setParent(editor);
+//    ui->plainTxtEdProg->se
+//    using namespace kgl;
+//    QCodeEditor_Example *editor = new QCodeEditor_Example;
+
+
     // ## MainWindow::MainWindow
 
 //    setCentralWidget(editor);
-    ui->gridLayout->addWidget(editor);
+//    ui->gridLayout->addWidget(editor);
 
 //    qDebug()<<editor->centralWidget();
 
@@ -846,39 +859,22 @@ void MainWindow::on_btnWriteProg_clicked()
 
 
 
-
-//    // ## MainWindow::MainWindow
-//    QCodeEditorDesign design;
-//    design.setLineColumnVisible(false);
-//    design.setEditorBackColor(0xff333333);
-//    design.setEditorTextColor(0xffdddddd);
-//    design.setEditorBorderColor(0xff999999);
-//    design.setEditorBorder(QMargins(1,1,1,1)); // l t r b
-//    editor->setDesign(design);
-
-
-//    QList<QSyntaxRule> rules =
-//    QSyntaxRules::loadFromFile(":/rule_cpp.xml", design);
-//    editor->setRules(rules);
-
-//    QStringList keywords = { "printf", "scanf" };
-//    editor->setKeywords(keywords);
 }
 
-void MainWindow::on_btnSaveProg_clicked()
+void MainWindow::on_btnCompProg_clicked()
 {
+    QProcess* pCompileProcess = new QProcess(this);
+//    pCompileProcess -> setWorkingDirectory("./Interpreter");
+    pCompileProcess -> setWorkingDirectory("D:/Study/NCKH/5_SIMULATION/opcuaqt/qtopcua/debug/Interpreter");
 
-//    QString currentFile = "";
-//    QString fileName = QFileDialog::getSaveFileName(editor, "Save as");
-//    QFile file(fileName);
-//    if(!file.open(QFile::WriteOnly | QFile::Text))
-//    {
-//        QMessageBox::warning(editor,"Warning","Cannot save file: "+file.errorString());
-//        return;
-//    }
-//    currentFile = fileName;
-//    QTextStream out(&file);
-//    auto a = ui->gridLayout->takeAt(1);
+    QString strCommand = "D:/Study/NCKH/5_SIMULATION/opcuaqt/qtopcua/debug/Interpreter/EMC_COMPILER.exe";
+    QStringList strListArg;
+    strListArg << "4" << "test.SPT";
+//    strListArg << "test.SPT";
+
+//    pCompileProcess -> start(strCommand, strListArg);
+    pCompileProcess -> start(strCommand, strListArg);
+//    QThread::msleep(1000);
 
 }
 
