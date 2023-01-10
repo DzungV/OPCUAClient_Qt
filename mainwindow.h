@@ -12,6 +12,8 @@
 #include <open62541/types.h>
 #include <stdlib.h>
 #include "QCodeEditor_Example.hpp"
+#include <QTableWidget>
+#include <QTableWidgetItem>
 
 
 QT_BEGIN_NAMESPACE
@@ -78,6 +80,22 @@ private slots:
 
     void on_btnJ4_pos_released();
 
+    void on_btnJ5_neg_pressed();
+
+    void on_btnJ5_neg_released();
+
+    void on_btnJ5_pos_pressed();
+
+    void on_btnJ5_pos_released();
+
+    void on_btnJ6_neg_pressed();
+
+    void on_btnJ6_neg_released();
+
+    void on_btnJ6_pos_pressed();
+
+    void on_btnJ6_pos_released();
+
     void on_btnSVON_clicked();
 
     void on_btnSVOFF_clicked();
@@ -100,11 +118,23 @@ private slots:
 
     void on_btnCompProg_clicked();
 
+    void on_comboBox_currentTextChanged(const QString &arg1);
+
+    void on_btnDataAdd_clicked();
+
+
+
+    void on_btnSendPoints_clicked();
+
+    void on_tabJPointList_1_itemClicked(QTableWidgetItem *item);
+
 private:
     Ui::MainWindow *ui;
     QTimer *timer;
     QTimer *updatetimer;
 
+protected:
+    void closeEvent(QCloseEvent *e);
 
 };
 #endif // MAINWINDOW_H

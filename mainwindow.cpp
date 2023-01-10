@@ -15,7 +15,7 @@
 #include <QWidget>
 #include <QFileDialog>
 #include <QPlainTextEdit>
-//#include <SampleWidget.h>
+#include <QCloseEvent>
 #include <QProcess>
 
 std::string sName;
@@ -31,7 +31,21 @@ double dtheta1;
 double dtheta2;
 double dtheta4;
 double dPosition;
+int numclient;
+int robotnum;
+int pointlist[10];
+QTableWidgetItem *jpoint;
+QTableWidgetItem *wpoint;
+QTableWidgetItem *getpoint;
+//jpoint = new QTableWidgetItem;
 
+const char* nodeid;
+QString strCurJobName;
+QString filepath;
+
+
+
+char* chPacketData;
 
 
 
@@ -51,8 +65,9 @@ UA_Variant value;
 
 UA_Client *client = UA_Client_new();//create a OPC UA client
 
+UA_Int32 noclient;
 
-
+// FUNCTION
 
 void set_str_to_variant(UA_Variant *var, char stdPackData[]) {
 //    char stdPackData[] = "delta";
@@ -72,6 +87,18 @@ int getlength (UA_Variant *var)
 
 }
 
+const char* ChooseRobot (int robot)
+{
+    const char* node = NULL;
+    if (robot == 1)
+        node = "ns=4;s=Robot1/CMDSend";
+    else if (robot == 2)
+        node = "ns=4;s=Robot2/CMDSend";
+    else if (robot == 3)
+        node = "ns=4;s=Robot3/CMDSend";
+    return node;
+}
+
 int checkprogsend (QString &strPackData)
 {
     int chck = 0;
@@ -82,11 +109,16 @@ int checkprogsend (QString &strPackData)
     QString strACK = QString::fromStdString(ACK);
     strACK.resize(ACKlen);
     QString strToFind = ";";
-    QString Crc = strACK.mid(strACK.indexOf(strToFind)+strToFind.length()-1);
+    QString Crc = strACK.mid(strACK.indexOf(strToFind)+1);
+    Crc.chop(1);
     int nr = Crc.toInt();
     QString cmd = strACK.mid(1,6);
-    Crc = strPackData.mid(strPackData.indexOf(strToFind)+strToFind.length()-1);
-    int ns = Crc.toInt();
+    QString strToFind1 = ";";
+//    int n = strPackData.lastIndexOf(strToFind1);
+    QString Crc1 = strPackData.mid(strPackData.indexOf(strToFind1)+1);
+    Crc1.chop(1);
+    int ns = Crc1.toInt();
+    qDebug() << nr << ns;
     if (cmd == "ACK,OK")
     {
         if (nr == ns)
@@ -104,6 +136,26 @@ QString ChooseCoords (QString Coords)
 {
     return Coords;
 }
+
+char* PackData (QString strPackData)
+{
+    protocol* ptr;
+    ptr = getprotocolPtr();
+    ptr->MakeCrcSVON(strPackData);
+
+    QByteArray bPackData = strPackData.toLocal8Bit();
+    char *chPackData = bPackData.data();
+    return chPackData;
+}
+
+QString checksend(QString strPackData)
+{
+    protocol* ptr;
+    ptr = getprotocolPtr();
+    ptr->MakeCrcSVON(strPackData);
+    return strPackData;
+}
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -126,43 +178,35 @@ void MainWindow::ClientConnect(int status)
 
         UA_ClientConfig_setDefault(UA_Client_getConfig(client));
         UA_Client_connect(client, "opc.tcp://localhost:4880");  //connect to server
+        UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/Clientcntstt"), &value);
+        noclient = *(UA_Int32*)value.data ;
+        noclient += 1;
+        UA_Variant_setScalarCopy(myVariant, &noclient, &UA_TYPES[UA_TYPES_INT32]);
+        UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/Clientcntstt"), myVariant);
 
-//        // Send Start Message
-//        QString StartMsg = "Starting transmitting data";
-//        QByteArray bPackData = StartMsg.toLocal8Bit();
-//        char *chPackData = bPackData.data();
-//        set_str_to_variant(myVariant,chPackData);
-//        UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/StartMsg"), myVariant);
-//        // Get Reply from RBC
-//        int nrep = 0;
-//        while (nrep != 5)
-//        {
-//            UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/Startchar"), &value);
-//            nrep = *(UA_Int32*)value.data ;
-//        }
-//        QString strRecv;
-//        while (strRecv != "ACK,OK,READY")
-//        {
-//            UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/StartMsg"), &value);
-//            std::string Recv = get_str_to_variant(&value);
-//            int Recvlen = getlength(&value);
-//            strRecv = QString::fromStdString(Recv);
-//            strRecv.resize(Recvlen);
-//            ui->lnESend_Name->setText(strRecv);
-//        }
         //Create update timer
         updatetimer = new QTimer(this);
         connect(updatetimer, SIGNAL(timeout()),this,SLOT(UpdateTimerTick()));
         updatetimer->start(10);
     }
-    else
+    else if (status==0)
     {
         disconnect(updatetimer, SIGNAL(timeout()),this,SLOT(UpdateTimerTick()));
+
+        UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/Clientcntstt"), &value);
+        noclient = *(UA_Int32*)value.data ;
+        noclient += -1;
+        UA_Variant_setScalarCopy(myVariant, &noclient, &UA_TYPES[UA_TYPES_INT32]);
+        UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/Clientcntstt"), myVariant);
+
+        UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/Clientcntstt"), &value);
+        numclient = *(UA_Int32*)value.data ;
+        QString NoClient = QString::number(numclient);
+        ui->lnENoclients->setText(NoClient);
+
         UA_Client_disconnect(client);
+
     }
-
-
-
 
 }
 
@@ -182,6 +226,7 @@ void MainWindow::Clock()
 
 
 }
+
 
 void MainWindow::ReadData(UA_Client *client)
 {
@@ -216,6 +261,12 @@ void MainWindow::ReadData(UA_Client *client)
 //    dTemperature = *(UA_Double*)value.data;
 //    QString R1Temp = QString::number(dTemperature);
 //    ui->lnERecv_Temp->setText(R1Temp);
+    // Number of clients
+    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/Clientcntstt"), &value);
+    numclient = *(UA_Int32*)value.data ;
+    QString NoClient = QString::number(numclient);
+    ui->lnENoclients->setText(NoClient);
+    //SCARA Data
     //x
     UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/x"), &value);
     dx = *(UA_Double*)value.data ;
@@ -272,9 +323,34 @@ void MainWindow::ReadData(UA_Client *client)
     len = getlength(&value);
     QString strName = QString::fromStdString(sName);
     strName.resize(len);
-    ui->lnESend_Name->setText(strName);
+    ui->lnECmd->setText(strName);
+
+    // DELTA Data
+    //theta1
+    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot2/theta1"), &value);
+    dtheta1 = *(UA_Double*)value.data ;
+    QString R2theta1 = QString::number(dtheta1);
+    ui->lnERecv_theta1_1->setText(R1theta1);
+    //theta2
+    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot2/theta2"), &value);
+    dtheta2 = *(UA_Double*)value.data ;
+    QString R2theta2 = QString::number(dtheta2);
+    ui->lnERecv_theta2_1->setText(R1theta2);
+    //theta3
+    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot2/theta3"), &value);
+    dd3 = *(UA_Double*)value.data ;
+    QString R2theta3 = QString::number(dd3);
+    ui->lnERecv_theta3_1->setText(R1d3);
+    //CMDAck
+    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot2/CMDAck"), &value);
+    sName = get_str_to_variant(&value);
+    len = getlength(&value);
+    QString strName1 = QString::fromStdString(sName);
+    strName1.resize(len);
+    ui->lnECmd1->setText(strName1);
 }
 
+// CONNECTION
 
 void MainWindow::on_btnStart_clicked()
 {
@@ -306,6 +382,8 @@ void MainWindow::on_btnStop_clicked()
 }
 
 
+// JOG TAB
+
 void MainWindow::on_btnJ1_neg_pressed()
 {
 
@@ -318,17 +396,12 @@ void MainWindow::on_btnJ1_neg_pressed()
     else
     {
         StrPacketData = QString("%1JOGJ,%2,%3,%4%5").arg(STX,coords,no_joint,direction,ETX);
-        protocol* ptr;
-        ptr = getprotocolPtr();
-        ptr->MakeCrcSVON(StrPacketData);
-
-        QByteArray bPackData = StrPacketData.toLocal8Bit();
-        char *chPackData = bPackData.data();
-        set_str_to_variant(myVariant,chPackData);
+        chPacketData = PackData(StrPacketData);
+        set_str_to_variant(myVariant,chPacketData);
     }
 
-//    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/theta1"), myVariant);
-    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
+    nodeid = ChooseRobot(robotnum);
+    UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
 }
 
 
@@ -336,16 +409,11 @@ void MainWindow::on_btnJ1_neg_released()
 {
     no_joint = "1";
     StrPacketData = QString("%1STOP,%2%3").arg(STX,no_joint,ETX);
-    protocol* ptr;
-    ptr = getprotocolPtr();
-    ptr->MakeCrcSVON(StrPacketData);
+    chPacketData = PackData(StrPacketData);
+    set_str_to_variant(myVariant,chPacketData);
 
-    QByteArray bPackData = StrPacketData.toLocal8Bit();
-    char *chPackData = bPackData.data();
-    set_str_to_variant(myVariant,chPackData);
-
-//    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/theta1"), myVariant);
-    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
+    nodeid = ChooseRobot(robotnum);
+    UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
 
 
 }
@@ -362,17 +430,12 @@ void MainWindow::on_btnJ1_pos_pressed()
     else
     {
         StrPacketData = QString("%1JOGJ,%2,%3,%4%5").arg(STX,coords,no_joint,direction,ETX);
-        protocol* ptr;
-        ptr = getprotocolPtr();
-        ptr->MakeCrcSVON(StrPacketData);
-
-        QByteArray bPackData = StrPacketData.toLocal8Bit();
-        char *chPackData = bPackData.data();
-        set_str_to_variant(myVariant,chPackData);
+        chPacketData = PackData(StrPacketData);
+        set_str_to_variant(myVariant,chPacketData);
     }
 
-//    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/theta1"), myVariant);
-    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
+    nodeid = ChooseRobot(robotnum);
+    UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
 }
 
 
@@ -381,16 +444,11 @@ void MainWindow::on_btnJ1_pos_released()
 
     no_joint = "1";
     StrPacketData = QString("%1STOP,%2%3").arg(STX,no_joint,ETX);
-    protocol* ptr;
-    ptr = getprotocolPtr();
-    ptr->MakeCrcSVON(StrPacketData);
+    chPacketData = PackData(StrPacketData);
+    set_str_to_variant(myVariant,chPacketData);
 
-    QByteArray bPackData = StrPacketData.toLocal8Bit();
-    char *chPackData = bPackData.data();
-    set_str_to_variant(myVariant,chPackData);
-
-//    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/theta1"), myVariant);
-    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
+    nodeid = ChooseRobot(robotnum);
+    UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
 }
 
 
@@ -404,15 +462,11 @@ void MainWindow::on_btnJ2_neg_pressed()
     else
     {
         StrPacketData = QString("%1JOGJ,%2,%3,%4%5").arg(STX,coords,no_joint,direction,ETX);
-        protocol* ptr;
-        ptr = getprotocolPtr();
-        ptr->MakeCrcSVON(StrPacketData);
+        chPacketData = PackData(StrPacketData);
+        set_str_to_variant(myVariant,chPacketData);
 
-        QByteArray bPackData = StrPacketData.toLocal8Bit();
-        char *chPackData = bPackData.data();
-        set_str_to_variant(myVariant,chPackData);
-
-        UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
+        nodeid = ChooseRobot(robotnum);
+        UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
     }
 
 
@@ -423,15 +477,11 @@ void MainWindow::on_btnJ2_neg_released()
 {
     no_joint = "2";
     StrPacketData = QString("%1STOP,%2%3").arg(STX,no_joint,ETX);
-    protocol* ptr;
-    ptr = getprotocolPtr();
-    ptr->MakeCrcSVON(StrPacketData);
+    chPacketData = PackData(StrPacketData);
+    set_str_to_variant(myVariant,chPacketData);
 
-    QByteArray bPackData = StrPacketData.toLocal8Bit();
-    char *chPackData = bPackData.data();
-    set_str_to_variant(myVariant,chPackData);
-
-    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
+    nodeid = ChooseRobot(robotnum);
+    UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
 
 }
 
@@ -446,18 +496,12 @@ void MainWindow::on_btnJ2_pos_pressed()
     else
     {
         StrPacketData = QString("%1JOGJ,%2,%3,%4%5").arg(STX,coords,no_joint,direction,ETX);
-        protocol* ptr;
-        ptr = getprotocolPtr();
-        ptr->MakeCrcSVON(StrPacketData);
+        chPacketData = PackData(StrPacketData);
+        set_str_to_variant(myVariant,chPacketData);
 
-        QByteArray bPackData = StrPacketData.toLocal8Bit();
-        char *chPackData = bPackData.data();
-        set_str_to_variant(myVariant,chPackData);
-
-        UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
+        nodeid = ChooseRobot(robotnum);
+        UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
     }
-
-
 }
 
 
@@ -466,15 +510,11 @@ void MainWindow::on_btnJ2_pos_released()
 
     no_joint = "2";
     StrPacketData = QString("%1STOP,%2%3").arg(STX,no_joint,ETX);
-    protocol* ptr;
-    ptr = getprotocolPtr();
-    ptr->MakeCrcSVON(StrPacketData);
+    chPacketData = PackData(StrPacketData);
+    set_str_to_variant(myVariant,chPacketData);
 
-    QByteArray bPackData = StrPacketData.toLocal8Bit();
-    char *chPackData = bPackData.data();
-    set_str_to_variant(myVariant,chPackData);
-
-    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
+    nodeid = ChooseRobot(robotnum);
+    UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
 }
 
 
@@ -488,18 +528,13 @@ void MainWindow::on_btnJ3_neg_pressed()
     else
     {
         StrPacketData = QString("%1JOGJ,%2,%3,%4%5").arg(STX,coords,no_joint,direction,ETX);
-        protocol* ptr;
-        ptr = getprotocolPtr();
-        ptr->MakeCrcSVON(StrPacketData);
+        chPacketData = PackData(StrPacketData);
+        set_str_to_variant(myVariant,chPacketData);
 
-        QByteArray bPackData = StrPacketData.toLocal8Bit();
-        char *chPackData = bPackData.data();
-        set_str_to_variant(myVariant,chPackData);
-
-        UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
+        nodeid = ChooseRobot(robotnum);
+        UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
 
     }
-
 }
 
 
@@ -508,15 +543,11 @@ void MainWindow::on_btnJ3_neg_released()
 
     no_joint = "3";
     StrPacketData = QString("%1STOP,%2%3").arg(STX,no_joint,ETX);
-    protocol* ptr;
-    ptr = getprotocolPtr();
-    ptr->MakeCrcSVON(StrPacketData);
+    chPacketData = PackData(StrPacketData);
+    set_str_to_variant(myVariant,chPacketData);
 
-    QByteArray bPackData = StrPacketData.toLocal8Bit();
-    char *chPackData = bPackData.data();
-    set_str_to_variant(myVariant,chPackData);
-
-    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
+    nodeid = ChooseRobot(robotnum);
+    UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
 }
 
 
@@ -530,15 +561,11 @@ void MainWindow::on_btnJ3_pos_pressed()
     else
     {
         StrPacketData = QString("%1JOGJ,%2,%3,%4%5").arg(STX,coords,no_joint,direction,ETX);
-        protocol* ptr;
-        ptr = getprotocolPtr();
-        ptr->MakeCrcSVON(StrPacketData);
+        chPacketData = PackData(StrPacketData);
+        set_str_to_variant(myVariant,chPacketData);
 
-        QByteArray bPackData = StrPacketData.toLocal8Bit();
-        char *chPackData = bPackData.data();
-        set_str_to_variant(myVariant,chPackData);
-
-        UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
+        nodeid = ChooseRobot(robotnum);
+        UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
     }
 
 
@@ -549,15 +576,11 @@ void MainWindow::on_btnJ3_pos_released()
 {
     no_joint = "3";
     StrPacketData = QString("%1STOP,%2%3").arg(STX,no_joint,ETX);
-    protocol* ptr;
-    ptr = getprotocolPtr();
-    ptr->MakeCrcSVON(StrPacketData);
+    chPacketData = PackData(StrPacketData);
+    set_str_to_variant(myVariant,chPacketData);
 
-    QByteArray bPackData = StrPacketData.toLocal8Bit();
-    char *chPackData = bPackData.data();
-    set_str_to_variant(myVariant,chPackData);
-
-    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
+    nodeid = ChooseRobot(robotnum);
+    UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
 
 }
 
@@ -572,18 +595,12 @@ void MainWindow::on_btnJ4_neg_pressed()
     else
     {
         StrPacketData = QString("%1JOGJ,%2,%3,%4%5").arg(STX,coords,no_joint,direction,ETX);
-        protocol* ptr;
-        ptr = getprotocolPtr();
-        ptr->MakeCrcSVON(StrPacketData);
+        chPacketData = PackData(StrPacketData);
+        set_str_to_variant(myVariant,chPacketData);
 
-        QByteArray bPackData = StrPacketData.toLocal8Bit();
-        char *chPackData = bPackData.data();
-        set_str_to_variant(myVariant,chPackData);
-
-        UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
+        nodeid = ChooseRobot(robotnum);
+        UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
     }
-
-
 }
 
 
@@ -591,15 +608,11 @@ void MainWindow::on_btnJ4_neg_released()
 {
     no_joint = "4";
     StrPacketData = QString("%1STOP,%2%3").arg(STX,no_joint,ETX);
-    protocol* ptr;
-    ptr = getprotocolPtr();
-    ptr->MakeCrcSVON(StrPacketData);
+    chPacketData = PackData(StrPacketData);
+    set_str_to_variant(myVariant,chPacketData);
 
-    QByteArray bPackData = StrPacketData.toLocal8Bit();
-    char *chPackData = bPackData.data();
-    set_str_to_variant(myVariant,chPackData);
-
-    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
+    nodeid = ChooseRobot(robotnum);
+    UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
 
 }
 
@@ -614,19 +627,13 @@ void MainWindow::on_btnJ4_pos_pressed()
     else
     {
         StrPacketData = QString("%1JOGJ,%2,%3,%4%5").arg(STX,coords,no_joint,direction,ETX);
-        protocol* ptr;
-        ptr = getprotocolPtr();
-        ptr->MakeCrcSVON(StrPacketData);
+        chPacketData = PackData(StrPacketData);
+        set_str_to_variant(myVariant,chPacketData);
 
-        QByteArray bPackData = StrPacketData.toLocal8Bit();
-        char *chPackData = bPackData.data();
-        set_str_to_variant(myVariant,chPackData);
-
-        UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
+        nodeid = ChooseRobot(robotnum);
+        UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
 
     }
-
-
 
 }
 
@@ -635,30 +642,147 @@ void MainWindow::on_btnJ4_pos_released()
 {
     no_joint = "4";
     StrPacketData = QString("%1STOP,%2%3").arg(STX,no_joint,ETX);
-    protocol* ptr;
-    ptr = getprotocolPtr();
-    ptr->MakeCrcSVON(StrPacketData);
+    chPacketData = PackData(StrPacketData);
+    set_str_to_variant(myVariant,chPacketData);
 
-    QByteArray bPackData = StrPacketData.toLocal8Bit();
-    char *chPackData = bPackData.data();
-    set_str_to_variant(myVariant,chPackData);
-
-    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
+    nodeid = ChooseRobot(robotnum);
+    UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
 }
+
+void MainWindow::on_btnJ5_neg_pressed()
+{
+    no_joint = "5";
+    direction = "-1";
+    coords = ChooseCoords(coords);
+    if (coords == NULL)
+    QMessageBox::critical(this, "Notice", "Please Choose Coordinate");
+    else
+    {
+        StrPacketData = QString("%1JOGJ,%2,%3,%4%5").arg(STX,coords,no_joint,direction,ETX);
+        chPacketData = PackData(StrPacketData);
+        set_str_to_variant(myVariant,chPacketData);
+
+        nodeid = ChooseRobot(robotnum);
+        UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+    }
+}
+
+
+void MainWindow::on_btnJ5_neg_released()
+{
+    no_joint = "5";
+    StrPacketData = QString("%1STOP,%2%3").arg(STX,no_joint,ETX);
+    chPacketData = PackData(StrPacketData);
+    set_str_to_variant(myVariant,chPacketData);
+
+    nodeid = ChooseRobot(robotnum);
+    UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+}
+
+
+void MainWindow::on_btnJ5_pos_pressed()
+{
+    no_joint = "5";
+    direction = "+1";
+    coords = ChooseCoords(coords);
+    if (coords == NULL)
+    QMessageBox::critical(this, "Notice", "Please Choose Coordinate");
+    else
+    {
+        StrPacketData = QString("%1JOGJ,%2,%3,%4%5").arg(STX,coords,no_joint,direction,ETX);
+        chPacketData = PackData(StrPacketData);
+        set_str_to_variant(myVariant,chPacketData);
+
+        nodeid = ChooseRobot(robotnum);
+        UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+    }
+}
+
+
+void MainWindow::on_btnJ5_pos_released()
+{
+    no_joint = "5";
+    StrPacketData = QString("%1STOP,%2%3").arg(STX,no_joint,ETX);
+    chPacketData = PackData(StrPacketData);
+    set_str_to_variant(myVariant,chPacketData);
+
+    nodeid = ChooseRobot(robotnum);
+    UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+}
+
+
+void MainWindow::on_btnJ6_neg_pressed()
+{
+    no_joint = "6";
+    direction = "-1";
+    coords = ChooseCoords(coords);
+    if (coords == NULL)
+    QMessageBox::critical(this, "Notice", "Please Choose Coordinate");
+    else
+    {
+        StrPacketData = QString("%1JOGJ,%2,%3,%4%5").arg(STX,coords,no_joint,direction,ETX);
+        chPacketData = PackData(StrPacketData);
+        set_str_to_variant(myVariant,chPacketData);
+
+        nodeid = ChooseRobot(robotnum);
+        UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+    }
+}
+
+
+void MainWindow::on_btnJ6_neg_released()
+{
+    no_joint = "6";
+    StrPacketData = QString("%1STOP,%2%3").arg(STX,no_joint,ETX);
+    chPacketData = PackData(StrPacketData);
+    set_str_to_variant(myVariant,chPacketData);
+
+    nodeid = ChooseRobot(robotnum);
+    UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+}
+
+
+void MainWindow::on_btnJ6_pos_pressed()
+{
+    no_joint = "6";
+    direction = "+1";
+    coords = ChooseCoords(coords);
+    if (coords == NULL)
+    QMessageBox::critical(this, "Notice", "Please Choose Coordinate");
+    else
+    {
+        StrPacketData = QString("%1JOGJ,%2,%3,%4%5").arg(STX,coords,no_joint,direction,ETX);
+        chPacketData = PackData(StrPacketData);
+        set_str_to_variant(myVariant,chPacketData);
+
+        nodeid = ChooseRobot(robotnum);
+        UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+    }
+}
+
+
+void MainWindow::on_btnJ6_pos_released()
+{
+    no_joint = "6";
+    StrPacketData = QString("%1STOP,%2%3").arg(STX,no_joint,ETX);
+    chPacketData = PackData(StrPacketData);
+    set_str_to_variant(myVariant,chPacketData);
+
+    nodeid = ChooseRobot(robotnum);
+    UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+}
+
 
 
 void MainWindow::on_btnSVON_clicked()
 {
     servostt = "1";
     StrPacketData = QString("%1SVON,%2%3").arg(STX,servostt,ETX);
-    protocol* ptr;
-    ptr = getprotocolPtr();
-    ptr->MakeCrcSVON(StrPacketData);
+    chPacketData = PackData(StrPacketData);
+    set_str_to_variant(myVariant,chPacketData);
 
-    QByteArray bPackData = StrPacketData.toLocal8Bit();
-    char *chPackData = bPackData.data();
-    set_str_to_variant(myVariant,chPackData);
-    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
+    nodeid = ChooseRobot(robotnum);
+    UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
 
 
 }
@@ -668,20 +792,13 @@ void MainWindow::on_btnSVOFF_clicked()
 {
     servostt = "0";
     StrPacketData = QString("%1SVON,%2%3").arg(STX,servostt,ETX);
-    protocol* ptr;
-    ptr = getprotocolPtr();
-    ptr->MakeCrcSVON(StrPacketData);
+    chPacketData = PackData(StrPacketData);
+    set_str_to_variant(myVariant,chPacketData);
 
-    QByteArray bPackData = StrPacketData.toLocal8Bit();
-    char *chPackData = bPackData.data();
-    set_str_to_variant(myVariant,chPackData);
-    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
+    nodeid = ChooseRobot(robotnum);
+    UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
 
 }
-
-
-
-
 
 
 void MainWindow::on_chbCoords_currentTextChanged(const QString &arg1)
@@ -698,29 +815,71 @@ void MainWindow::on_chbCoords_currentTextChanged(const QString &arg1)
     else
         QMessageBox::critical(this, "Notice", "Please Choose Coordinate");
 
+}
+
+void MainWindow::on_btnSpeed_low_clicked()
+{
+    speed = "1";
+    StrPacketData = QString("%1SPED,%2%3").arg(STX,speed,ETX);
+    chPacketData = PackData(StrPacketData);
+    set_str_to_variant(myVariant,chPacketData);
+
+    nodeid = ChooseRobot(robotnum);
+    UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
 
 }
 
 
+void MainWindow::on_btnSpeed_med_clicked()
+{
+    speed = "2";
+    StrPacketData = QString("%1SPED,%2%3").arg(STX,speed,ETX);
+    chPacketData = PackData(StrPacketData);
+    set_str_to_variant(myVariant,chPacketData);
+
+    nodeid = ChooseRobot(robotnum);
+    UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+}
+
+
+void MainWindow::on_btnSpeed_high_clicked()
+{
+    speed = "3";
+    StrPacketData = QString("%1SPED,%2%3").arg(STX,speed,ETX);
+    chPacketData = PackData(StrPacketData);
+    set_str_to_variant(myVariant,chPacketData);
+
+    nodeid = ChooseRobot(robotnum);
+    UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+}
+
+
+void MainWindow::on_btnSpeed_top_clicked()
+{
+    speed = "4";
+    StrPacketData = QString("%1SPED,%2%3").arg(STX,speed,ETX);
+    chPacketData = PackData(StrPacketData);
+    set_str_to_variant(myVariant,chPacketData);
+
+    nodeid = ChooseRobot(robotnum);
+    UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+}
+
+// PROGRAM TAB
+
 void MainWindow::on_btnSendProg_clicked()
 {
-
+    nodeid = ChooseRobot(robotnum);
+    strCurJobName = ui->lnEProgName->displayText();
     int curline = 1;
-    QFile inputFile("D:/Study/NCKH/5_SIMULATION/opcuaqt/qtopcua/debug/Compile/test/test.ASM");
+    filepath = "D:/Study/NCKH/5_SIMULATION/opcuaqt/qtopcua/debug/Compile/"+strCurJobName+"/"+strCurJobName+".ASM";
+    QFile inputFile(filepath);
     if(!inputFile.exists())
     {
-        ui->lnESend_Name->setText("File not found");
+//        ui->lnECmd->setText("File not found");
+        QMessageBox::critical(this, "Caution", "The file is not exist");
         return;
     }
-//    int line_count=0;
-// // //   inputFile.open(QIODevice::ReadOnly);
-//    QString line[100];
-//    QTextStream incnt(&inputFile);
-//    while( !incnt.atEnd())
-//        {
-//            line[line_count]=incnt.readLine();
-//            line_count++;
-//        }
 
 
     if (inputFile.open(QIODevice::ReadOnly))
@@ -731,104 +890,98 @@ void MainWindow::on_btnSendProg_clicked()
        QTextStream in(&inputFile);
        while (!in.atEnd())
        {
+          int nosend = 0;
           QString line = in.readLine();
           QString curlin= QString::number(curline);
           StrPacketData = QString("%1ASMW,%2,%3%4").arg(STX,line,curlin,ETX);
-          protocol* ptr;
-          ptr = getprotocolPtr();
-          ptr->MakeCrcSVON(StrPacketData);
-          QByteArray bPackData = StrPacketData.toLocal8Bit();
-          chPackData = bPackData.data();
-          set_str_to_variant(myVariant,chPackData);
-          UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
-          int ncheck = checkprogsend(StrPacketData); // check if command sent
-          while (ncheck != 1)
+          chPacketData = PackData(StrPacketData);
+          set_str_to_variant(myVariant,chPacketData);
+          UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+          QThread::msleep(50); // wait for sending command
+          QString chstrPacketData = checksend(StrPacketData);
+          int ncheck = checkprogsend(chstrPacketData); // a function that check if command is sent
+          while (ncheck != 1 && nosend < 10)
           {
-              UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
-//              continue;
+              UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+              nosend++;
           }
-          QThread::msleep(50);
-          curline++;
-//          else
-//          {
-// //              QMessageBox::critical(this, "Error", "Error Sending Program");
-//          }
+          if (nosend == 10)
+          {
+              QMessageBox::critical(this, "Caution", "Send Taught Points Fail!!!");
+              return;
+          }
+          else
+              curline++;
+
 
        }
+
        inputFile.close();
+       QMessageBox::information(this, "Information", "Send Program OK!");
     }
     else
     {
-        ui->lnESend_Name->setText("Error String");
+        ui->lnECmd->setText("Error String");
 
     }
 }
 
-
-void MainWindow::on_btnSpeed_low_clicked()
+void MainWindow::on_btnSendPoints_clicked()
 {
-    speed = "1";
-    StrPacketData = QString("%1SPED,%2%3").arg(STX,speed,ETX);
-    protocol* ptr;
-    ptr = getprotocolPtr();
-    ptr->MakeCrcSVON(StrPacketData);
+     // limit number of times resending cmd
+    nodeid = ChooseRobot(robotnum);
+    int curline = 1;
+    filepath = "D:/Study/NCKH/5_SIMULATION/opcuaqt/qtopcua/debug/Compile/data.SPT";
+    QFile inputFile(filepath);
+    if(!inputFile.exists())
+    {
+//        ui->lnECmd->setText("File not found");
+        QMessageBox::critical(this, "Caution", "The file is not exist");
+        return;
+    }
+    if (inputFile.open(QIODevice::ReadOnly))
+    {
+        char *chPackData;
 
-    QByteArray bPackData = StrPacketData.toLocal8Bit();
-    char *chPackData = bPackData.data();
-    set_str_to_variant(myVariant,chPackData);
 
-    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
+       QTextStream in(&inputFile);
+       while (!in.atEnd())
+       {
+          int nosend = 0;
+          QString line = in.readLine();
+          line.chop(1);
+          QString curlin= QString::number(curline);
+          StrPacketData = QString("%1TPTS,%2,%3%4").arg(STX,line,curlin,ETX);
+          chPacketData = PackData(StrPacketData);
+          set_str_to_variant(myVariant,chPacketData);
+          UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+          QThread::msleep(50); // wait for sending command
+          QString chstrPacketData = checksend(StrPacketData);
+          int ncheck = checkprogsend(chstrPacketData); // a function that check if command is sent
+          while (ncheck != 1 && nosend < 10)
+          {
+              UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+              nosend++;
+          }
+          if (nosend == 10)
+          {
+              QMessageBox::critical(this, "Caution", "Send Taught Points Fail!!!");
+              return;
+          }
+          else
+              curline++;
+       }
+       inputFile.close();
+       QMessageBox::information(this, "Information", "Send Taught Points OK!");
+    }
+    else
+    {
+//        ui->lnECmd->setText("Error String");
+        QMessageBox::critical(this, "Caution", "The file is not exist");
+
+    }
+
 }
-
-
-void MainWindow::on_btnSpeed_med_clicked()
-{
-    speed = "2";
-    StrPacketData = QString("%1SPED,%2%3").arg(STX,speed,ETX);
-    protocol* ptr;
-    ptr = getprotocolPtr();
-    ptr->MakeCrcSVON(StrPacketData);
-
-    QByteArray bPackData = StrPacketData.toLocal8Bit();
-    char *chPackData = bPackData.data();
-    set_str_to_variant(myVariant,chPackData);
-
-    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
-}
-
-
-void MainWindow::on_btnSpeed_high_clicked()
-{
-    speed = "3";
-    StrPacketData = QString("%1SPED,%2%3").arg(STX,speed,ETX);
-    protocol* ptr;
-    ptr = getprotocolPtr();
-    ptr->MakeCrcSVON(StrPacketData);
-
-    QByteArray bPackData = StrPacketData.toLocal8Bit();
-    char *chPackData = bPackData.data();
-    set_str_to_variant(myVariant,chPackData);
-
-    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
-}
-
-
-void MainWindow::on_btnSpeed_top_clicked()
-{
-    speed = "4";
-    StrPacketData = QString("%1SPED,%2%3").arg(STX,speed,ETX);
-    protocol* ptr;
-    ptr = getprotocolPtr();
-    ptr->MakeCrcSVON(StrPacketData);
-
-    QByteArray bPackData = StrPacketData.toLocal8Bit();
-    char *chPackData = bPackData.data();
-    set_str_to_variant(myVariant,chPackData);
-
-    UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), myVariant);
-}
-
-
 
 
 
@@ -840,41 +993,288 @@ void MainWindow::on_btnWriteProg_clicked()
     process->start(file);
 
 
-//    ProgramWindow
-//    kgl::QCodeEditor_Example *editor = new kgl::QCodeEditor_Example;
-//    ui->plainTxtEdProg->setParent(editor);
-//    ui->plainTxtEdProg->se
-//    using namespace kgl;
-//    QCodeEditor_Example *editor = new QCodeEditor_Example;
-
-
-    // ## MainWindow::MainWindow
-
-//    setCentralWidget(editor);
-//    ui->gridLayout->addWidget(editor);
-
-//    qDebug()<<editor->centralWidget();
-
-
-
-
-
 }
 
 void MainWindow::on_btnCompProg_clicked()
 {
+    strCurJobName = ui->lnEProgName->displayText();
+
     QProcess* pCompileProcess = new QProcess(this);
 //    pCompileProcess -> setWorkingDirectory("./Interpreter");
     pCompileProcess -> setWorkingDirectory("D:/Study/NCKH/5_SIMULATION/opcuaqt/qtopcua/debug/Interpreter");
-
+//    pCompileProcess -> setWorkingDirectory("./Interpreter");
     QString strCommand = "D:/Study/NCKH/5_SIMULATION/opcuaqt/qtopcua/debug/Interpreter/EMC_COMPILER.exe";
     QStringList strListArg;
-    strListArg << "4" << "test.SPT";
+    strListArg << "4" << strCurJobName + ".SPT";
 //    strListArg << "test.SPT";
 
 //    pCompileProcess -> start(strCommand, strListArg);
     pCompileProcess -> start(strCommand, strListArg);
-//    QThread::msleep(1000);
+    QThread::msleep(100);
+    filepath = "D:/Study/NCKH/5_SIMULATION/opcuaqt/qtopcua/debug/Compile/"+strCurJobName+"/"+strCurJobName+".ASM";
+    QFile inputFile(filepath);
+    if(!inputFile.exists())
+    {
+        QMessageBox::critical(this, "Caution", "Compile NG");
+        return;
+    }
+    else
+        QMessageBox::information(this, "Information", "Compile OK");
 
 }
+
+// CHOOSE ROBOT
+
+void MainWindow::on_comboBox_currentTextChanged(const QString &arg1)
+{
+    if (arg1 == "SCARA")
+    {
+        robotnum = 1;
+        ui->tabJPointList_1->show();
+        ui->tabJPointList_2->hide();
+        ui->tabJPointList_3->hide();
+        ui->tabJPointList_4->hide();
+
+        ui->tabWPointList_1->show();
+        ui->tabWPointList_2->hide();
+        ui->tabWPointList_3->hide();
+        ui->tabWPointList_4->hide();
+    }
+
+    else if (arg1 == "DELTA1")
+    {
+        robotnum = 2;
+        ui->tabJPointList_2->show();
+        ui->tabJPointList_1->hide();
+        ui->tabJPointList_3->hide();
+        ui->tabJPointList_4->hide();
+
+        ui->tabWPointList_2->show();
+        ui->tabWPointList_1->hide();
+        ui->tabWPointList_3->hide();
+        ui->tabWPointList_4->hide();
+    }
+
+    else if (arg1 == "MANIPULATOR")
+    {
+        robotnum = 4;
+        ui->tabJPointList_4->show();
+        ui->tabJPointList_1->hide();
+        ui->tabJPointList_2->hide();
+        ui->tabJPointList_3->hide();
+
+        ui->tabWPointList_4->show();
+        ui->tabWPointList_1->hide();
+        ui->tabWPointList_2->hide();
+        ui->tabWPointList_3->hide();
+    }
+    else
+        QMessageBox::critical(this, "Notice", "Please Choose Robot to control");
+
+}
+
+
+
+
+void MainWindow::on_btnDataAdd_clicked()
+{
+    if (robotnum == 1)
+    {
+
+        for (int j=0; j<ui->tabJPointList_1->columnCount();j++)
+        {
+            jpoint  = new QTableWidgetItem;
+            wpoint  = new QTableWidgetItem;
+
+            if (j==0)
+            {
+                jpoint->setText(QString::number(pointlist[1]));
+                wpoint->setText(QString::number(pointlist[1]));
+            }
+            if (j==1)
+            {
+                jpoint->setText(ui->lnERecv_theta1->text());
+                wpoint->setText(ui->lnERecv_x->text());
+            }
+            if (j==2)
+            {
+                jpoint->setText(ui->lnERecv_theta2->text());
+                wpoint->setText(ui->lnERecv_y->text());
+            }
+            if (j==3)
+            {
+                jpoint->setText(ui->lnERecv_d3->text());
+                wpoint->setText(ui->lnERecv_z->text());
+            }
+            if (j==4)
+            {
+                jpoint->setText(ui->lnERecv_theta4->text());
+                wpoint->setText(ui->lnERecv_roll->text());
+            }
+            if (j==5)
+            {
+                wpoint->setText(ui->lnERecv_pitch->text());
+            }
+            if (j==6)
+            {
+                wpoint->setText(ui->lnERecv_yaw->text());
+            }
+
+
+             ui->tabJPointList_1->setItem(pointlist[1],j,jpoint);
+             ui->tabWPointList_1->setItem(pointlist[1],j,wpoint);
+
+        }
+        pointlist[1]++;
+    }
+    else if (robotnum == 2)
+    {
+
+        for (int j=0; j<ui->tabJPointList_2->columnCount();j++)
+        {
+            jpoint  = new QTableWidgetItem;
+            wpoint  = new QTableWidgetItem;
+
+            if (j==0)
+            {
+                jpoint->setText(QString::number(pointlist[2]));
+                wpoint->setText(QString::number(pointlist[2]));
+            }
+
+            if (j==1)
+            {
+                jpoint->setText(ui->lnERecv_theta1_1->text());
+                wpoint->setText(ui->lnERecv_x1->text());
+            }
+            if (j==2)
+            {
+                jpoint->setText(ui->lnERecv_theta2_1->text());
+                wpoint->setText(ui->lnERecv_y1->text());
+            }
+            if (j==3)
+            {
+                jpoint->setText(ui->lnERecv_theta3_1->text());
+                wpoint->setText(ui->lnERecv_z1->text());
+            }
+            if (j==4)
+            {
+                wpoint->setText(ui->lnERecv_roll1->text());
+            }
+            if (j==5)
+            {
+                wpoint->setText(ui->lnERecv_pitch1->text());
+            }
+            if (j==6)
+            {
+                wpoint->setText(ui->lnERecv_yaw1->text());
+            }
+
+             ui->tabJPointList_2->setItem(pointlist[2],j,jpoint);
+             ui->tabWPointList_2->setItem(pointlist[2],j,wpoint);
+
+        }
+        pointlist[2]++;
+    }
+    else if (robotnum == 4)
+    {
+
+        for (int j=0; j<ui->tabJPointList_4->columnCount();j++)
+        {
+            jpoint  = new QTableWidgetItem;
+            wpoint  = new QTableWidgetItem;
+
+
+            if (j==0)
+            {
+                jpoint->setText(QString::number(pointlist[4]));
+                wpoint->setText(QString::number(pointlist[4]));
+            }
+            if (j==1)
+            {
+                jpoint->setText(ui->lnERecv_J1->text());
+                wpoint->setText(ui->lnERecv_x3->text());
+            }
+            if (j==2)
+            {
+                jpoint->setText(ui->lnERecv_J2->text());
+                wpoint->setText(ui->lnERecv_y3->text());
+            }
+            if (j==3)
+            {
+                jpoint->setText(ui->lnERecv_J3->text());
+                wpoint->setText(ui->lnERecv_z3->text());
+            }
+            if (j==4)
+            {
+                jpoint->setText(ui->lnERecv_J4->text());
+                wpoint->setText(ui->lnERecv_roll3->text());
+            }
+            if (j==5)
+            {
+                jpoint->setText(ui->lnERecv_J5->text());
+                wpoint->setText(ui->lnERecv_pitch3->text());
+            }
+            if (j==6)
+            {
+                jpoint->setText(ui->lnERecv_J6->text());
+                wpoint->setText(ui->lnERecv_yaw3->text());
+            }
+
+             ui->tabJPointList_4->setItem(pointlist[4],j,jpoint);
+             ui->tabWPointList_4->setItem(pointlist[4],j,wpoint);
+
+        }
+        pointlist[4]++;
+    }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+void MainWindow::on_tabJPointList_1_itemClicked(QTableWidgetItem *item)
+{
+    int nrow = item->row();
+    filepath = "D:/Study/NCKH/5_SIMULATION/opcuaqt/qtopcua/debug/Compile/data.SPT";
+    QFile file(filepath);
+    if (file.open(QIODevice::WriteOnly | QIODevice::Append))
+    {
+         QTextStream stream(&file);
+         for (int j=0; j<7;j++)
+         {
+             getpoint = new QTableWidgetItem;
+             getpoint = ui->tabJPointList_1->item(nrow,j);
+             QString str = getpoint->data(Qt::DisplayRole).toString();
+             ui->lnECmd->setText(str);
+             //
+             if (str != NULL)
+             {
+                 stream << str << ",";
+             }
+         }
+         stream << endl;
+    }
+
+}
+
+
+void MainWindow::closeEvent(QCloseEvent *e)
+{
+    QString close_event = ui->lbSttMsg->text();
+    if (close_event == "Logging Started and Connected to OPC Server")
+    {
+        ClientConnect(0);
+        QMainWindow::closeEvent(e);
+    }
+    else
+    QMainWindow::closeEvent(e);
+}
+
 
