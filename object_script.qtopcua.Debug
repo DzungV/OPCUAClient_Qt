@@ -1,4 +1,5 @@
 debug/QCodeEditor_Example.o
+debug/alarmdialog.o
 debug/code_editor.o
 debug/files.o
 debug/highlighter.o
@@ -22,6 +23,7 @@ debug/templates.o
 debug/geisttextedit.o
 debug/qrc_res.o
 debug/moc_QCodeEditor_Example.o
+debug/moc_alarmdialog.o
 debug/moc_code_editor.o
 debug/moc_highlighter.o
 debug/moc_QCodeEditor.o

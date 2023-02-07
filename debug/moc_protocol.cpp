@@ -7,7 +7,7 @@
 *****************************************************************************/
 
 #include <memory>
-#include "../protocol.h"
+#include "../../../newclient/OPCUAClient_Qt-master/protocol.h"
 #include <QtCore/qbytearray.h>
 #include <QtCore/qmetatype.h>
 #if !defined(Q_MOC_OUTPUT_REVISION)

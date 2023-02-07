@@ -11,6 +11,7 @@ INCLUDEPATH += include
 
 SOURCES += \
     QCodeEditor_Example.cpp \
+    alarmdialog.cpp \
     code_editor.cpp \
     files.cpp \
     highlighter.cpp \
@@ -35,6 +36,7 @@ SOURCES += \
 
 HEADERS += \
     QCodeEditor_Example.hpp \
+    alarmdialog.h \
     code_editor.h \
     files.h \
     highlighter.h \
@@ -56,6 +58,7 @@ HEADERS += \
     widgets/geisttextedit.h
 
 FORMS += \
+    alarmdialog.ui \
     code_editor.ui \
     mainwindow.ui
 

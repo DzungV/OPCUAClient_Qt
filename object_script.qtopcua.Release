@@ -1,4 +1,5 @@
 release/QCodeEditor_Example.o
+release/alarmdialog.o
 release/code_editor.o
 release/files.o
 release/highlighter.o
@@ -22,6 +23,7 @@ release/templates.o
 release/geisttextedit.o
 release/qrc_res.o
 release/moc_QCodeEditor_Example.o
+release/moc_alarmdialog.o
 release/moc_code_editor.o
 release/moc_highlighter.o
 release/moc_QCodeEditor.o

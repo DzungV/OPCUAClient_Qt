@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1581</width>
-    <height>954</height>
+    <height>969</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,8 +17,8 @@
    <widget class="QLabel" name="lbSttMsg">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>20</y>
+      <x>70</x>
+      <y>70</y>
       <width>331</width>
       <height>20</height>
      </rect>
@@ -30,8 +30,8 @@
    <widget class="QPushButton" name="btnStart">
     <property name="geometry">
      <rect>
-      <x>860</x>
-      <y>20</y>
+      <x>1030</x>
+      <y>10</y>
       <width>93</width>
       <height>29</height>
      </rect>
@@ -46,7 +46,7 @@
       <x>10</x>
       <y>100</y>
       <width>971</width>
-      <height>801</height>
+      <height>831</height>
      </rect>
     </property>
     <property name="title">
@@ -61,11 +61,11 @@
        <x>20</x>
        <y>100</y>
        <width>951</width>
-       <height>691</height>
+       <height>711</height>
       </rect>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -422,7 +422,7 @@
        <property name="geometry">
         <rect>
          <x>540</x>
-         <y>470</y>
+         <y>140</y>
          <width>131</width>
          <height>41</height>
         </rect>
@@ -435,7 +435,7 @@
        <property name="geometry">
         <rect>
          <x>30</x>
-         <y>470</y>
+         <y>140</y>
          <width>131</width>
          <height>41</height>
         </rect>
@@ -448,7 +448,7 @@
        <property name="geometry">
         <rect>
          <x>280</x>
-         <y>470</y>
+         <y>140</y>
          <width>151</width>
          <height>41</height>
         </rect>
@@ -483,27 +483,50 @@
       <widget class="QPushButton" name="btnSendPoints">
        <property name="geometry">
         <rect>
-         <x>270</x>
+         <x>240</x>
          <y>400</y>
          <width>161</width>
          <height>41</height>
         </rect>
        </property>
        <property name="text">
-        <string>Send Taught Points</string>
+        <string>Send Teaching Points</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="btnChPoints">
+      <widget class="QLineEdit" name="lnEDataPts">
        <property name="geometry">
         <rect>
-         <x>30</x>
+         <x>220</x>
+         <y>310</y>
+         <width>191</width>
+         <height>26</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_47">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>310</y>
+         <width>191</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Name of teaching points file</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btnOpenPts">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
          <y>400</y>
-         <width>161</width>
+         <width>171</width>
          <height>41</height>
         </rect>
        </property>
        <property name="text">
-        <string>Choose Taught Points</string>
+        <string>Modify teaching points</string>
        </property>
       </widget>
      </widget>
@@ -1179,6 +1202,3970 @@
        </widget>
       </widget>
      </widget>
+     <widget class="QWidget" name="tab_10">
+      <attribute name="title">
+       <string>I/O</string>
+      </attribute>
+      <widget class="QTabWidget" name="tabWidget_4">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>20</y>
+         <width>921</width>
+         <height>651</height>
+        </rect>
+       </property>
+       <property name="currentIndex">
+        <number>1</number>
+       </property>
+       <widget class="QWidget" name="tab_11">
+        <attribute name="title">
+         <string>Digital Input</string>
+        </attribute>
+        <widget class="QLabel" name="label_121">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>40</y>
+           <width>63</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Group</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_113">
+         <property name="geometry">
+          <rect>
+           <x>220</x>
+           <y>40</y>
+           <width>91</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Status (Bits)</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_117">
+         <property name="geometry">
+          <rect>
+           <x>90</x>
+           <y>40</y>
+           <width>63</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Inputs</string>
+         </property>
+        </widget>
+        <widget class="Line" name="line">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>90</y>
+           <width>511</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+        <widget class="Line" name="line_2">
+         <property name="geometry">
+          <rect>
+           <x>500</x>
+           <y>40</y>
+           <width>20</width>
+           <height>551</height>
+          </rect>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
+        <widget class="Line" name="line_3">
+         <property name="geometry">
+          <rect>
+           <x>510</x>
+           <y>113</y>
+           <width>401</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_87">
+         <property name="geometry">
+          <rect>
+           <x>530</x>
+           <y>50</y>
+           <width>63</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>GROUP:</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_88">
+         <property name="geometry">
+          <rect>
+           <x>530</x>
+           <y>90</y>
+           <width>63</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>INPUT:</string>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lnEDIgr">
+         <property name="geometry">
+          <rect>
+           <x>590</x>
+           <y>40</y>
+           <width>51</width>
+           <height>31</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lnEDIinput">
+         <property name="geometry">
+          <rect>
+           <x>590</x>
+           <y>80</y>
+           <width>81</width>
+           <height>31</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_89">
+         <property name="geometry">
+          <rect>
+           <x>710</x>
+           <y>50</y>
+           <width>91</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>VALUE (DEC):</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_90">
+         <property name="geometry">
+          <rect>
+           <x>710</x>
+           <y>90</y>
+           <width>91</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>VALUE (HEX):</string>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lnEDIdecval">
+         <property name="geometry">
+          <rect>
+           <x>810</x>
+           <y>40</y>
+           <width>101</width>
+           <height>31</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lnEhexval">
+         <property name="geometry">
+          <rect>
+           <x>810</x>
+           <y>80</y>
+           <width>101</width>
+           <height>31</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_151">
+         <property name="geometry">
+          <rect>
+           <x>530</x>
+           <y>150</y>
+           <width>63</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Input</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_152">
+         <property name="geometry">
+          <rect>
+           <x>630</x>
+           <y>150</y>
+           <width>63</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Status</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_153">
+         <property name="geometry">
+          <rect>
+           <x>780</x>
+           <y>150</y>
+           <width>63</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Name</string>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lineEdit_7">
+         <property name="geometry">
+          <rect>
+           <x>770</x>
+           <y>190</y>
+           <width>131</width>
+           <height>31</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lineEdit_8">
+         <property name="geometry">
+          <rect>
+           <x>770</x>
+           <y>240</y>
+           <width>131</width>
+           <height>31</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lineEdit_9">
+         <property name="geometry">
+          <rect>
+           <x>770</x>
+           <y>290</y>
+           <width>131</width>
+           <height>31</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lineEdit_10">
+         <property name="geometry">
+          <rect>
+           <x>770</x>
+           <y>340</y>
+           <width>131</width>
+           <height>31</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lineEdit_11">
+         <property name="geometry">
+          <rect>
+           <x>770</x>
+           <y>390</y>
+           <width>131</width>
+           <height>31</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lineEdit_12">
+         <property name="geometry">
+          <rect>
+           <x>770</x>
+           <y>440</y>
+           <width>131</width>
+           <height>31</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lineEdit_13">
+         <property name="geometry">
+          <rect>
+           <x>770</x>
+           <y>490</y>
+           <width>131</width>
+           <height>31</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lineEdit_14">
+         <property name="geometry">
+          <rect>
+           <x>770</x>
+           <y>540</y>
+           <width>131</width>
+           <height>31</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lnEDIin1">
+         <property name="geometry">
+          <rect>
+           <x>520</x>
+           <y>190</y>
+           <width>51</width>
+           <height>31</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lnEDIin2">
+         <property name="geometry">
+          <rect>
+           <x>520</x>
+           <y>240</y>
+           <width>51</width>
+           <height>31</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lnEDIin3">
+         <property name="geometry">
+          <rect>
+           <x>520</x>
+           <y>290</y>
+           <width>51</width>
+           <height>31</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lnEDIin4">
+         <property name="geometry">
+          <rect>
+           <x>520</x>
+           <y>340</y>
+           <width>51</width>
+           <height>31</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lnEDIin5">
+         <property name="geometry">
+          <rect>
+           <x>520</x>
+           <y>390</y>
+           <width>51</width>
+           <height>31</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lnEDIin6">
+         <property name="geometry">
+          <rect>
+           <x>520</x>
+           <y>440</y>
+           <width>51</width>
+           <height>31</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lnEDIin7">
+         <property name="geometry">
+          <rect>
+           <x>520</x>
+           <y>490</y>
+           <width>51</width>
+           <height>31</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lnEDIin8">
+         <property name="geometry">
+          <rect>
+           <x>520</x>
+           <y>540</y>
+           <width>51</width>
+           <height>31</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLabel" name="lbDIStt0">
+         <property name="geometry">
+          <rect>
+           <x>640</x>
+           <y>190</y>
+           <width>31</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QLabel" name="lbDIStt1">
+         <property name="geometry">
+          <rect>
+           <x>640</x>
+           <y>240</y>
+           <width>31</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QLabel" name="lbDIStt2">
+         <property name="geometry">
+          <rect>
+           <x>640</x>
+           <y>290</y>
+           <width>31</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QLabel" name="lbDIStt3">
+         <property name="geometry">
+          <rect>
+           <x>640</x>
+           <y>340</y>
+           <width>31</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QLabel" name="lbDIStt4">
+         <property name="geometry">
+          <rect>
+           <x>640</x>
+           <y>390</y>
+           <width>31</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QLabel" name="lbDIStt5">
+         <property name="geometry">
+          <rect>
+           <x>640</x>
+           <y>440</y>
+           <width>31</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QLabel" name="lbDIStt6">
+         <property name="geometry">
+          <rect>
+           <x>640</x>
+           <y>490</y>
+           <width>31</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QLabel" name="lbDIStt7">
+         <property name="geometry">
+          <rect>
+           <x>640</x>
+           <y>540</y>
+           <width>31</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI7">
+         <property name="geometry">
+          <rect>
+           <x>161</x>
+           <y>111</y>
+           <width>37</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI6">
+         <property name="geometry">
+          <rect>
+           <x>205</x>
+           <y>111</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI4">
+         <property name="geometry">
+          <rect>
+           <x>291</x>
+           <y>111</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI3">
+         <property name="geometry">
+          <rect>
+           <x>334</x>
+           <y>111</y>
+           <width>37</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI2">
+         <property name="geometry">
+          <rect>
+           <x>378</x>
+           <y>111</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI5">
+         <property name="geometry">
+          <rect>
+           <x>248</x>
+           <y>111</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI0">
+         <property name="geometry">
+          <rect>
+           <x>464</x>
+           <y>111</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI1">
+         <property name="geometry">
+          <rect>
+           <x>421</x>
+           <y>111</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_120">
+         <property name="geometry">
+          <rect>
+           <x>220</x>
+           <y>71</y>
+           <width>16</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>6</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_118">
+         <property name="geometry">
+          <rect>
+           <x>178</x>
+           <y>71</y>
+           <width>16</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>7</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_116">
+         <property name="geometry">
+          <rect>
+           <x>346</x>
+           <y>71</y>
+           <width>16</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>3</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_119">
+         <property name="geometry">
+          <rect>
+           <x>262</x>
+           <y>71</y>
+           <width>16</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>5</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_122">
+         <property name="geometry">
+          <rect>
+           <x>304</x>
+           <y>71</y>
+           <width>16</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>4</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_112">
+         <property name="geometry">
+          <rect>
+           <x>387</x>
+           <y>71</y>
+           <width>16</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>2</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_114">
+         <property name="geometry">
+          <rect>
+           <x>471</x>
+           <y>71</y>
+           <width>16</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>0</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_115">
+         <property name="geometry">
+          <rect>
+           <x>429</x>
+           <y>71</y>
+           <width>16</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>1</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI14">
+         <property name="geometry">
+          <rect>
+           <x>205</x>
+           <y>161</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI15">
+         <property name="geometry">
+          <rect>
+           <x>161</x>
+           <y>161</y>
+           <width>37</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI12">
+         <property name="geometry">
+          <rect>
+           <x>291</x>
+           <y>161</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI11">
+         <property name="geometry">
+          <rect>
+           <x>334</x>
+           <y>161</y>
+           <width>37</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI13">
+         <property name="geometry">
+          <rect>
+           <x>248</x>
+           <y>161</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI10">
+         <property name="geometry">
+          <rect>
+           <x>378</x>
+           <y>161</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI9">
+         <property name="geometry">
+          <rect>
+           <x>421</x>
+           <y>161</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI8">
+         <property name="geometry">
+          <rect>
+           <x>464</x>
+           <y>161</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI22">
+         <property name="geometry">
+          <rect>
+           <x>205</x>
+           <y>211</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI23">
+         <property name="geometry">
+          <rect>
+           <x>161</x>
+           <y>211</y>
+           <width>37</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI20">
+         <property name="geometry">
+          <rect>
+           <x>291</x>
+           <y>211</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI21">
+         <property name="geometry">
+          <rect>
+           <x>248</x>
+           <y>211</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI19">
+         <property name="geometry">
+          <rect>
+           <x>334</x>
+           <y>211</y>
+           <width>37</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI18">
+         <property name="geometry">
+          <rect>
+           <x>378</x>
+           <y>211</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI16">
+         <property name="geometry">
+          <rect>
+           <x>464</x>
+           <y>211</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI17">
+         <property name="geometry">
+          <rect>
+           <x>421</x>
+           <y>211</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI44">
+         <property name="geometry">
+          <rect>
+           <x>291</x>
+           <y>361</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI45">
+         <property name="geometry">
+          <rect>
+           <x>248</x>
+           <y>361</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI47">
+         <property name="geometry">
+          <rect>
+           <x>161</x>
+           <y>361</y>
+           <width>37</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI46">
+         <property name="geometry">
+          <rect>
+           <x>205</x>
+           <y>361</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI42">
+         <property name="geometry">
+          <rect>
+           <x>378</x>
+           <y>361</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI41">
+         <property name="geometry">
+          <rect>
+           <x>421</x>
+           <y>361</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI43">
+         <property name="geometry">
+          <rect>
+           <x>334</x>
+           <y>361</y>
+           <width>37</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI40">
+         <property name="geometry">
+          <rect>
+           <x>464</x>
+           <y>361</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI30">
+         <property name="geometry">
+          <rect>
+           <x>205</x>
+           <y>261</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI31">
+         <property name="geometry">
+          <rect>
+           <x>161</x>
+           <y>261</y>
+           <width>37</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI29">
+         <property name="geometry">
+          <rect>
+           <x>248</x>
+           <y>261</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI28">
+         <property name="geometry">
+          <rect>
+           <x>291</x>
+           <y>261</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI26">
+         <property name="geometry">
+          <rect>
+           <x>378</x>
+           <y>261</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI27">
+         <property name="geometry">
+          <rect>
+           <x>334</x>
+           <y>261</y>
+           <width>37</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI25">
+         <property name="geometry">
+          <rect>
+           <x>421</x>
+           <y>261</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI24">
+         <property name="geometry">
+          <rect>
+           <x>464</x>
+           <y>261</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI39">
+         <property name="geometry">
+          <rect>
+           <x>161</x>
+           <y>311</y>
+           <width>37</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI36">
+         <property name="geometry">
+          <rect>
+           <x>291</x>
+           <y>311</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI37">
+         <property name="geometry">
+          <rect>
+           <x>248</x>
+           <y>311</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI38">
+         <property name="geometry">
+          <rect>
+           <x>205</x>
+           <y>311</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI34">
+         <property name="geometry">
+          <rect>
+           <x>378</x>
+           <y>311</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI35">
+         <property name="geometry">
+          <rect>
+           <x>334</x>
+           <y>311</y>
+           <width>37</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI32">
+         <property name="geometry">
+          <rect>
+           <x>464</x>
+           <y>311</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI33">
+         <property name="geometry">
+          <rect>
+           <x>421</x>
+           <y>311</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI70">
+         <property name="geometry">
+          <rect>
+           <x>205</x>
+           <y>511</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI68">
+         <property name="geometry">
+          <rect>
+           <x>291</x>
+           <y>511</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI71">
+         <property name="geometry">
+          <rect>
+           <x>161</x>
+           <y>511</y>
+           <width>37</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI69">
+         <property name="geometry">
+          <rect>
+           <x>248</x>
+           <y>511</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI65">
+         <property name="geometry">
+          <rect>
+           <x>421</x>
+           <y>511</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI67">
+         <property name="geometry">
+          <rect>
+           <x>334</x>
+           <y>511</y>
+           <width>37</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI66">
+         <property name="geometry">
+          <rect>
+           <x>378</x>
+           <y>511</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI64">
+         <property name="geometry">
+          <rect>
+           <x>464</x>
+           <y>511</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI79">
+         <property name="geometry">
+          <rect>
+           <x>161</x>
+           <y>561</y>
+           <width>37</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI77">
+         <property name="geometry">
+          <rect>
+           <x>248</x>
+           <y>561</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI78">
+         <property name="geometry">
+          <rect>
+           <x>205</x>
+           <y>561</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI76">
+         <property name="geometry">
+          <rect>
+           <x>291</x>
+           <y>561</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI75">
+         <property name="geometry">
+          <rect>
+           <x>334</x>
+           <y>561</y>
+           <width>37</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI73">
+         <property name="geometry">
+          <rect>
+           <x>421</x>
+           <y>561</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI74">
+         <property name="geometry">
+          <rect>
+           <x>378</x>
+           <y>561</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI72">
+         <property name="geometry">
+          <rect>
+           <x>464</x>
+           <y>561</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI55">
+         <property name="geometry">
+          <rect>
+           <x>161</x>
+           <y>411</y>
+           <width>37</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI54">
+         <property name="geometry">
+          <rect>
+           <x>205</x>
+           <y>411</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI52">
+         <property name="geometry">
+          <rect>
+           <x>291</x>
+           <y>411</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI53">
+         <property name="geometry">
+          <rect>
+           <x>248</x>
+           <y>411</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI49">
+         <property name="geometry">
+          <rect>
+           <x>421</x>
+           <y>411</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI50">
+         <property name="geometry">
+          <rect>
+           <x>378</x>
+           <y>411</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI48">
+         <property name="geometry">
+          <rect>
+           <x>464</x>
+           <y>411</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI51">
+         <property name="geometry">
+          <rect>
+           <x>334</x>
+           <y>411</y>
+           <width>37</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI57">
+         <property name="geometry">
+          <rect>
+           <x>421</x>
+           <y>461</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI59">
+         <property name="geometry">
+          <rect>
+           <x>334</x>
+           <y>461</y>
+           <width>37</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI58">
+         <property name="geometry">
+          <rect>
+           <x>378</x>
+           <y>461</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI63">
+         <property name="geometry">
+          <rect>
+           <x>161</x>
+           <y>461</y>
+           <width>37</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI62">
+         <property name="geometry">
+          <rect>
+           <x>205</x>
+           <y>461</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI61">
+         <property name="geometry">
+          <rect>
+           <x>248</x>
+           <y>461</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI60">
+         <property name="geometry">
+          <rect>
+           <x>291</x>
+           <y>461</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI56">
+         <property name="geometry">
+          <rect>
+           <x>464</x>
+           <y>461</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_78">
+         <property name="geometry">
+          <rect>
+           <x>80</x>
+           <y>162</y>
+           <width>30</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>9-16</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_77">
+         <property name="geometry">
+          <rect>
+           <x>80</x>
+           <y>112</y>
+           <width>22</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>1-8</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_80">
+         <property name="geometry">
+          <rect>
+           <x>80</x>
+           <y>261</y>
+           <width>38</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>25-32</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_79">
+         <property name="geometry">
+          <rect>
+           <x>80</x>
+           <y>211</y>
+           <width>38</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>17-24</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_81">
+         <property name="geometry">
+          <rect>
+           <x>80</x>
+           <y>310</y>
+           <width>38</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>33-40</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_84">
+         <property name="geometry">
+          <rect>
+           <x>80</x>
+           <y>459</y>
+           <width>38</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>57-64</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_82">
+         <property name="geometry">
+          <rect>
+           <x>80</x>
+           <y>360</y>
+           <width>38</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>41-48</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_83">
+         <property name="geometry">
+          <rect>
+           <x>80</x>
+           <y>410</y>
+           <width>38</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>49-56</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_86">
+         <property name="geometry">
+          <rect>
+           <x>80</x>
+           <y>558</y>
+           <width>38</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>73-80</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_85">
+         <property name="geometry">
+          <rect>
+           <x>80</x>
+           <y>509</y>
+           <width>38</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>65-72</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="chbDIgr1">
+         <property name="geometry">
+          <rect>
+           <x>11</x>
+           <y>110</y>
+           <width>43</width>
+           <height>24</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>01</string>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="chbDIgr3">
+         <property name="geometry">
+          <rect>
+           <x>11</x>
+           <y>210</y>
+           <width>43</width>
+           <height>24</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>03</string>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="chbDIgr4">
+         <property name="geometry">
+          <rect>
+           <x>11</x>
+           <y>260</y>
+           <width>43</width>
+           <height>24</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>04</string>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="chbDIgr2">
+         <property name="geometry">
+          <rect>
+           <x>11</x>
+           <y>160</y>
+           <width>43</width>
+           <height>24</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>02</string>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="chbDIgr7">
+         <property name="geometry">
+          <rect>
+           <x>11</x>
+           <y>410</y>
+           <width>43</width>
+           <height>24</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>07</string>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="chbDIgr6">
+         <property name="geometry">
+          <rect>
+           <x>11</x>
+           <y>360</y>
+           <width>43</width>
+           <height>24</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>06</string>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="chbDIgr5">
+         <property name="geometry">
+          <rect>
+           <x>11</x>
+           <y>310</y>
+           <width>43</width>
+           <height>24</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>05</string>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="chbDIgr9">
+         <property name="geometry">
+          <rect>
+           <x>11</x>
+           <y>510</y>
+           <width>43</width>
+           <height>24</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>09</string>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="chbDIgr10">
+         <property name="geometry">
+          <rect>
+           <x>11</x>
+           <y>560</y>
+           <width>43</width>
+           <height>24</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>10</string>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="chbDIgr8">
+         <property name="geometry">
+          <rect>
+           <x>11</x>
+           <y>460</y>
+           <width>43</width>
+           <height>24</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>08</string>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="tab_12">
+        <attribute name="title">
+         <string>Digital Output</string>
+        </attribute>
+        <widget class="QLineEdit" name="lnEDIin3_3">
+         <property name="geometry">
+          <rect>
+           <x>520</x>
+           <y>290</y>
+           <width>51</width>
+           <height>31</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="Line" name="line_7">
+         <property name="geometry">
+          <rect>
+           <x>500</x>
+           <y>40</y>
+           <width>20</width>
+           <height>551</height>
+          </rect>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_199">
+         <property name="geometry">
+          <rect>
+           <x>700</x>
+           <y>20</y>
+           <width>91</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>VALUE (DEC):</string>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lineEdit_29">
+         <property name="geometry">
+          <rect>
+           <x>680</x>
+           <y>240</y>
+           <width>131</width>
+           <height>31</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLabel" name="lbDIStt3_3">
+         <property name="geometry">
+          <rect>
+           <x>610</x>
+           <y>340</y>
+           <width>31</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lineEdit_30">
+         <property name="geometry">
+          <rect>
+           <x>680</x>
+           <y>340</y>
+           <width>131</width>
+           <height>31</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lineEdit_25">
+         <property name="geometry">
+          <rect>
+           <x>680</x>
+           <y>540</y>
+           <width>131</width>
+           <height>31</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLabel" name="lbDIStt4_3">
+         <property name="geometry">
+          <rect>
+           <x>610</x>
+           <y>390</y>
+           <width>31</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lineEdit_23">
+         <property name="geometry">
+          <rect>
+           <x>680</x>
+           <y>290</y>
+           <width>131</width>
+           <height>31</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLabel" name="lbDIStt7_3">
+         <property name="geometry">
+          <rect>
+           <x>610</x>
+           <y>540</y>
+           <width>31</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lnEDIin5_3">
+         <property name="geometry">
+          <rect>
+           <x>520</x>
+           <y>390</y>
+           <width>51</width>
+           <height>31</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLabel" name="lbDIStt6_3">
+         <property name="geometry">
+          <rect>
+           <x>610</x>
+           <y>490</y>
+           <width>31</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_157">
+         <property name="geometry">
+          <rect>
+           <x>520</x>
+           <y>60</y>
+           <width>63</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>INPUT:</string>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lnEDIdecval_3">
+         <property name="geometry">
+          <rect>
+           <x>800</x>
+           <y>10</y>
+           <width>101</width>
+           <height>31</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lnEDIin1_3">
+         <property name="geometry">
+          <rect>
+           <x>520</x>
+           <y>190</y>
+           <width>51</width>
+           <height>31</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lnEDIinput_3">
+         <property name="geometry">
+          <rect>
+           <x>580</x>
+           <y>50</y>
+           <width>81</width>
+           <height>31</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLabel" name="lbDIStt1_3">
+         <property name="geometry">
+          <rect>
+           <x>610</x>
+           <y>240</y>
+           <width>31</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lnEhexval_3">
+         <property name="geometry">
+          <rect>
+           <x>800</x>
+           <y>50</y>
+           <width>101</width>
+           <height>31</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="Line" name="line_8">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>90</y>
+           <width>511</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lnEDIin6_3">
+         <property name="geometry">
+          <rect>
+           <x>520</x>
+           <y>440</y>
+           <width>51</width>
+           <height>31</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_158">
+         <property name="geometry">
+          <rect>
+           <x>690</x>
+           <y>150</y>
+           <width>63</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Name</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_161">
+         <property name="geometry">
+          <rect>
+           <x>520</x>
+           <y>20</y>
+           <width>63</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>GROUP:</string>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lineEdit_27">
+         <property name="geometry">
+          <rect>
+           <x>680</x>
+           <y>490</y>
+           <width>131</width>
+           <height>31</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lnEDIin8_3">
+         <property name="geometry">
+          <rect>
+           <x>520</x>
+           <y>540</y>
+           <width>51</width>
+           <height>31</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lineEdit_26">
+         <property name="geometry">
+          <rect>
+           <x>680</x>
+           <y>390</y>
+           <width>131</width>
+           <height>31</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLabel" name="lbDIStt2_3">
+         <property name="geometry">
+          <rect>
+           <x>610</x>
+           <y>290</y>
+           <width>31</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lnEDIgr_3">
+         <property name="geometry">
+          <rect>
+           <x>580</x>
+           <y>10</y>
+           <width>51</width>
+           <height>31</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLabel" name="lbDIStt0_3">
+         <property name="geometry">
+          <rect>
+           <x>610</x>
+           <y>190</y>
+           <width>31</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lnEDIin4_3">
+         <property name="geometry">
+          <rect>
+           <x>520</x>
+           <y>340</y>
+           <width>51</width>
+           <height>31</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lnEDIin7_3">
+         <property name="geometry">
+          <rect>
+           <x>520</x>
+           <y>490</y>
+           <width>51</width>
+           <height>31</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lineEdit_24">
+         <property name="geometry">
+          <rect>
+           <x>680</x>
+           <y>440</y>
+           <width>131</width>
+           <height>31</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_160">
+         <property name="geometry">
+          <rect>
+           <x>600</x>
+           <y>150</y>
+           <width>63</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Status</string>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lnEDIin2_3">
+         <property name="geometry">
+          <rect>
+           <x>520</x>
+           <y>240</y>
+           <width>51</width>
+           <height>31</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_190">
+         <property name="geometry">
+          <rect>
+           <x>530</x>
+           <y>150</y>
+           <width>63</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Input</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_159">
+         <property name="geometry">
+          <rect>
+           <x>700</x>
+           <y>60</y>
+           <width>91</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>VALUE (HEX):</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="lbDIStt5_3">
+         <property name="geometry">
+          <rect>
+           <x>610</x>
+           <y>440</y>
+           <width>31</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lineEdit_28">
+         <property name="geometry">
+          <rect>
+           <x>680</x>
+           <y>190</y>
+           <width>131</width>
+           <height>31</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_253">
+         <property name="geometry">
+          <rect>
+           <x>220</x>
+           <y>40</y>
+           <width>91</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Status (Bits)</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_254">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>40</y>
+           <width>63</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Group</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_255">
+         <property name="geometry">
+          <rect>
+           <x>90</x>
+           <y>40</y>
+           <width>63</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Inputs</string>
+         </property>
+        </widget>
+        <widget class="Line" name="line_14">
+         <property name="geometry">
+          <rect>
+           <x>510</x>
+           <y>140</y>
+           <width>401</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_256">
+         <property name="geometry">
+          <rect>
+           <x>840</x>
+           <y>150</y>
+           <width>63</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Toggle</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton">
+         <property name="geometry">
+          <rect>
+           <x>840</x>
+           <y>190</y>
+           <width>51</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_2">
+         <property name="geometry">
+          <rect>
+           <x>840</x>
+           <y>240</y>
+           <width>51</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_3">
+         <property name="geometry">
+          <rect>
+           <x>840</x>
+           <y>290</y>
+           <width>51</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_4">
+         <property name="geometry">
+          <rect>
+           <x>840</x>
+           <y>340</y>
+           <width>51</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_5">
+         <property name="geometry">
+          <rect>
+           <x>840</x>
+           <y>390</y>
+           <width>51</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_6">
+         <property name="geometry">
+          <rect>
+           <x>840</x>
+           <y>440</y>
+           <width>51</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_7">
+         <property name="geometry">
+          <rect>
+           <x>840</x>
+           <y>540</y>
+           <width>51</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_8">
+         <property name="geometry">
+          <rect>
+           <x>840</x>
+           <y>490</y>
+           <width>51</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_181">
+         <property name="geometry">
+          <rect>
+           <x>80</x>
+           <y>170</y>
+           <width>30</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>9-16</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_172">
+         <property name="geometry">
+          <rect>
+           <x>80</x>
+           <y>120</y>
+           <width>22</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>1-8</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_183">
+         <property name="geometry">
+          <rect>
+           <x>80</x>
+           <y>269</y>
+           <width>38</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>25-32</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_184">
+         <property name="geometry">
+          <rect>
+           <x>80</x>
+           <y>318</y>
+           <width>38</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>33-40</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_182">
+         <property name="geometry">
+          <rect>
+           <x>80</x>
+           <y>219</y>
+           <width>38</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>17-24</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_188">
+         <property name="geometry">
+          <rect>
+           <x>80</x>
+           <y>517</y>
+           <width>38</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>65-72</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_186">
+         <property name="geometry">
+          <rect>
+           <x>80</x>
+           <y>418</y>
+           <width>38</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>49-56</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_187">
+         <property name="geometry">
+          <rect>
+           <x>80</x>
+           <y>467</y>
+           <width>38</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>57-64</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_185">
+         <property name="geometry">
+          <rect>
+           <x>80</x>
+           <y>368</y>
+           <width>38</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>41-48</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_189">
+         <property name="geometry">
+          <rect>
+           <x>80</x>
+           <y>566</y>
+           <width>38</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>73-80</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="chbDIgr1_4">
+         <property name="geometry">
+          <rect>
+           <x>11</x>
+           <y>111</y>
+           <width>43</width>
+           <height>24</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>01</string>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="chbDIgr5_4">
+         <property name="geometry">
+          <rect>
+           <x>11</x>
+           <y>315</y>
+           <width>43</width>
+           <height>24</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>05</string>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="chbDIgr4_4">
+         <property name="geometry">
+          <rect>
+           <x>11</x>
+           <y>264</y>
+           <width>43</width>
+           <height>24</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>04</string>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="chbDIgr3_4">
+         <property name="geometry">
+          <rect>
+           <x>11</x>
+           <y>213</y>
+           <width>43</width>
+           <height>24</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>03</string>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="chbDIgr2_4">
+         <property name="geometry">
+          <rect>
+           <x>11</x>
+           <y>162</y>
+           <width>43</width>
+           <height>24</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>02</string>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="chbDIgr6_4">
+         <property name="geometry">
+          <rect>
+           <x>11</x>
+           <y>366</y>
+           <width>43</width>
+           <height>24</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>06</string>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="chbDIgr8_4">
+         <property name="geometry">
+          <rect>
+           <x>11</x>
+           <y>468</y>
+           <width>43</width>
+           <height>24</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>08</string>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="chbDIgr7_4">
+         <property name="geometry">
+          <rect>
+           <x>11</x>
+           <y>417</y>
+           <width>43</width>
+           <height>24</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>07</string>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="chbDIgr10_4">
+         <property name="geometry">
+          <rect>
+           <x>11</x>
+           <y>570</y>
+           <width>43</width>
+           <height>24</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>10</string>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="chbDIgr9_4">
+         <property name="geometry">
+          <rect>
+           <x>11</x>
+           <y>519</y>
+           <width>43</width>
+           <height>24</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>09</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDO6">
+         <property name="geometry">
+          <rect>
+           <x>205</x>
+           <y>111</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDO4">
+         <property name="geometry">
+          <rect>
+           <x>291</x>
+           <y>111</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDO5">
+         <property name="geometry">
+          <rect>
+           <x>248</x>
+           <y>111</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDO7">
+         <property name="geometry">
+          <rect>
+           <x>161</x>
+           <y>111</y>
+           <width>37</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDO3">
+         <property name="geometry">
+          <rect>
+           <x>334</x>
+           <y>111</y>
+           <width>37</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDO2">
+         <property name="geometry">
+          <rect>
+           <x>378</x>
+           <y>111</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDO1">
+         <property name="geometry">
+          <rect>
+           <x>421</x>
+           <y>111</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDO0">
+         <property name="geometry">
+          <rect>
+           <x>464</x>
+           <y>111</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_191">
+         <property name="geometry">
+          <rect>
+           <x>178</x>
+           <y>71</y>
+           <width>16</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>7</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_194">
+         <property name="geometry">
+          <rect>
+           <x>304</x>
+           <y>71</y>
+           <width>16</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>4</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_195">
+         <property name="geometry">
+          <rect>
+           <x>346</x>
+           <y>71</y>
+           <width>16</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>3</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_192">
+         <property name="geometry">
+          <rect>
+           <x>220</x>
+           <y>71</y>
+           <width>16</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>6</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_193">
+         <property name="geometry">
+          <rect>
+           <x>262</x>
+           <y>71</y>
+           <width>16</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>5</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_198">
+         <property name="geometry">
+          <rect>
+           <x>471</x>
+           <y>71</y>
+           <width>16</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>0</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_196">
+         <property name="geometry">
+          <rect>
+           <x>387</x>
+           <y>71</y>
+           <width>16</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>2</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_197">
+         <property name="geometry">
+          <rect>
+           <x>429</x>
+           <y>71</y>
+           <width>16</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>1</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI30_4">
+         <property name="geometry">
+          <rect>
+           <x>205</x>
+           <y>261</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI31_4">
+         <property name="geometry">
+          <rect>
+           <x>161</x>
+           <y>261</y>
+           <width>37</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI29_4">
+         <property name="geometry">
+          <rect>
+           <x>248</x>
+           <y>261</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI28_4">
+         <property name="geometry">
+          <rect>
+           <x>291</x>
+           <y>261</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI25_4">
+         <property name="geometry">
+          <rect>
+           <x>421</x>
+           <y>261</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI26_4">
+         <property name="geometry">
+          <rect>
+           <x>378</x>
+           <y>261</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI27_4">
+         <property name="geometry">
+          <rect>
+           <x>334</x>
+           <y>261</y>
+           <width>37</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI24_4">
+         <property name="geometry">
+          <rect>
+           <x>464</x>
+           <y>261</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI78_4">
+         <property name="geometry">
+          <rect>
+           <x>205</x>
+           <y>561</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI79_4">
+         <property name="geometry">
+          <rect>
+           <x>161</x>
+           <y>561</y>
+           <width>37</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI76_4">
+         <property name="geometry">
+          <rect>
+           <x>291</x>
+           <y>561</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI74_4">
+         <property name="geometry">
+          <rect>
+           <x>378</x>
+           <y>561</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI77_4">
+         <property name="geometry">
+          <rect>
+           <x>248</x>
+           <y>561</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI75_4">
+         <property name="geometry">
+          <rect>
+           <x>334</x>
+           <y>561</y>
+           <width>37</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI72_4">
+         <property name="geometry">
+          <rect>
+           <x>464</x>
+           <y>561</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI73_4">
+         <property name="geometry">
+          <rect>
+           <x>421</x>
+           <y>561</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI39_4">
+         <property name="geometry">
+          <rect>
+           <x>161</x>
+           <y>311</y>
+           <width>37</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI36_4">
+         <property name="geometry">
+          <rect>
+           <x>291</x>
+           <y>311</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI38_4">
+         <property name="geometry">
+          <rect>
+           <x>205</x>
+           <y>311</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI34_4">
+         <property name="geometry">
+          <rect>
+           <x>378</x>
+           <y>311</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI35_4">
+         <property name="geometry">
+          <rect>
+           <x>334</x>
+           <y>311</y>
+           <width>37</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI37_4">
+         <property name="geometry">
+          <rect>
+           <x>248</x>
+           <y>311</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI32_4">
+         <property name="geometry">
+          <rect>
+           <x>464</x>
+           <y>311</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI33_4">
+         <property name="geometry">
+          <rect>
+           <x>421</x>
+           <y>311</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI23_4">
+         <property name="geometry">
+          <rect>
+           <x>161</x>
+           <y>211</y>
+           <width>37</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI22_4">
+         <property name="geometry">
+          <rect>
+           <x>205</x>
+           <y>211</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI21_4">
+         <property name="geometry">
+          <rect>
+           <x>248</x>
+           <y>211</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI20_4">
+         <property name="geometry">
+          <rect>
+           <x>291</x>
+           <y>211</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI18_4">
+         <property name="geometry">
+          <rect>
+           <x>378</x>
+           <y>211</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI17_4">
+         <property name="geometry">
+          <rect>
+           <x>421</x>
+           <y>211</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI19_4">
+         <property name="geometry">
+          <rect>
+           <x>334</x>
+           <y>211</y>
+           <width>37</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI16_4">
+         <property name="geometry">
+          <rect>
+           <x>464</x>
+           <y>211</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI55_4">
+         <property name="geometry">
+          <rect>
+           <x>161</x>
+           <y>411</y>
+           <width>37</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI52_4">
+         <property name="geometry">
+          <rect>
+           <x>291</x>
+           <y>411</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI51_4">
+         <property name="geometry">
+          <rect>
+           <x>334</x>
+           <y>411</y>
+           <width>37</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI54_4">
+         <property name="geometry">
+          <rect>
+           <x>205</x>
+           <y>411</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI53_4">
+         <property name="geometry">
+          <rect>
+           <x>248</x>
+           <y>411</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI50_4">
+         <property name="geometry">
+          <rect>
+           <x>378</x>
+           <y>411</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI48_4">
+         <property name="geometry">
+          <rect>
+           <x>464</x>
+           <y>411</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI49_4">
+         <property name="geometry">
+          <rect>
+           <x>421</x>
+           <y>411</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI56_4">
+         <property name="geometry">
+          <rect>
+           <x>464</x>
+           <y>461</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI58_4">
+         <property name="geometry">
+          <rect>
+           <x>378</x>
+           <y>461</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI59_4">
+         <property name="geometry">
+          <rect>
+           <x>334</x>
+           <y>461</y>
+           <width>37</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI57_4">
+         <property name="geometry">
+          <rect>
+           <x>421</x>
+           <y>461</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI63_4">
+         <property name="geometry">
+          <rect>
+           <x>161</x>
+           <y>461</y>
+           <width>37</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI60_4">
+         <property name="geometry">
+          <rect>
+           <x>291</x>
+           <y>461</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI62_4">
+         <property name="geometry">
+          <rect>
+           <x>205</x>
+           <y>461</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI61_4">
+         <property name="geometry">
+          <rect>
+           <x>248</x>
+           <y>461</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI45_4">
+         <property name="geometry">
+          <rect>
+           <x>248</x>
+           <y>361</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI44_4">
+         <property name="geometry">
+          <rect>
+           <x>291</x>
+           <y>361</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI46_4">
+         <property name="geometry">
+          <rect>
+           <x>205</x>
+           <y>361</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI47_4">
+         <property name="geometry">
+          <rect>
+           <x>161</x>
+           <y>361</y>
+           <width>37</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI42_4">
+         <property name="geometry">
+          <rect>
+           <x>378</x>
+           <y>361</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI41_4">
+         <property name="geometry">
+          <rect>
+           <x>421</x>
+           <y>361</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI43_4">
+         <property name="geometry">
+          <rect>
+           <x>334</x>
+           <y>361</y>
+           <width>37</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI40_4">
+         <property name="geometry">
+          <rect>
+           <x>464</x>
+           <y>361</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDO15">
+         <property name="geometry">
+          <rect>
+           <x>161</x>
+           <y>161</y>
+           <width>37</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDO14">
+         <property name="geometry">
+          <rect>
+           <x>205</x>
+           <y>161</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI13_4">
+         <property name="geometry">
+          <rect>
+           <x>248</x>
+           <y>161</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI12_4">
+         <property name="geometry">
+          <rect>
+           <x>291</x>
+           <y>161</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI11_4">
+         <property name="geometry">
+          <rect>
+           <x>334</x>
+           <y>161</y>
+           <width>37</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI8_4">
+         <property name="geometry">
+          <rect>
+           <x>464</x>
+           <y>161</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI10_4">
+         <property name="geometry">
+          <rect>
+           <x>378</x>
+           <y>161</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI9_4">
+         <property name="geometry">
+          <rect>
+           <x>421</x>
+           <y>161</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI69_4">
+         <property name="geometry">
+          <rect>
+           <x>248</x>
+           <y>511</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI68_4">
+         <property name="geometry">
+          <rect>
+           <x>291</x>
+           <y>511</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI70_4">
+         <property name="geometry">
+          <rect>
+           <x>205</x>
+           <y>511</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI71_4">
+         <property name="geometry">
+          <rect>
+           <x>161</x>
+           <y>511</y>
+           <width>37</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI65_4">
+         <property name="geometry">
+          <rect>
+           <x>421</x>
+           <y>511</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI66_4">
+         <property name="geometry">
+          <rect>
+           <x>378</x>
+           <y>511</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI67_4">
+         <property name="geometry">
+          <rect>
+           <x>334</x>
+           <y>511</y>
+           <width>37</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnDI64_4">
+         <property name="geometry">
+          <rect>
+           <x>464</x>
+           <y>511</y>
+           <width>36</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </widget>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="tab_13">
+      <attribute name="title">
+       <string>HISTORY</string>
+      </attribute>
+     </widget>
     </widget>
     <widget class="QLabel" name="label_39">
      <property name="geometry">
@@ -1215,6 +5202,11 @@
      <item>
       <property name="text">
        <string>DELTA1</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>DELTA2</string>
       </property>
      </item>
      <item>
@@ -2996,8 +6988,8 @@
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>500</x>
-      <y>20</y>
+      <x>670</x>
+      <y>10</y>
       <width>81</width>
       <height>20</height>
      </rect>
@@ -3009,8 +7001,8 @@
    <widget class="QLineEdit" name="lnETime">
     <property name="geometry">
      <rect>
-      <x>610</x>
-      <y>20</y>
+      <x>780</x>
+      <y>10</y>
       <width>151</width>
       <height>26</height>
      </rect>
@@ -3019,8 +7011,8 @@
    <widget class="QPushButton" name="btnStop">
     <property name="geometry">
      <rect>
-      <x>860</x>
-      <y>60</y>
+      <x>1030</x>
+      <y>50</y>
       <width>93</width>
       <height>29</height>
      </rect>
@@ -3032,8 +7024,8 @@
    <widget class="QLabel" name="label_18">
     <property name="geometry">
      <rect>
-      <x>1040</x>
-      <y>30</y>
+      <x>1210</x>
+      <y>20</y>
       <width>121</width>
       <height>20</height>
      </rect>
@@ -3045,11 +7037,47 @@
    <widget class="QLineEdit" name="lnENoclients">
     <property name="geometry">
      <rect>
-      <x>1170</x>
-      <y>20</y>
+      <x>1350</x>
+      <y>10</y>
       <width>113</width>
       <height>26</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_4">
+    <property name="geometry">
+     <rect>
+      <x>70</x>
+      <y>20</y>
+      <width>131</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Server IP Address</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lnEServerIP">
+    <property name="geometry">
+     <rect>
+      <x>200</x>
+      <y>20</y>
+      <width>181</width>
+      <height>26</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnSaveIP">
+    <property name="geometry">
+     <rect>
+      <x>400</x>
+      <y>20</y>
+      <width>93</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Save</string>
     </property>
    </widget>
   </widget>

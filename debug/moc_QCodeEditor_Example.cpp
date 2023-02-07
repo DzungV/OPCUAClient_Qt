@@ -7,7 +7,7 @@
 *****************************************************************************/
 
 #include <memory>
-#include "../QCodeEditor_Example.hpp"
+#include "../../../newclient/OPCUAClient_Qt-master/QCodeEditor_Example.hpp"
 #include <QtCore/qbytearray.h>
 #include <QtCore/qmetatype.h>
 #if !defined(Q_MOC_OUTPUT_REVISION)
