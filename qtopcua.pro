@@ -17,6 +17,7 @@ SOURCES += \
     highlighter.cpp \
     main.cpp \
     mainwindow.cpp \
+    mythread.cpp \
     protocol.cpp \
     search.cpp \
     src/Design/QCodeEditorDesign.cpp \
@@ -51,6 +52,7 @@ HEADERS += \
     include/KGL/Widgets/QCodeEditorLineWidget.hpp \
     include/KGL/Widgets/QCodeEditorPopup.hpp \
     mainwindow.h \
+    mythread.h \
     protocol.h \
     search.h \
     utils/conversion.h \

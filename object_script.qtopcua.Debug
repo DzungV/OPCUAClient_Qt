@@ -5,6 +5,7 @@ debug/files.o
 debug/highlighter.o
 debug/main.o
 debug/mainwindow.o
+debug/mythread.o
 debug/protocol.o
 debug/search.o
 debug/QCodeEditorDesign.o
@@ -29,5 +30,6 @@ debug/moc_highlighter.o
 debug/moc_QCodeEditor.o
 debug/moc_QCodeEditorHighlighter.o
 debug/moc_mainwindow.o
+debug/moc_mythread.o
 debug/moc_protocol.o
 debug/moc_geisttextedit.o

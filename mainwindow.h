@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include <QTimer>
 
+
+#include <mythread.h>
 #include <open62541/client_config_default.h>
 #include <open62541/client_highlevel.h>
 #include <open62541/client_subscriptions.h>
@@ -30,6 +32,8 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    MyThread *mThread;
+
 
 
 
@@ -44,11 +48,14 @@ public slots:
     void IOAlarmTick();
     void Clock();
     void ServerTimeout();
+    void JogRBTimer();
     void ReadData(UA_Client *client);
     void Alarm(UA_Client *client);
     void ReadDeltaData(UA_Client *client);
     void ReadDI(UA_Client *client);
     void DisplayDI();
+    void JogProcess(int number);
+
 
 private slots:
     void on_btnStart_clicked();
@@ -222,6 +229,7 @@ private:
     QTimer *updatetimer;
     QTimer *svlifetime;
     QTimer *IOAlarmtimer;
+
 
 
 

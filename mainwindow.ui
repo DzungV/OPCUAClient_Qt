@@ -65,7 +65,7 @@
       </rect>
      </property>
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -5254,7 +5254,7 @@
       </rect>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_3">
       <attribute name="title">
@@ -5264,7 +5264,7 @@
        <property name="geometry">
         <rect>
          <x>30</x>
-         <y>540</y>
+         <y>560</y>
          <width>41</width>
          <height>20</height>
         </rect>
@@ -5277,7 +5277,7 @@
        <property name="geometry">
         <rect>
          <x>290</x>
-         <y>490</y>
+         <y>510</y>
          <width>63</width>
          <height>20</height>
         </rect>
@@ -5290,7 +5290,7 @@
        <property name="geometry">
         <rect>
          <x>30</x>
-         <y>440</y>
+         <y>460</y>
          <width>21</width>
          <height>20</height>
         </rect>
@@ -5303,7 +5303,7 @@
        <property name="geometry">
         <rect>
          <x>372</x>
-         <y>435</y>
+         <y>455</y>
          <width>111</width>
          <height>31</height>
         </rect>
@@ -5313,7 +5313,7 @@
        <property name="geometry">
         <rect>
          <x>110</x>
-         <y>490</y>
+         <y>510</y>
          <width>113</width>
          <height>26</height>
         </rect>
@@ -5323,7 +5323,7 @@
        <property name="geometry">
         <rect>
          <x>290</x>
-         <y>390</y>
+         <y>410</y>
          <width>63</width>
          <height>20</height>
         </rect>
@@ -5336,7 +5336,7 @@
        <property name="geometry">
         <rect>
          <x>110</x>
-         <y>390</y>
+         <y>410</y>
          <width>113</width>
          <height>26</height>
         </rect>
@@ -5346,7 +5346,7 @@
        <property name="geometry">
         <rect>
          <x>110</x>
-         <y>540</y>
+         <y>560</y>
          <width>113</width>
          <height>26</height>
         </rect>
@@ -5356,7 +5356,7 @@
        <property name="geometry">
         <rect>
          <x>372</x>
-         <y>485</y>
+         <y>505</y>
          <width>111</width>
          <height>31</height>
         </rect>
@@ -5366,7 +5366,7 @@
        <property name="geometry">
         <rect>
          <x>110</x>
-         <y>590</y>
+         <y>610</y>
          <width>113</width>
          <height>26</height>
         </rect>
@@ -5376,7 +5376,7 @@
        <property name="geometry">
         <rect>
          <x>30</x>
-         <y>640</y>
+         <y>660</y>
          <width>63</width>
          <height>20</height>
         </rect>
@@ -5389,7 +5389,7 @@
        <property name="geometry">
         <rect>
          <x>290</x>
-         <y>440</y>
+         <y>460</y>
          <width>63</width>
          <height>20</height>
         </rect>
@@ -5402,7 +5402,7 @@
        <property name="geometry">
         <rect>
          <x>30</x>
-         <y>390</y>
+         <y>410</y>
          <width>31</width>
          <height>20</height>
         </rect>
@@ -5415,7 +5415,7 @@
        <property name="geometry">
         <rect>
          <x>290</x>
-         <y>540</y>
+         <y>560</y>
          <width>63</width>
          <height>20</height>
         </rect>
@@ -5428,7 +5428,7 @@
        <property name="geometry">
         <rect>
          <x>370</x>
-         <y>530</y>
+         <y>550</y>
          <width>111</width>
          <height>31</height>
         </rect>
@@ -5438,7 +5438,7 @@
        <property name="geometry">
         <rect>
          <x>110</x>
-         <y>440</y>
+         <y>460</y>
          <width>113</width>
          <height>26</height>
         </rect>
@@ -5448,7 +5448,7 @@
        <property name="geometry">
         <rect>
          <x>372</x>
-         <y>390</y>
+         <y>410</y>
          <width>111</width>
          <height>31</height>
         </rect>
@@ -5458,7 +5458,7 @@
        <property name="geometry">
         <rect>
          <x>30</x>
-         <y>490</y>
+         <y>510</y>
          <width>31</width>
          <height>20</height>
         </rect>
@@ -5471,7 +5471,7 @@
        <property name="geometry">
         <rect>
          <x>110</x>
-         <y>640</y>
+         <y>660</y>
          <width>113</width>
          <height>26</height>
         </rect>
@@ -5481,7 +5481,7 @@
        <property name="geometry">
         <rect>
          <x>30</x>
-         <y>590</y>
+         <y>610</y>
          <width>51</width>
          <height>20</height>
         </rect>
@@ -5519,7 +5519,7 @@
          <x>20</x>
          <y>10</y>
          <width>451</width>
-         <height>301</height>
+         <height>331</height>
         </rect>
        </property>
        <property name="title">
@@ -5669,7 +5669,7 @@
          <string>Security Level</string>
         </property>
        </widget>
-       <widget class="QLineEdit" name="lnE_SysStt1_2">
+       <widget class="QLineEdit" name="lnE_Mode1">
         <property name="geometry">
          <rect>
           <x>130</x>
@@ -5679,7 +5679,7 @@
          </rect>
         </property>
        </widget>
-       <widget class="QLineEdit" name="lnE_SysStt1_3">
+       <widget class="QLineEdit" name="lnE_Seclvl1">
         <property name="geometry">
          <rect>
           <x>130</x>
@@ -5689,12 +5689,35 @@
          </rect>
         </property>
        </widget>
+       <widget class="QLabel" name="label_72">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>300</y>
+          <width>161</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Lock/Unlock Controller</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="lnELockRBC1">
+        <property name="geometry">
+         <rect>
+          <x>180</x>
+          <y>300</y>
+          <width>261</width>
+          <height>26</height>
+         </rect>
+        </property>
+       </widget>
       </widget>
       <widget class="QLabel" name="label_44">
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>340</y>
+         <y>360</y>
          <width>63</width>
          <height>20</height>
         </rect>
@@ -5707,9 +5730,9 @@
        <property name="geometry">
         <rect>
          <x>110</x>
-         <y>330</y>
+         <y>360</y>
          <width>361</width>
-         <height>41</height>
+         <height>31</height>
         </rect>
        </property>
       </widget>
@@ -5721,8 +5744,8 @@
       <widget class="QLabel" name="label_17">
        <property name="geometry">
         <rect>
-         <x>30</x>
-         <y>390</y>
+         <x>20</x>
+         <y>410</y>
          <width>31</width>
          <height>20</height>
         </rect>
@@ -5734,8 +5757,8 @@
       <widget class="QLineEdit" name="lnERecv_theta1_1">
        <property name="geometry">
         <rect>
-         <x>370</x>
-         <y>390</y>
+         <x>360</x>
+         <y>410</y>
          <width>111</width>
          <height>31</height>
         </rect>
@@ -5744,8 +5767,8 @@
       <widget class="QLabel" name="label_19">
        <property name="geometry">
         <rect>
-         <x>290</x>
-         <y>400</y>
+         <x>280</x>
+         <y>420</y>
          <width>63</width>
          <height>20</height>
         </rect>
@@ -5767,8 +5790,8 @@
       <widget class="QLineEdit" name="lnERecv_roll1">
        <property name="geometry">
         <rect>
-         <x>110</x>
-         <y>540</y>
+         <x>100</x>
+         <y>560</y>
          <width>113</width>
          <height>26</height>
         </rect>
@@ -5777,8 +5800,8 @@
       <widget class="QLabel" name="label_20">
        <property name="geometry">
         <rect>
-         <x>30</x>
-         <y>590</y>
+         <x>20</x>
+         <y>610</y>
          <width>51</width>
          <height>20</height>
         </rect>
@@ -5790,8 +5813,8 @@
       <widget class="QLineEdit" name="lnERecv_y1">
        <property name="geometry">
         <rect>
-         <x>110</x>
-         <y>440</y>
+         <x>100</x>
+         <y>460</y>
          <width>113</width>
          <height>26</height>
         </rect>
@@ -5800,8 +5823,8 @@
       <widget class="QLabel" name="label_21">
        <property name="geometry">
         <rect>
-         <x>30</x>
-         <y>540</y>
+         <x>20</x>
+         <y>560</y>
          <width>41</width>
          <height>20</height>
         </rect>
@@ -5813,8 +5836,8 @@
       <widget class="QLineEdit" name="lnERecv_theta3_1">
        <property name="geometry">
         <rect>
-         <x>370</x>
-         <y>490</y>
+         <x>360</x>
+         <y>510</y>
          <width>111</width>
          <height>31</height>
         </rect>
@@ -5823,8 +5846,8 @@
       <widget class="QLineEdit" name="lnERecv_x1">
        <property name="geometry">
         <rect>
-         <x>110</x>
-         <y>390</y>
+         <x>100</x>
+         <y>410</y>
          <width>113</width>
          <height>26</height>
         </rect>
@@ -5833,8 +5856,8 @@
       <widget class="QLineEdit" name="lnERecv_pitch1">
        <property name="geometry">
         <rect>
-         <x>110</x>
-         <y>590</y>
+         <x>100</x>
+         <y>610</y>
          <width>113</width>
          <height>26</height>
         </rect>
@@ -5843,8 +5866,8 @@
       <widget class="QLabel" name="label_22">
        <property name="geometry">
         <rect>
-         <x>30</x>
-         <y>640</y>
+         <x>20</x>
+         <y>660</y>
          <width>63</width>
          <height>20</height>
         </rect>
@@ -5856,8 +5879,8 @@
       <widget class="QLineEdit" name="lnERecv_z1">
        <property name="geometry">
         <rect>
-         <x>110</x>
-         <y>490</y>
+         <x>100</x>
+         <y>510</y>
          <width>113</width>
          <height>26</height>
         </rect>
@@ -5866,8 +5889,8 @@
       <widget class="QLineEdit" name="lnERecv_yaw1">
        <property name="geometry">
         <rect>
-         <x>110</x>
-         <y>640</y>
+         <x>100</x>
+         <y>660</y>
          <width>113</width>
          <height>26</height>
         </rect>
@@ -5876,8 +5899,8 @@
       <widget class="QLabel" name="label_23">
        <property name="geometry">
         <rect>
-         <x>290</x>
-         <y>500</y>
+         <x>280</x>
+         <y>520</y>
          <width>63</width>
          <height>20</height>
         </rect>
@@ -5889,8 +5912,8 @@
       <widget class="QLineEdit" name="lnERecv_theta2_1">
        <property name="geometry">
         <rect>
-         <x>370</x>
-         <y>440</y>
+         <x>360</x>
+         <y>460</y>
          <width>111</width>
          <height>31</height>
         </rect>
@@ -5899,8 +5922,8 @@
       <widget class="QLabel" name="label_24">
        <property name="geometry">
         <rect>
-         <x>30</x>
-         <y>440</y>
+         <x>20</x>
+         <y>460</y>
          <width>21</width>
          <height>20</height>
         </rect>
@@ -5925,8 +5948,8 @@
       <widget class="QLabel" name="label_26">
        <property name="geometry">
         <rect>
-         <x>30</x>
-         <y>490</y>
+         <x>20</x>
+         <y>510</y>
          <width>31</width>
          <height>20</height>
         </rect>
@@ -5938,8 +5961,8 @@
       <widget class="QLabel" name="label_27">
        <property name="geometry">
         <rect>
-         <x>290</x>
-         <y>450</y>
+         <x>280</x>
+         <y>470</y>
          <width>63</width>
          <height>20</height>
         </rect>
@@ -5954,7 +5977,7 @@
          <x>20</x>
          <y>20</y>
          <width>451</width>
-         <height>301</height>
+         <height>331</height>
         </rect>
        </property>
        <property name="title">
@@ -6104,7 +6127,7 @@
          <string>Mode</string>
         </property>
        </widget>
-       <widget class="QLineEdit" name="lnE_SysStt1_4">
+       <widget class="QLineEdit" name="lnE_Seclvl2">
         <property name="geometry">
          <rect>
           <x>130</x>
@@ -6114,7 +6137,7 @@
          </rect>
         </property>
        </widget>
-       <widget class="QLineEdit" name="lnE_SysStt1_5">
+       <widget class="QLineEdit" name="lnE_Mode2">
         <property name="geometry">
          <rect>
           <x>130</x>
@@ -6124,12 +6147,35 @@
          </rect>
         </property>
        </widget>
+       <widget class="QLabel" name="label_73">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>300</y>
+          <width>161</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Lock/Unlock Controller</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="lnELockRBC2">
+        <property name="geometry">
+         <rect>
+          <x>180</x>
+          <y>300</y>
+          <width>261</width>
+          <height>26</height>
+         </rect>
+        </property>
+       </widget>
       </widget>
       <widget class="QLabel" name="label_45">
        <property name="geometry">
         <rect>
-         <x>30</x>
-         <y>340</y>
+         <x>20</x>
+         <y>360</y>
          <width>63</width>
          <height>20</height>
         </rect>
@@ -6141,10 +6187,10 @@
       <widget class="QLineEdit" name="lnERB2Ala">
        <property name="geometry">
         <rect>
-         <x>120</x>
-         <y>330</y>
+         <x>110</x>
+         <y>360</y>
          <width>361</width>
-         <height>41</height>
+         <height>31</height>
         </rect>
        </property>
       </widget>
@@ -6157,7 +6203,7 @@
        <property name="geometry">
         <rect>
          <x>110</x>
-         <y>440</y>
+         <y>460</y>
          <width>113</width>
          <height>26</height>
         </rect>
@@ -6167,7 +6213,7 @@
        <property name="geometry">
         <rect>
          <x>110</x>
-         <y>640</y>
+         <y>660</y>
          <width>113</width>
          <height>26</height>
         </rect>
@@ -6190,7 +6236,7 @@
        <property name="geometry">
         <rect>
          <x>350</x>
-         <y>440</y>
+         <y>460</y>
          <width>111</width>
          <height>31</height>
         </rect>
@@ -6200,7 +6246,7 @@
        <property name="geometry">
         <rect>
          <x>30</x>
-         <y>640</y>
+         <y>660</y>
          <width>63</width>
          <height>20</height>
         </rect>
@@ -6213,7 +6259,7 @@
        <property name="geometry">
         <rect>
          <x>270</x>
-         <y>450</y>
+         <y>470</y>
          <width>63</width>
          <height>20</height>
         </rect>
@@ -6226,7 +6272,7 @@
        <property name="geometry">
         <rect>
          <x>270</x>
-         <y>400</y>
+         <y>420</y>
          <width>63</width>
          <height>20</height>
         </rect>
@@ -6239,7 +6285,7 @@
        <property name="geometry">
         <rect>
          <x>30</x>
-         <y>590</y>
+         <y>610</y>
          <width>51</width>
          <height>20</height>
         </rect>
@@ -6262,7 +6308,7 @@
        <property name="geometry">
         <rect>
          <x>350</x>
-         <y>490</y>
+         <y>510</y>
          <width>111</width>
          <height>31</height>
         </rect>
@@ -6272,7 +6318,7 @@
        <property name="geometry">
         <rect>
          <x>110</x>
-         <y>540</y>
+         <y>560</y>
          <width>113</width>
          <height>26</height>
         </rect>
@@ -6282,7 +6328,7 @@
        <property name="geometry">
         <rect>
          <x>110</x>
-         <y>390</y>
+         <y>410</y>
          <width>113</width>
          <height>26</height>
         </rect>
@@ -6292,7 +6338,7 @@
        <property name="geometry">
         <rect>
          <x>110</x>
-         <y>590</y>
+         <y>610</y>
          <width>113</width>
          <height>26</height>
         </rect>
@@ -6302,7 +6348,7 @@
        <property name="geometry">
         <rect>
          <x>350</x>
-         <y>390</y>
+         <y>410</y>
          <width>111</width>
          <height>31</height>
         </rect>
@@ -6312,7 +6358,7 @@
        <property name="geometry">
         <rect>
          <x>270</x>
-         <y>500</y>
+         <y>520</y>
          <width>63</width>
          <height>20</height>
         </rect>
@@ -6325,7 +6371,7 @@
        <property name="geometry">
         <rect>
          <x>30</x>
-         <y>490</y>
+         <y>510</y>
          <width>31</width>
          <height>20</height>
         </rect>
@@ -6338,7 +6384,7 @@
        <property name="geometry">
         <rect>
          <x>30</x>
-         <y>390</y>
+         <y>410</y>
          <width>31</width>
          <height>20</height>
         </rect>
@@ -6351,7 +6397,7 @@
        <property name="geometry">
         <rect>
          <x>110</x>
-         <y>490</y>
+         <y>510</y>
          <width>113</width>
          <height>26</height>
         </rect>
@@ -6361,7 +6407,7 @@
        <property name="geometry">
         <rect>
          <x>30</x>
-         <y>540</y>
+         <y>560</y>
          <width>41</width>
          <height>20</height>
         </rect>
@@ -6374,7 +6420,7 @@
        <property name="geometry">
         <rect>
          <x>30</x>
-         <y>440</y>
+         <y>460</y>
          <width>21</width>
          <height>20</height>
         </rect>
@@ -6389,7 +6435,7 @@
          <x>20</x>
          <y>10</y>
          <width>451</width>
-         <height>301</height>
+         <height>331</height>
         </rect>
        </property>
        <property name="title">
@@ -6539,17 +6585,17 @@
          <string>Mode</string>
         </property>
        </widget>
-       <widget class="QLineEdit" name="lnE_SysStt1_6">
+       <widget class="QLineEdit" name="lnE_Seclvl3">
         <property name="geometry">
          <rect>
           <x>130</x>
           <y>260</y>
-          <width>211</width>
+          <width>231</width>
           <height>26</height>
          </rect>
         </property>
        </widget>
-       <widget class="QLineEdit" name="lnE_SysStt1_7">
+       <widget class="QLineEdit" name="lnE_Mode3">
         <property name="geometry">
          <rect>
           <x>130</x>
@@ -6559,12 +6605,35 @@
          </rect>
         </property>
        </widget>
+       <widget class="QLabel" name="label_74">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>300</y>
+          <width>161</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Lock/Unlock Controller</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="lnELockRBC3">
+        <property name="geometry">
+         <rect>
+          <x>180</x>
+          <y>300</y>
+          <width>261</width>
+          <height>26</height>
+         </rect>
+        </property>
+       </widget>
       </widget>
       <widget class="QLabel" name="label_46">
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>340</y>
+         <y>360</y>
          <width>63</width>
          <height>20</height>
         </rect>
@@ -6577,9 +6646,9 @@
        <property name="geometry">
         <rect>
          <x>110</x>
-         <y>330</y>
+         <y>360</y>
          <width>361</width>
-         <height>41</height>
+         <height>31</height>
         </rect>
        </property>
       </widget>
@@ -6592,7 +6661,7 @@
        <property name="geometry">
         <rect>
          <x>30</x>
-         <y>540</y>
+         <y>550</y>
          <width>41</width>
          <height>20</height>
         </rect>
@@ -6605,7 +6674,7 @@
        <property name="geometry">
         <rect>
          <x>110</x>
-         <y>440</y>
+         <y>450</y>
          <width>113</width>
          <height>26</height>
         </rect>
@@ -6615,7 +6684,7 @@
        <property name="geometry">
         <rect>
          <x>30</x>
-         <y>440</y>
+         <y>450</y>
          <width>21</width>
          <height>20</height>
         </rect>
@@ -6628,7 +6697,7 @@
        <property name="geometry">
         <rect>
          <x>30</x>
-         <y>390</y>
+         <y>400</y>
          <width>31</width>
          <height>20</height>
         </rect>
@@ -6641,7 +6710,7 @@
        <property name="geometry">
         <rect>
          <x>110</x>
-         <y>540</y>
+         <y>550</y>
          <width>113</width>
          <height>26</height>
         </rect>
@@ -6651,7 +6720,7 @@
        <property name="geometry">
         <rect>
          <x>30</x>
-         <y>590</y>
+         <y>600</y>
          <width>51</width>
          <height>20</height>
         </rect>
@@ -6677,7 +6746,7 @@
        <property name="geometry">
         <rect>
          <x>110</x>
-         <y>640</y>
+         <y>650</y>
          <width>113</width>
          <height>26</height>
         </rect>
@@ -6687,7 +6756,7 @@
        <property name="geometry">
         <rect>
          <x>370</x>
-         <y>540</y>
+         <y>550</y>
          <width>111</width>
          <height>31</height>
         </rect>
@@ -6697,7 +6766,7 @@
        <property name="geometry">
         <rect>
          <x>110</x>
-         <y>490</y>
+         <y>500</y>
          <width>113</width>
          <height>26</height>
         </rect>
@@ -6707,7 +6776,7 @@
        <property name="geometry">
         <rect>
          <x>110</x>
-         <y>590</y>
+         <y>600</y>
          <width>113</width>
          <height>26</height>
         </rect>
@@ -6717,7 +6786,7 @@
        <property name="geometry">
         <rect>
          <x>30</x>
-         <y>640</y>
+         <y>650</y>
          <width>63</width>
          <height>20</height>
         </rect>
@@ -6730,7 +6799,7 @@
        <property name="geometry">
         <rect>
          <x>370</x>
-         <y>390</y>
+         <y>400</y>
          <width>111</width>
          <height>31</height>
         </rect>
@@ -6740,7 +6809,7 @@
        <property name="geometry">
         <rect>
          <x>370</x>
-         <y>490</y>
+         <y>500</y>
          <width>111</width>
          <height>31</height>
         </rect>
@@ -6750,7 +6819,7 @@
        <property name="geometry">
         <rect>
          <x>30</x>
-         <y>490</y>
+         <y>500</y>
          <width>31</width>
          <height>20</height>
         </rect>
@@ -6763,7 +6832,7 @@
        <property name="geometry">
         <rect>
          <x>370</x>
-         <y>440</y>
+         <y>450</y>
          <width>111</width>
          <height>31</height>
         </rect>
@@ -6783,7 +6852,7 @@
        <property name="geometry">
         <rect>
          <x>110</x>
-         <y>390</y>
+         <y>400</y>
          <width>113</width>
          <height>26</height>
         </rect>
@@ -6793,7 +6862,7 @@
        <property name="geometry">
         <rect>
          <x>290</x>
-         <y>400</y>
+         <y>410</y>
          <width>63</width>
          <height>20</height>
         </rect>
@@ -6806,7 +6875,7 @@
        <property name="geometry">
         <rect>
          <x>290</x>
-         <y>450</y>
+         <y>460</y>
          <width>63</width>
          <height>20</height>
         </rect>
@@ -6819,7 +6888,7 @@
        <property name="geometry">
         <rect>
          <x>290</x>
-         <y>500</y>
+         <y>510</y>
          <width>63</width>
          <height>20</height>
         </rect>
@@ -6832,7 +6901,7 @@
        <property name="geometry">
         <rect>
          <x>290</x>
-         <y>550</y>
+         <y>560</y>
          <width>63</width>
          <height>20</height>
         </rect>
@@ -6845,7 +6914,7 @@
        <property name="geometry">
         <rect>
          <x>370</x>
-         <y>590</y>
+         <y>600</y>
          <width>111</width>
          <height>31</height>
         </rect>
@@ -6855,7 +6924,7 @@
        <property name="geometry">
         <rect>
          <x>290</x>
-         <y>600</y>
+         <y>610</y>
          <width>63</width>
          <height>20</height>
         </rect>
@@ -6868,7 +6937,7 @@
        <property name="geometry">
         <rect>
          <x>370</x>
-         <y>640</y>
+         <y>650</y>
          <width>111</width>
          <height>31</height>
         </rect>
@@ -6878,7 +6947,7 @@
        <property name="geometry">
         <rect>
          <x>290</x>
-         <y>650</y>
+         <y>660</y>
          <width>63</width>
          <height>20</height>
         </rect>
@@ -6893,7 +6962,7 @@
          <x>20</x>
          <y>10</y>
          <width>451</width>
-         <height>301</height>
+         <height>331</height>
         </rect>
        </property>
        <property name="title">
@@ -6987,7 +7056,7 @@
          </rect>
         </property>
        </widget>
-       <widget class="QLineEdit" name="lnE_Coord">
+       <widget class="QLineEdit" name="lnE_Coord4">
         <property name="geometry">
          <rect>
           <x>220</x>
@@ -7043,17 +7112,17 @@
          <string>Mode</string>
         </property>
        </widget>
-       <widget class="QLineEdit" name="lnE_SysStt1_8">
+       <widget class="QLineEdit" name="lnE_Seclvl4">
         <property name="geometry">
          <rect>
           <x>130</x>
           <y>260</y>
-          <width>211</width>
+          <width>221</width>
           <height>26</height>
          </rect>
         </property>
        </widget>
-       <widget class="QLineEdit" name="lnE_SysStt1_9">
+       <widget class="QLineEdit" name="lnE_Mode4">
         <property name="geometry">
          <rect>
           <x>130</x>
@@ -7063,12 +7132,35 @@
          </rect>
         </property>
        </widget>
+       <widget class="QLabel" name="label_75">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>300</y>
+          <width>161</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Lock/Unlock Controller</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="lnELockRBC4">
+        <property name="geometry">
+         <rect>
+          <x>180</x>
+          <y>300</y>
+          <width>261</width>
+          <height>26</height>
+         </rect>
+        </property>
+       </widget>
       </widget>
       <widget class="QLabel" name="label_48">
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>340</y>
+         <y>350</y>
          <width>63</width>
          <height>20</height>
         </rect>
@@ -7081,9 +7173,9 @@
        <property name="geometry">
         <rect>
          <x>110</x>
-         <y>330</y>
+         <y>350</y>
          <width>361</width>
-         <height>41</height>
+         <height>31</height>
         </rect>
        </property>
       </widget>

@@ -5,6 +5,7 @@ release/files.o
 release/highlighter.o
 release/main.o
 release/mainwindow.o
+release/mythread.o
 release/protocol.o
 release/search.o
 release/QCodeEditorDesign.o
@@ -29,5 +30,6 @@ release/moc_highlighter.o
 release/moc_QCodeEditor.o
 release/moc_QCodeEditorHighlighter.o
 release/moc_mainwindow.o
+release/moc_mythread.o
 release/moc_protocol.o
 release/moc_geisttextedit.o
