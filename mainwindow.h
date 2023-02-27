@@ -55,6 +55,7 @@ public slots:
     void ReadDI(UA_Client *client);
     void DisplayDI();
     void JogProcess(int number);
+    void SetSttbar(bool bset);
 
 
 private slots:
@@ -110,9 +111,6 @@ private slots:
 
     void on_btnJ6_pos_released();
 
-    void on_btnSVON_clicked();
-
-    void on_btnSVOFF_clicked();
 
 
 
@@ -222,6 +220,23 @@ private slots:
     void on_btnDO7_toggled(bool checked);
 
     void on_btnDO8_toggled(bool checked);
+
+
+    void on_combSeclvl_currentTextChanged(const QString &arg1);
+
+    void on_btnOkpass_clicked();
+
+    void on_btnRunprg_clicked();
+
+    void on_btnPauseprg_clicked();
+
+    void on_btnStopprg_clicked();
+
+    void on_btnRBMode_toggled(bool checked);
+
+    void on_btnRBCLock_toggled(bool checked);
+
+    void on_btnRBServo_toggled(bool checked);
 
 private:
     Ui::MainWindow *ui;

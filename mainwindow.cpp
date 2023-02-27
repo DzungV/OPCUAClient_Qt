@@ -77,6 +77,9 @@ QString direction;
 QString coords;
 QString StrPacketData;
 QString speed;
+QString seclevel;
+QString rbMode;
+QString lockRBC;
 
 double dd3;
 UA_Variant* myVariant = UA_Variant_new();
@@ -260,7 +263,7 @@ QString checksend(QString strPackData)
     return strPackData;
 }
 
-void SendDI(UA_Client *client, int nbit, bool bstt)
+void RececiveDI(UA_Client *client, int nbit, bool bstt)
 {
     QString DIbit = QString::number(nbit);
     QString DIstt = QString::number(bstt);
@@ -280,6 +283,8 @@ void SendDO(UA_Client *client, int ngroup, int nbit, bool bstt)
     set_str_to_variant(myVariant,chPacketData);
     UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
 }
+
+
 
 QString Dispjogsp(int num)
 {
@@ -576,6 +581,24 @@ MainWindow::MainWindow(QWidget *parent)
     ui->btnDO7->setCheckable(true);
     ui->btnDO8->setIcon(QIcon("./IOpics/offbtn.jpg"));
     ui->btnDO8->setCheckable(true);
+    //
+    ui->btnRBMode->setIcon(QIcon("./IOpics/auto mode.jpg"));
+    ui->btnRBMode->setCheckable(true);
+    ui->btnRBCLock->setIcon(QIcon("./IOpics/lock RBC.jpg"));
+    ui->btnRBCLock->setCheckable(true);
+    ui->btnRBServo->setIcon(QIcon("./IOpics/servo off.jpg"));
+    ui->btnRBServo->setCheckable(true);
+
+
+    ui->lnEServerIP->setText("localhost");
+
+    //set default status bar
+    ui->tab_Jog->setEnabled(false);
+    ui->btnRBMode->setEnabled(false);
+    SetSttbar(0);
+
+
+
 
 //    QMessageBox::information(this, "Information", " Enter the Server IP Adress",
 //                                                            QMessageBox::Ok);
@@ -631,6 +654,8 @@ void MainWindow::ClientConnect(int status)
     else if (status==0)
     {
         disconnect(updatetimer, SIGNAL(timeout()),this,SLOT(UpdateTimerTick()));
+        disconnect(svlifetime, SIGNAL(timeout()),this,SLOT(ServerTimeout()));
+        disconnect(IOAlarmtimer, SIGNAL(timeout()),this,SLOT(IOAlarmTick()));
 
         UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/Clientcntstt"), &value);
         noclient = *(UA_Int32*)value.data ;
@@ -758,6 +783,40 @@ void MainWindow::JogProcess(int number)
     qDebug() << number;
 }
 
+void MainWindow::SetSttbar(bool bset)
+{
+    if (!bset)
+    {
+        ui->cbEnableDO->setEnabled(false);
+        ui->btnDataAdd->setEnabled(false);
+        ui->btnSendProg->setEnabled(false);
+        ui->btnWriteProg->setEnabled(false);
+        ui->btnCompProg->setEnabled(false);
+        ui->btnOpenPts->setEnabled(false);
+        ui->btnSendPoints->setEnabled(false);
+        ui->tab_Points->setEnabled(false);
+        ui->cbEnableDO->setEnabled(false);
+        ui->btnOkpass->setEnabled(false);
+        ui->tab_Jog->setEnabled(false);
+    }
+    else
+    {
+        ui->cbEnableDO->setEnabled(true);
+        ui->btnDataAdd->setEnabled(true);
+        ui->btnSendProg->setEnabled(true);
+        ui->btnWriteProg->setEnabled(true);
+        ui->btnCompProg->setEnabled(true);
+        ui->btnOpenPts->setEnabled(true);
+        ui->btnSendPoints->setEnabled(true);
+        ui->tab_Points->setEnabled(true);
+        ui->cbEnableDO->setEnabled(true);
+        ui->btnOkpass->setEnabled(true);
+        ui->tab_Jog->setEnabled(true);
+    }
+
+
+}
+
 
 
 
@@ -818,11 +877,11 @@ void MainWindow::ReadData(UA_Client *client) // SCARA Data
     ui->lnELockRBC1->setText(lockrbc);
 
     //
-    UA_Boolean bytee;
-    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/OverheatingAlert"), &value);
-    bytee = *(UA_Boolean*)value.data ;
+//    UA_Byte bytee;
+//    UA_Client_readEventNotifierAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), &bytee);
+
 //    if(bytee == 1)
-    qDebug() << bytee;
+//    qDebug() << bytee;
 
     //x
     UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/x"), &value);
@@ -1089,6 +1148,7 @@ void MainWindow::on_btnSaveIP_clicked()
     svIPadd = ui->lnEServerIP->text();
     qSvaddress = "opc.tcp://"+svIPadd+":4880";
 
+
 }
 
 
@@ -1190,35 +1250,33 @@ void MainWindow::on_comboBox_currentTextChanged(const QString &arg1)
 
 // JOG TAB
 
-void MainWindow::on_btnSVON_clicked()
+void MainWindow::on_btnRBServo_toggled(bool checked)
 {
-    servostt = "1";
-    StrPacketData = QString("%1SVON,%2%3").arg(STX,servostt,ETX);
-    chPacketData = PackData(StrPacketData);
-    set_str_to_variant(myVariant,chPacketData);
+    if (checked)
+    {
+        ui->btnRBServo->setIcon(QIcon("./IOpics/servo on.jpg"));
+        servostt = "1";
+        StrPacketData = QString("%1SVON,%2%3").arg(STX,servostt,ETX);
+        chPacketData = PackData(StrPacketData);
+        set_str_to_variant(myVariant,chPacketData);
 
-    nodeid = ChooseRobot(robotnum);
-    UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+        nodeid = ChooseRobot(robotnum);
+        UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+    }
+    else
+    {
+        ui->btnRBServo->setIcon(QIcon("./IOpics/servo off.jpg"));
+        servostt = "0";
+        StrPacketData = QString("%1SVON,%2%3").arg(STX,servostt,ETX);
+        chPacketData = PackData(StrPacketData);
+        set_str_to_variant(myVariant,chPacketData);
 
-//    mThread->start();
-
-
-
+        nodeid = ChooseRobot(robotnum);
+        UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+    }
 }
 
 
-void MainWindow::on_btnSVOFF_clicked()
-{
-
-    servostt = "0";
-    StrPacketData = QString("%1SVON,%2%3").arg(STX,servostt,ETX);
-    chPacketData = PackData(StrPacketData);
-    set_str_to_variant(myVariant,chPacketData);
-
-    nodeid = ChooseRobot(robotnum);
-    UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
-
-}
 
 
 void MainWindow::on_chbCoords_currentTextChanged(const QString &arg1)
@@ -1764,6 +1822,7 @@ void MainWindow::on_btnSpeed_top_clicked()
 
 // PROGRAM TAB
 
+// CMD program
 void MainWindow::on_btnSendProg_clicked()
 {
     nodeid = ChooseRobot(robotnum);
@@ -1823,66 +1882,6 @@ void MainWindow::on_btnSendProg_clicked()
     }
 }
 
-void MainWindow::on_btnSendPoints_clicked()
-{
-     // limit number of times resending cmd
-    nodeid = ChooseRobot(robotnum);
-    int curline = 1;
-    strPtsfilename = ui->lnEDataPts->displayText();
-    filepath = "./DataPoints/"+strPtsfilename+".SPT";
-    QFile inputFile(filepath);
-    if(!inputFile.exists())
-    {
-//        ui->lnECmd->setText("File not found");
-        QMessageBox::critical(this, "Caution", "The file is not exist");
-        return;
-    }
-    if (inputFile.open(QIODevice::ReadOnly))
-    {
-//        char *chPackData;
-
-
-       QTextStream in(&inputFile);
-       while (!in.atEnd())
-       {
-          int nosend = 0;
-          QString line = in.readLine();
-          line.chop(1);
-          QString curlin= QString::number(curline);
-          StrPacketData = QString("%1TPTS,%2,%3%4").arg(STX,line,curlin,ETX);
-          chPacketData = PackData(StrPacketData);
-          set_str_to_variant(myVariant,chPacketData);
-          UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
-          QThread::msleep(50); // wait for sending command
-          QString chstrPacketData = checksend(StrPacketData);
-          int ncheck = checkprogsend(chstrPacketData); // function that check if command is sent
-          while (ncheck != 1 && nosend < 10)
-          {
-              UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
-              nosend++;
-          }
-          if (nosend == 10)
-          {
-              QMessageBox::critical(this, "Caution", "Send Taught Points Failed!!!");
-              return;
-          }
-          else
-              curline++;
-       }
-       inputFile.close();
-       QMessageBox::information(this, "Information", "Send Taught Points OK!");
-    }
-    else
-    {
-//        ui->lnECmd->setText("Error String");
-        QMessageBox::critical(this, "Caution", "The file is not exist");
-
-    }
-
-}
-
-
-
 void MainWindow::on_btnWriteProg_clicked()
 {
     QProcess *process = new QProcess(this);
@@ -1921,7 +1920,43 @@ void MainWindow::on_btnCompProg_clicked()
 
 }
 
+void MainWindow::on_btnRunprg_clicked()
+{
+    strCurJobName = ui->lnEProgName->text();
+    StrPacketData = QString("%1RPRG,%2%3").arg(STX,strCurJobName,ETX);
+    chPacketData = PackData(StrPacketData);
+    set_str_to_variant(myVariant,chPacketData);
+    nodeid = ChooseRobot(robotnum);
+    UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
 
+
+}
+
+
+void MainWindow::on_btnPauseprg_clicked()
+{
+    strCurJobName = ui->lnEProgName->text();
+    StrPacketData = QString("%1PPRG,%2%3").arg(STX,strCurJobName,ETX);
+    chPacketData = PackData(StrPacketData);
+    set_str_to_variant(myVariant,chPacketData);
+    nodeid = ChooseRobot(robotnum);
+    UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+
+}
+
+
+void MainWindow::on_btnStopprg_clicked()
+{
+    strCurJobName = ui->lnEProgName->text();
+    StrPacketData = QString("%1SPRG,%2%3").arg(STX,strCurJobName,ETX);
+    chPacketData = PackData(StrPacketData);
+    set_str_to_variant(myVariant,chPacketData);
+    nodeid = ChooseRobot(robotnum);
+    UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+}
+
+
+// Points
 void MainWindow::on_btnDataAdd_clicked()
 {
     if (robotnum == 1)
@@ -2122,7 +2157,6 @@ void MainWindow::on_btnDataAdd_clicked()
     }
 }
 
-
 void MainWindow::on_btnDataDel_clicked()
 {
     if (robotnum == 1)
@@ -2156,6 +2190,65 @@ void MainWindow::on_btnOpenPts_clicked()
     process->start(file);
 
 }
+
+void MainWindow::on_btnSendPoints_clicked()
+{
+     // limit number of times resending cmd
+    nodeid = ChooseRobot(robotnum);
+    int curline = 1;
+    strPtsfilename = ui->lnEDataPts->displayText();
+    filepath = "./DataPoints/"+strPtsfilename+".SPT";
+    QFile inputFile(filepath);
+    if(!inputFile.exists())
+    {
+//        ui->lnECmd->setText("File not found");
+        QMessageBox::critical(this, "Caution", "The file is not exist");
+        return;
+    }
+    if (inputFile.open(QIODevice::ReadOnly))
+    {
+//        char *chPackData;
+
+
+       QTextStream in(&inputFile);
+       while (!in.atEnd())
+       {
+          int nosend = 0;
+          QString line = in.readLine();
+          line.chop(1);
+          QString curlin= QString::number(curline);
+          StrPacketData = QString("%1TPTS,%2,%3%4").arg(STX,line,curlin,ETX);
+          chPacketData = PackData(StrPacketData);
+          set_str_to_variant(myVariant,chPacketData);
+          UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+          QThread::msleep(50); // wait for sending command
+          QString chstrPacketData = checksend(StrPacketData);
+          int ncheck = checkprogsend(chstrPacketData); // function that check if command is sent
+          while (ncheck != 1 && nosend < 10)
+          {
+              UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+              nosend++;
+          }
+          if (nosend == 10)
+          {
+              QMessageBox::critical(this, "Caution", "Send Taught Points Failed!!!");
+              return;
+          }
+          else
+              curline++;
+       }
+       inputFile.close();
+       QMessageBox::information(this, "Information", "Send Taught Points OK!");
+    }
+    else
+    {
+//        ui->lnECmd->setText("Error String");
+        QMessageBox::critical(this, "Caution", "The file is not exist");
+
+    }
+
+}
+
 
 
 // DATA TAB
@@ -2226,7 +2319,6 @@ void MainWindow::on_tabJPointList_3_itemClicked(QTableWidgetItem *item)
          stream << endl;
     }
 }
-
 
 void MainWindow::on_tabJPointList_4_itemClicked(QTableWidgetItem *item)
 {
@@ -4941,4 +5033,135 @@ void MainWindow::on_btnDO8_toggled(bool checked)
         ui->btnDO7->setChecked(false);
 
 }
+
+
+
+// Modify status bar
+
+void MainWindow::on_combSeclvl_currentTextChanged(const QString &arg1)
+{
+    ui->btnRBMode->setEnabled(true);
+    if (arg1 == "Edit")
+    {
+        ui->lnESecPass->clear();
+        ui->btnOkpass->setEnabled(true);
+
+    }
+    else if (arg1 == "Management")
+    {
+        ui->lnESecPass->clear();
+        ui->btnOkpass->setEnabled(true);
+    }
+    else if (arg1 == "Operation")
+    {
+        ui->btnOkpass->setEnabled(false);
+        ui->lnESecPass->clear();
+        SetSttbar(0);
+        seclevel = "1";
+        StrPacketData = QString("%1SECL,%2%3").arg(STX,seclevel,ETX);
+        chPacketData = PackData(StrPacketData);
+        set_str_to_variant(myVariant,chPacketData);
+        nodeid = ChooseRobot(robotnum);
+        UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+
+    }
+
+}
+
+
+void MainWindow::on_btnOkpass_clicked()
+{
+    QString qstrpass;
+    qstrpass = ui->lnESecPass->text();
+    if (qstrpass == "1234")
+    {
+//        SetSttbar(1);
+//        ui->tab_Program->setEnabled(true);
+//        ui->tab_Points->setEnabled(true);
+        seclevel = "2";
+        StrPacketData = QString("%1SECL,%2%3").arg(STX,seclevel,ETX);
+        chPacketData = PackData(StrPacketData);
+        set_str_to_variant(myVariant,chPacketData);
+        nodeid = ChooseRobot(robotnum);
+        UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+
+    }
+    else if (qstrpass == "5678")
+    {
+
+        seclevel = "3";
+        StrPacketData = QString("%1SECL,%2%3").arg(STX,seclevel,ETX);
+        chPacketData = PackData(StrPacketData);
+        set_str_to_variant(myVariant,chPacketData);
+        nodeid = ChooseRobot(robotnum);
+        UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+    }
+}
+
+
+
+
+
+void MainWindow::on_btnRBMode_toggled(bool checked)
+{
+    if (checked)
+    {
+        if (seclevel == "2" || seclevel == "3")
+            SetSttbar(1);
+        else if (seclevel == "1")
+            ui->tab_Jog->setEnabled(true);
+        ui->btnRBMode->setIcon(QIcon("./IOpics/teach mode.jpg"));
+        rbMode = "1";
+        StrPacketData = QString("%1MODE,%2%3").arg(STX,rbMode,ETX);
+        chPacketData = PackData(StrPacketData);
+        set_str_to_variant(myVariant,chPacketData);
+        nodeid = ChooseRobot(robotnum);
+        UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+    }
+    else
+    {
+        ui->tab_Jog->setEnabled(false);
+        SetSttbar(0);
+        ui->btnRBMode->setIcon(QIcon("./IOpics/auto mode.jpg"));
+        rbMode = "0";
+        StrPacketData = QString("%1MODE,%2%3").arg(STX,rbMode,ETX);
+        chPacketData = PackData(StrPacketData);
+        set_str_to_variant(myVariant,chPacketData);
+        nodeid = ChooseRobot(robotnum);
+        UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+    }
+}
+
+
+void MainWindow::on_btnRBCLock_toggled(bool checked)
+{
+    if (checked)
+    {
+        ui->btnRBCLock->setIcon(QIcon("./IOpics/unlock RBC.jpg"));
+        ui->btnRBMode->setEnabled(true);
+        lockRBC = "1";
+        StrPacketData = QString("%1LOCK,%2%3").arg(STX,lockRBC,ETX);
+        chPacketData = PackData(StrPacketData);
+        set_str_to_variant(myVariant,chPacketData);
+        nodeid = ChooseRobot(robotnum);
+        UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+    }
+    else
+    {
+        ui->btnRBCLock->setIcon(QIcon("./IOpics/lock RBC.jpg"));
+        ui->btnRBMode->setEnabled(false);
+        SetSttbar(0);
+        lockRBC = "0";
+        StrPacketData = QString("%1LOCK,%2%3").arg(STX,lockRBC,ETX);
+        chPacketData = PackData(StrPacketData);
+        set_str_to_variant(myVariant,chPacketData);
+        nodeid = ChooseRobot(robotnum);
+        UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+    }
+
+
+}
+
+
+
 
