@@ -56,6 +56,7 @@ public slots:
     void DisplayDI();
     void JogProcess(int number);
     void SetSttbar(bool bset);
+    void CheckCMDAck();
 
 
 private slots:

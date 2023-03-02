@@ -124,6 +124,7 @@ int count;
 
 
 
+
 // FUNCTION
 
 void set_str_to_variant(UA_Variant *var, char stdPackData[]) {
@@ -263,15 +264,7 @@ QString checksend(QString strPackData)
     return strPackData;
 }
 
-void RececiveDI(UA_Client *client, int nbit, bool bstt)
-{
-    QString DIbit = QString::number(nbit);
-    QString DIstt = QString::number(bstt);
-    StrPacketData = QString("%1RBDI,%2,%3%4").arg(STX,DIbit,DIstt,ETX);
-    chPacketData = PackData(StrPacketData);
-    set_str_to_variant(myVariant,chPacketData);
-    UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
-}
+
 
 void SendDO(UA_Client *client, int ngroup, int nbit, bool bstt)
 {
@@ -596,6 +589,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tab_Jog->setEnabled(false);
     ui->btnRBMode->setEnabled(false);
     SetSttbar(0);
+    ui->cbEnableDO->setEnabled(true);
 
 
 
@@ -649,6 +643,7 @@ void MainWindow::ClientConnect(int status)
         IOAlarmtimer = new QTimer(this);
         connect(IOAlarmtimer, SIGNAL(timeout()),this,SLOT(IOAlarmTick()));
         IOAlarmtimer->start(50);
+
 
     }
     else if (status==0)
@@ -744,10 +739,7 @@ void MainWindow::ServerTimeout()
            updatetimer->start(10);
            connect(IOAlarmtimer, SIGNAL(timeout()),this,SLOT(IOAlarmTick()));
            IOAlarmtimer->start(50);
-           // create thread
 
-           mThread = new MyThread(this);
-           connect(mThread, SIGNAL(NumberChange(int)), this, SLOT(JogProcess(int)));
 
 
 
@@ -780,7 +772,7 @@ void MainWindow::JogProcess(int number)
 //        qDebug() << count++;
 //    }
 
-    qDebug() << number;
+
 }
 
 void MainWindow::SetSttbar(bool bset)
@@ -813,12 +805,28 @@ void MainWindow::SetSttbar(bool bset)
         ui->btnOkpass->setEnabled(true);
         ui->tab_Jog->setEnabled(true);
     }
-
-
 }
 
+void MainWindow::CheckCMDAck()
+{
+    int ncheck = 0;
+    int nosend = 0;
+    QString chstrPacketData = checksend(StrPacketData);
+    while (ncheck != 1 && nosend < 100)
+    {
+        QThread::msleep(1);
+        ncheck = checkprogsend(chstrPacketData); // a function that check if command is sent
+        nosend++;
+    }
 
-
+    if (nosend == 100)
+    {
+        QMessageBox::critical(this, "Caution", "Send CMD Failed!!!");
+        return;
+    }
+    else
+        qDebug() << "Send CMD successfully";
+}
 
 
 
@@ -878,7 +886,7 @@ void MainWindow::ReadData(UA_Client *client) // SCARA Data
 
     //
 //    UA_Byte bytee;
-//    UA_Client_readEventNotifierAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), &bytee);
+//    UA_Client_readEventNotifierAttribute(client, UA_NODEID("ns=4;s=Robot1/IOSend"), &bytee);
 
 //    if(bytee == 1)
 //    qDebug() << bytee;
@@ -934,7 +942,7 @@ void MainWindow::ReadData(UA_Client *client) // SCARA Data
     QString R1theta4 = QString::number(dtheta4);
     ui->lnERecv_theta4->setText(R1theta4);
     //CMDAck
-    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDSend"), &value); //CMDAck
+    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/CMDAck"), &value); //CMDAck
     sName = get_str_to_variant(&value);
     len = getlength(&value);
     QString strName = QString::fromStdString(sName);
@@ -1017,15 +1025,24 @@ void MainWindow::Alarm(UA_Client *client)
 
 void MainWindow::ReadDI(UA_Client *client)
 {
-    nodeid = ChooseRobot(robotnum);
-    UA_Client_readValueAttribute(client, UA_NODEID(nodeidio), &value);
+//    nodeid = ChooseRobot(robotnum);
+    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/DISend"), &value);
     strIO = get_str_to_variant(&value);
     IOlen = getlength(&value);
     IOsig = QString::fromStdString(strIO);
     IOsig.resize(IOlen);
-    if  (IOsig != "No IO signal Sent yet")
+    if  (IOsig != "No DI signal Sent yet")
     {
         IOsig = CheckCrc(IOsig);
+        QString strToFind = ";";
+        QString Crc = IOsig.mid(IOsig.indexOf(strToFind)+1);
+        Crc.chop(1);
+        QString AckDI = QString("%1ACK,OK;%2%3").arg(STX,Crc,ETX);
+        char* chAckDI = PackData(AckDI);
+        set_str_to_variant(myVariant,chAckDI);
+        UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/DIAck"), myVariant);
+
+
         std::string strIOsig = IOsig.toStdString();
         int i = 0;
         char* p;
@@ -1044,11 +1061,14 @@ void MainWindow::ReadDI(UA_Client *client)
                 // nIOarg[2] = bit status
             }
         }
+//        qDebug() << AckDI;
+
 
 
 
     }
 //    qDebug() << IOsig;
+
 
 
 
@@ -1254,6 +1274,7 @@ void MainWindow::on_btnRBServo_toggled(bool checked)
 {
     if (checked)
     {
+
         ui->btnRBServo->setIcon(QIcon("./IOpics/servo on.jpg"));
         servostt = "1";
         StrPacketData = QString("%1SVON,%2%3").arg(STX,servostt,ETX);
@@ -1262,6 +1283,8 @@ void MainWindow::on_btnRBServo_toggled(bool checked)
 
         nodeid = ChooseRobot(robotnum);
         UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+        CheckCMDAck();
+
     }
     else
     {
@@ -1273,6 +1296,7 @@ void MainWindow::on_btnRBServo_toggled(bool checked)
 
         nodeid = ChooseRobot(robotnum);
         UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+        CheckCMDAck();
     }
 }
 
@@ -1311,6 +1335,7 @@ void MainWindow::on_btnJ1_neg_pressed()
 
         nodeid = ChooseRobot(robotnum);
         UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+        CheckCMDAck();
 
 
     }
@@ -1333,6 +1358,7 @@ void MainWindow::on_btnJ1_neg_released()
 
         nodeid = ChooseRobot(robotnum);
         UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+        CheckCMDAck();
     }
 
 
@@ -1355,6 +1381,7 @@ void MainWindow::on_btnJ1_pos_pressed()
 
         nodeid = ChooseRobot(robotnum);
         UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+        CheckCMDAck();
     }
 
 
@@ -1375,6 +1402,7 @@ void MainWindow::on_btnJ1_pos_released()
 
         nodeid = ChooseRobot(robotnum);
         UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+        CheckCMDAck();
     }
 
 
@@ -1396,6 +1424,7 @@ void MainWindow::on_btnJ2_neg_pressed()
 
         nodeid = ChooseRobot(robotnum);
         UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+        CheckCMDAck();
     }
 
 }
@@ -1416,6 +1445,7 @@ void MainWindow::on_btnJ2_neg_released()
 
         nodeid = ChooseRobot(robotnum);
         UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+        CheckCMDAck();
     }
 
 }
@@ -1436,6 +1466,7 @@ void MainWindow::on_btnJ2_pos_pressed()
 
         nodeid = ChooseRobot(robotnum);
         UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+        CheckCMDAck();
     }
 }
 
@@ -1454,6 +1485,7 @@ void MainWindow::on_btnJ2_pos_released()
 
         nodeid = ChooseRobot(robotnum);
         UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+        CheckCMDAck();
     }
 
 }
@@ -1474,6 +1506,7 @@ void MainWindow::on_btnJ3_neg_pressed()
 
         nodeid = ChooseRobot(robotnum);
         UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+        CheckCMDAck();
     }
 }
 
@@ -1492,6 +1525,7 @@ void MainWindow::on_btnJ3_neg_released()
 
         nodeid = ChooseRobot(robotnum);
         UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+        CheckCMDAck();
     }
 
 }
@@ -1512,6 +1546,7 @@ void MainWindow::on_btnJ3_pos_pressed()
 
         nodeid = ChooseRobot(robotnum);
         UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+        CheckCMDAck();
     }
 }
 
@@ -1530,6 +1565,7 @@ void MainWindow::on_btnJ3_pos_released()
 
         nodeid = ChooseRobot(robotnum);
         UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+        CheckCMDAck();
     }
 
 }
@@ -1550,6 +1586,7 @@ void MainWindow::on_btnJ4_neg_pressed()
 
         nodeid = ChooseRobot(robotnum);
         UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+        CheckCMDAck();
     }
 }
 
@@ -1568,6 +1605,7 @@ void MainWindow::on_btnJ4_neg_released()
 
         nodeid = ChooseRobot(robotnum);
         UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+        CheckCMDAck();
     }
 
 }
@@ -1588,6 +1626,7 @@ void MainWindow::on_btnJ4_pos_pressed()
 
         nodeid = ChooseRobot(robotnum);
         UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+        CheckCMDAck();
 
     }
 }
@@ -1607,6 +1646,7 @@ void MainWindow::on_btnJ4_pos_released()
 
         nodeid = ChooseRobot(robotnum);
         UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+        CheckCMDAck();
     }
 
 }
@@ -1626,6 +1666,7 @@ void MainWindow::on_btnJ5_neg_pressed()
 
         nodeid = ChooseRobot(robotnum);
         UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+        CheckCMDAck();
     }
 }
 
@@ -1644,6 +1685,7 @@ void MainWindow::on_btnJ5_neg_released()
 
         nodeid = ChooseRobot(robotnum);
         UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+        CheckCMDAck();
     }
 }
 
@@ -1663,6 +1705,7 @@ void MainWindow::on_btnJ5_pos_pressed()
 
         nodeid = ChooseRobot(robotnum);
         UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+        CheckCMDAck();
     }
 }
 
@@ -1681,6 +1724,7 @@ void MainWindow::on_btnJ5_pos_released()
 
         nodeid = ChooseRobot(robotnum);
         UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+        CheckCMDAck();
     }
 
 }
@@ -1701,6 +1745,7 @@ void MainWindow::on_btnJ6_neg_pressed()
 
         nodeid = ChooseRobot(robotnum);
         UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+        CheckCMDAck();
     }
 }
 
@@ -1719,6 +1764,7 @@ void MainWindow::on_btnJ6_neg_released()
 
         nodeid = ChooseRobot(robotnum);
         UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+        CheckCMDAck();
     }
 
 
@@ -1740,6 +1786,7 @@ void MainWindow::on_btnJ6_pos_pressed()
 
         nodeid = ChooseRobot(robotnum);
         UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+        CheckCMDAck();
     }
 }
 
@@ -1758,6 +1805,7 @@ void MainWindow::on_btnJ6_pos_released()
 
         nodeid = ChooseRobot(robotnum);
         UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+        CheckCMDAck();
     }
 
 }
@@ -1775,6 +1823,7 @@ void MainWindow::on_btnSpeed_low_clicked()
 
     nodeid = ChooseRobot(robotnum);
     UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+    CheckCMDAck();
 
 
 }
@@ -1789,6 +1838,7 @@ void MainWindow::on_btnSpeed_med_clicked()
 
     nodeid = ChooseRobot(robotnum);
     UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+    CheckCMDAck();
 
 
 }
@@ -1803,6 +1853,7 @@ void MainWindow::on_btnSpeed_high_clicked()
 
     nodeid = ChooseRobot(robotnum);
     UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+    CheckCMDAck();
 }
 
 
@@ -1815,8 +1866,7 @@ void MainWindow::on_btnSpeed_top_clicked()
 
     nodeid = ChooseRobot(robotnum);
     UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
-
-
+    CheckCMDAck();
 
 }
 
@@ -1840,9 +1890,6 @@ void MainWindow::on_btnSendProg_clicked()
 
     if (inputFile.open(QIODevice::ReadOnly))
     {
-//        char *chPackData;
-
-//       QString linecnt = QString::number(line_count);
        QTextStream in(&inputFile);
        while (!in.atEnd())
        {
@@ -1853,27 +1900,35 @@ void MainWindow::on_btnSendProg_clicked()
           chPacketData = PackData(StrPacketData);
           set_str_to_variant(myVariant,chPacketData);
           UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
-          QThread::msleep(50); // wait for sending command
+//          QThread::msleep(50); // wait for sending command
           QString chstrPacketData = checksend(StrPacketData);
-          int ncheck = checkprogsend(chstrPacketData); // a function that check if command is sent
-          while (ncheck != 1 && nosend < 10)
+          int ncheck = 0;
+          while (ncheck != 1 && nosend < 100)
           {
-              UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+              QThread::msleep(1);
+              ncheck = checkprogsend(chstrPacketData); // a function that check if command is sent
               nosend++;
           }
-          if (nosend == 10)
+
+          if (nosend == 100)
           {
               QMessageBox::critical(this, "Caution", "Send Program Failed!!!");
               return;
           }
           else
+          {           
               curline++;
-
-
+          }
        }
 
        inputFile.close();
+
+       StrPacketData = QString("%1SEPG,DONE %2%3").arg(STX,strCurJobName,ETX); //  finish sending program
+       chPacketData = PackData(StrPacketData);
+       set_str_to_variant(myVariant,chPacketData);
+       UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
        QMessageBox::information(this, "Information", "Send Program OK!");
+
     }
     else
     {
@@ -1928,6 +1983,7 @@ void MainWindow::on_btnRunprg_clicked()
     set_str_to_variant(myVariant,chPacketData);
     nodeid = ChooseRobot(robotnum);
     UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+    CheckCMDAck();
 
 
 }
@@ -1941,6 +1997,7 @@ void MainWindow::on_btnPauseprg_clicked()
     set_str_to_variant(myVariant,chPacketData);
     nodeid = ChooseRobot(robotnum);
     UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+    CheckCMDAck();
 
 }
 
@@ -1953,6 +2010,7 @@ void MainWindow::on_btnStopprg_clicked()
     set_str_to_variant(myVariant,chPacketData);
     nodeid = ChooseRobot(robotnum);
     UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+    CheckCMDAck();
 }
 
 
@@ -2221,15 +2279,18 @@ void MainWindow::on_btnSendPoints_clicked()
           chPacketData = PackData(StrPacketData);
           set_str_to_variant(myVariant,chPacketData);
           UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
-          QThread::msleep(50); // wait for sending command
+//          QThread::msleep(50); // wait for sending command
           QString chstrPacketData = checksend(StrPacketData);
-          int ncheck = checkprogsend(chstrPacketData); // function that check if command is sent
-          while (ncheck != 1 && nosend < 10)
+          int ncheck = 0;
+
+          while (ncheck != 1 && nosend < 100)
           {
-              UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+              QThread::msleep(1);
+              ncheck = checkprogsend(chstrPacketData); // a function that check if command is sent
               nosend++;
           }
-          if (nosend == 10)
+
+          if (nosend == 100)
           {
               QMessageBox::critical(this, "Caution", "Send Taught Points Failed!!!");
               return;
@@ -2238,6 +2299,11 @@ void MainWindow::on_btnSendPoints_clicked()
               curline++;
        }
        inputFile.close();
+
+       StrPacketData = QString("%1SEPT,DONE %2%3").arg(STX,strPtsfilename,ETX); //  finish sending points
+       chPacketData = PackData(StrPacketData);
+       set_str_to_variant(myVariant,chPacketData);
+       UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
        QMessageBox::information(this, "Information", "Send Taught Points OK!");
     }
     else
@@ -4071,6 +4137,7 @@ void MainWindow::on_btnDO1_toggled(bool checked)
             }
         }
         SendDO(client,nDOgroup,nDObit,checked);
+//        CheckCMDAck();
     }
     else
         ui->btnDO1->setChecked(false);
@@ -4208,6 +4275,7 @@ void MainWindow::on_btnDO2_toggled(bool checked)
 
         }
         SendDO(client,nDOgroup,nDObit,checked);
+        CheckCMDAck();
     }
     else
         ui->btnDO2->setChecked(false);
@@ -4344,13 +4412,12 @@ void MainWindow::on_btnDO3_toggled(bool checked)
 
         }
         SendDO(client,nDOgroup,nDObit,checked);
+        CheckCMDAck();
     }
     else
         ui->btnDO3->setChecked(false);
 
 }
-
-
 
 
 void MainWindow::on_btnDO4_toggled(bool checked)
@@ -4482,6 +4549,7 @@ void MainWindow::on_btnDO4_toggled(bool checked)
 
         }
         SendDO(client,nDOgroup,nDObit,checked);
+        CheckCMDAck();
     }
     else
         ui->btnDO4->setChecked(false);
@@ -4619,6 +4687,7 @@ void MainWindow::on_btnDO5_toggled(bool checked)
 
         }
         SendDO(client,nDOgroup,nDObit,checked);
+        CheckCMDAck();
     }
     else
         ui->btnDO5->setChecked(false);
@@ -4756,6 +4825,7 @@ void MainWindow::on_btnDO6_toggled(bool checked)
 
         }
         SendDO(client,nDOgroup,nDObit,checked);
+        CheckCMDAck();
     }
     else
         ui->btnDO6->setChecked(false);
@@ -4892,6 +4962,7 @@ void MainWindow::on_btnDO7_toggled(bool checked)
 
         }
         SendDO(client,nDOgroup,nDObit,checked);
+        CheckCMDAck();
     }
     else
         ui->btnDO7->setChecked(false);
@@ -5028,6 +5099,7 @@ void MainWindow::on_btnDO8_toggled(bool checked)
 
         }
         SendDO(client,nDOgroup,nDObit,checked);
+        CheckCMDAck();
     }
     else
         ui->btnDO7->setChecked(false);
@@ -5063,6 +5135,7 @@ void MainWindow::on_combSeclvl_currentTextChanged(const QString &arg1)
         set_str_to_variant(myVariant,chPacketData);
         nodeid = ChooseRobot(robotnum);
         UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+        CheckCMDAck();
 
     }
 
@@ -5084,6 +5157,7 @@ void MainWindow::on_btnOkpass_clicked()
         set_str_to_variant(myVariant,chPacketData);
         nodeid = ChooseRobot(robotnum);
         UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+        CheckCMDAck();
 
     }
     else if (qstrpass == "5678")
@@ -5095,6 +5169,7 @@ void MainWindow::on_btnOkpass_clicked()
         set_str_to_variant(myVariant,chPacketData);
         nodeid = ChooseRobot(robotnum);
         UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+        CheckCMDAck();
     }
 }
 
@@ -5117,6 +5192,7 @@ void MainWindow::on_btnRBMode_toggled(bool checked)
         set_str_to_variant(myVariant,chPacketData);
         nodeid = ChooseRobot(robotnum);
         UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+        CheckCMDAck();
     }
     else
     {
@@ -5129,6 +5205,7 @@ void MainWindow::on_btnRBMode_toggled(bool checked)
         set_str_to_variant(myVariant,chPacketData);
         nodeid = ChooseRobot(robotnum);
         UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+        CheckCMDAck();
     }
 }
 
@@ -5145,6 +5222,7 @@ void MainWindow::on_btnRBCLock_toggled(bool checked)
         set_str_to_variant(myVariant,chPacketData);
         nodeid = ChooseRobot(robotnum);
         UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+        CheckCMDAck();
     }
     else
     {
@@ -5157,6 +5235,7 @@ void MainWindow::on_btnRBCLock_toggled(bool checked)
         set_str_to_variant(myVariant,chPacketData);
         nodeid = ChooseRobot(robotnum);
         UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
+        CheckCMDAck();
     }
 
 

@@ -1,6 +1,5 @@
 #include "mythread.h"
 
-
 MyThread::MyThread(QObject *parent)
     : QThread{parent}
 {
@@ -16,14 +15,8 @@ void MyThread::run()
 
 //        this->msleep(100);
 //    }
-    for(int i = 0; i<10000; i++)
 
-        {
 
-            emit NumberChange(i);
 
-            this->msleep(100);
-
-        }
 
 }
