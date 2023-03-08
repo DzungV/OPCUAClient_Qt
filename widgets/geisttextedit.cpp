@@ -156,7 +156,7 @@ void GeistTextEdit::toggleComment(){
     QString commentStart;
     QString commentEnd;
 
-    if(fileType == "html" or fileType == "css"){
+    if(fileType == "html" || fileType == "css"){
 
         if(fileType == "html"){
             commentStart = "<!--";

@@ -53,7 +53,9 @@ public slots:
     void Alarm(UA_Client *client);
     void ReadDeltaData(UA_Client *client);
     void ReadDI(UA_Client *client);
+    void ReadDO(UA_Client *client);
     void DisplayDI();
+    void DisplayDO();
     void JogProcess(int number);
     void SetSttbar(bool bset);
     void CheckCMDAck();
@@ -238,6 +240,8 @@ private slots:
     void on_btnRBCLock_toggled(bool checked);
 
     void on_btnRBServo_toggled(bool checked);
+
+    void on_btnSimRB_clicked();
 
 private:
     Ui::MainWindow *ui;

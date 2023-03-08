@@ -10,7 +10,6 @@ INCLUDEPATH += include
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    QCodeEditor_Example.cpp \
     alarmdialog.cpp \
     code_editor.cpp \
     files.cpp \
@@ -19,42 +18,18 @@ SOURCES += \
     mainwindow.cpp \
     mythread.cpp \
     protocol.cpp \
-    search.cpp \
-    src/Design/QCodeEditorDesign.cpp \
-    src/Design/QCodeEditorSheets.cpp \
-    src/Design/QLineColumnPadding.cpp \
-    src/Design/QSyntaxRule.cpp \
-    src/Design/XmlHelper.cpp \
-    src/Widgets/QCodeEditor.cpp \
-    src/Widgets/QCodeEditorEvents.cpp \
-    src/Widgets/QCodeEditorHighlighter.cpp \
-    src/Widgets/QCodeEditorLineWidget.cpp \
-    src/Widgets/QCodeEditorPopup.cpp \
-    src/Widgets/QCodeEditorSlots.cpp \
     utils/conversion.cpp \
     utils/templates.cpp \
     widgets/geisttextedit.cpp
 
 HEADERS += \
-    QCodeEditor_Example.hpp \
     alarmdialog.h \
     code_editor.h \
     files.h \
     highlighter.h \
-    include/KGL/Design/QCodeEditorDesign.hpp \
-    include/KGL/Design/QCodeEditorSheets.hpp \
-    include/KGL/Design/QLineColumnPadding.hpp \
-    include/KGL/Design/QSyntaxRule.hpp \
-    include/KGL/Design/XmlHelper.hpp \
-    include/KGL/KGLConfig.hpp \
-    include/KGL/Widgets/QCodeEditor.hpp \
-    include/KGL/Widgets/QCodeEditorHighlighter.hpp \
-    include/KGL/Widgets/QCodeEditorLineWidget.hpp \
-    include/KGL/Widgets/QCodeEditorPopup.hpp \
     mainwindow.h \
     mythread.h \
     protocol.h \
-    search.h \
     utils/conversion.h \
     utils/templates.h \
     widgets/geisttextedit.h

@@ -411,6 +411,7 @@ public:
     QPushButton *btnRBMode;
     QPushButton *btnRBCLock;
     QPushButton *btnRBServo;
+    QPushButton *btnSimRB;
     QGroupBox *groupBox_2;
     QTabWidget *tabWidget_2;
     QWidget *tab_3;
@@ -1966,6 +1967,9 @@ public:
         btnRBServo->setObjectName(QString::fromUtf8("btnRBServo"));
         btnRBServo->setGeometry(QRect(480, 40, 131, 41));
         btnRBServo->setIconSize(QSize(131, 41));
+        btnSimRB = new QPushButton(groupBox);
+        btnSimRB->setObjectName(QString::fromUtf8("btnSimRB"));
+        btnSimRB->setGeometry(QRect(280, 110, 121, 29));
         groupBox_2 = new QGroupBox(centralwidget);
         groupBox_2->setObjectName(QString::fromUtf8("groupBox_2"));
         groupBox_2->setGeometry(QRect(1030, 100, 531, 821));
@@ -2516,9 +2520,9 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(3);
+        tabWidget->setCurrentIndex(4);
         tabWidget_3->setCurrentIndex(0);
-        tabb->setCurrentIndex(0);
+        tabb->setCurrentIndex(1);
         tabWidget_2->setCurrentIndex(0);
 
 
@@ -2974,6 +2978,7 @@ public:
         btnRBMode->setText(QString());
         btnRBCLock->setText(QString());
         btnRBServo->setText(QString());
+        btnSimRB->setText(QCoreApplication::translate("MainWindow", "Simulate robot", nullptr));
         groupBox_2->setTitle(QCoreApplication::translate("MainWindow", "Robot Data Acquisition", nullptr));
         label_10->setText(QCoreApplication::translate("MainWindow", "roll", nullptr));
         label_15->setText(QCoreApplication::translate("MainWindow", "d3", nullptr));

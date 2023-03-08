@@ -119,6 +119,11 @@ bool bCMDcheck;
 
 int count;
 
+byte DIgroup1;
+byte DIgroup2;
+byte DOgroup1;
+byte DOgroup2;
+
 
 
 
@@ -282,13 +287,13 @@ void SendDO(UA_Client *client, int ngroup, int nbit, bool bstt)
 QString Dispjogsp(int num)
 {
    QString qspeed;
-   if (num == 1)
+   if (num == 0)
        qspeed = "Low Speed";
-   else if (num == 2)
+   else if (num == 1)
        qspeed = "Medium Speed";
-   else if (num == 3)
+   else if (num == 2)
        qspeed = "High Speed";
-   else if (num == 4 )
+   else if (num == 3 )
        qspeed = "Top Speed";
    return qspeed;
 }
@@ -296,13 +301,13 @@ QString Dispjogsp(int num)
 QString Dispcoord (int numm)
 {
     QString qcoord;
-    if (numm == 1)
+    if (numm == 0)
         qcoord = "Joint Coordinates";
-    else if (numm == 2)
+    else if (numm == 1)
         qcoord = "XYZ-World Coordinates";
-    else if (numm == 3)
+    else if (numm == 2)
         qcoord = "XYZ-Tool Coordinates";
-    else if (numm == 4 )
+    else if (numm == 3 )
         qcoord = "XYZ-User Frame Coordinates";
     return qcoord;
 }
@@ -318,20 +323,20 @@ QString Dispservostt (bool stt)
 QString Dispsysstt (int num)
 {
     QString qsysstt;
-    if (num == 1)
+    if (num == 0)
         qsysstt = "OK Status";
-    else if (num == 2)
+    else if (num == 1)
         qsysstt = "Alarm";
-    else if (num == 3)
-        qsysstt = "Run";
-    else if (num == 4 )
-        qsysstt = "Pause";
+//    else if (num == )
+//        qsysstt = "Run";
+//    else if (num == 4 )
+//        qsysstt = "Pause";
     return qsysstt;
 }
 QString Dispmode (bool mod)
 {
     QString qmode;
-    if (mod)
+    if (!mod)
         qmode = "TEACH mode";
     else
         qmode = "AUTOMATIC mode";
@@ -340,18 +345,18 @@ QString Dispmode (bool mod)
 QString Dispseclvl (int num)
 {
     QString qsec;
-    if (num == 1)
+    if (num == 0)
         qsec = "OPERATION mode";
-    else if (num == 2)
+    else if (num == 1)
         qsec = "EDIT mode";
-    else if (num == 3)
+    else if (num == 2)
         qsec = "MANAGEMENT mode";
     return qsec;
 }
 QString DispRBC (bool lck)
 {
     QString qlock;
-    if (lck)
+    if (!lck)
         qlock = "The status of controller is unlocked";
     else
         qlock = "The status of controller is locked";
@@ -586,10 +591,11 @@ MainWindow::MainWindow(QWidget *parent)
     ui->lnEServerIP->setText("localhost");
 
     //set default status bar
-    ui->tab_Jog->setEnabled(false);
-    ui->btnRBMode->setEnabled(false);
-    SetSttbar(0);
-    ui->cbEnableDO->setEnabled(true);
+//    ui->tab_Jog->setEnabled(false);
+//    ui->btnRBMode->setEnabled(false);
+//    SetSttbar(0);
+//    ui->cbEnableDO->setEnabled(true);
+
 
 
 
@@ -681,7 +687,9 @@ void MainWindow::UpdateTimerTick()
 void MainWindow::IOAlarmTick()
 {
     ReadDI(client);
+    ReadDO(client);
     DisplayDI();
+    DisplayDO();
 
 }
 
@@ -892,32 +900,32 @@ void MainWindow::ReadData(UA_Client *client) // SCARA Data
 //    qDebug() << bytee;
 
     //x
-    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/x"), &value);
+    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/XYZ1"), &value);
     dx = *(UA_Double*)value.data ;
     QString R1x = QString::number(dx);
     ui->lnERecv_x->setText(R1x);
     //y
-    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/y"), &value);
+    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/XYZ2"), &value);
     dy = *(UA_Double*)value.data ;
     QString R1y = QString::number(dy);
     ui->lnERecv_y->setText(R1y);
     //z
-    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/z"), &value);
+    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/XYZ3"), &value);
     dz = *(UA_Double*)value.data ;
     QString R1z = QString::number(dz);
     ui->lnERecv_z->setText(R1z);
     //roll
-    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/roll"), &value);
+    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/XYZ4"), &value);
     droll = *(UA_Double*)value.data ;
     QString R1roll = QString::number(droll);
     ui->lnERecv_roll->setText(R1roll);
     //pitch
-    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/pitch"), &value);
+    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/XYZ5"), &value);
     dpitch = *(UA_Double*)value.data ;
     QString R1pitch = QString::number(dpitch);
     ui->lnERecv_pitch->setText(R1pitch);
     //yaw
-    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/yaw"), &value);
+    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/XYZ6"), &value);
     dyaw = *(UA_Double*)value.data ;
     QString R1yaw = QString::number(dyaw);
     ui->lnERecv_yaw->setText(R1yaw);
@@ -932,7 +940,7 @@ void MainWindow::ReadData(UA_Client *client) // SCARA Data
     QString R1theta2 = QString::number(dtheta2);
     ui->lnERecv_theta2->setText(R1theta2);
     //d3
-    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/d3"), &value);
+    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/theta3"), &value);
     dd3 = *(UA_Double*)value.data ;
     QString R1d3 = QString::number(dd3);
     ui->lnERecv_d3->setText(R1d3);
@@ -1025,54 +1033,160 @@ void MainWindow::Alarm(UA_Client *client)
 
 void MainWindow::ReadDI(UA_Client *client)
 {
-//    nodeid = ChooseRobot(robotnum);
-    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/DISend"), &value);
-    strIO = get_str_to_variant(&value);
-    IOlen = getlength(&value);
-    IOsig = QString::fromStdString(strIO);
-    IOsig.resize(IOlen);
-    if  (IOsig != "No DI signal Sent yet")
-    {
-        IOsig = CheckCrc(IOsig);
-        QString strToFind = ";";
-        QString Crc = IOsig.mid(IOsig.indexOf(strToFind)+1);
-        Crc.chop(1);
-        QString AckDI = QString("%1ACK,OK;%2%3").arg(STX,Crc,ETX);
-        char* chAckDI = PackData(AckDI);
-        set_str_to_variant(myVariant,chAckDI);
-        UA_Client_writeValueAttribute(client, UA_NODEID("ns=4;s=Robot1/DIAck"), myVariant);
+    QPixmap offpix("./IOpics/Pilot light 2 (off).png");
+    QPixmap onpix("./IOpics/Green pilot light 2.png");
+    // group 1
+    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/DIgroup1"), &value);
+    DIgroup1  =  *(UA_Byte*)value.data ;
+    if ((DIgroup1 & 1) == 1)
+        ui->lbDIStt1->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+    else
+        ui->lbDIStt1->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+
+    if ((DIgroup1 & 2) == 2)
+        ui->lbDIStt2->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+    else
+        ui->lbDIStt2->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+
+    if ((DIgroup1 & 4) == 4)
+        ui->lbDIStt3->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+    else
+        ui->lbDIStt3->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+    if ((DIgroup1 & 8) == 8)
+        ui->lbDIStt4->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+    else
+        ui->lbDIStt4->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+    if ((DIgroup1 & 16) == 16)
+        ui->lbDIStt5->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+    else
+        ui->lbDIStt5->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+    if ((DIgroup1 & 32) == 32)
+        ui->lbDIStt6->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+    else
+        ui->lbDIStt6->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+    if ((DIgroup1 & 64) == 64)
+        ui->lbDIStt7->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+    else
+        ui->lbDIStt7->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+    if ((DIgroup1 & 128) == 128)
+        ui->lbDIStt8->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+    else
+        ui->lbDIStt8->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+    // group 2
+    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/DIgroup2"), &value);
+    DIgroup2  =  *(UA_Byte*)value.data ;
+    if ((DIgroup2 & 1) == 1)
+        ui->lbDIStt9->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+    else
+        ui->lbDIStt1->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+    if ((DIgroup2 & 2) == 2)
+        ui->lbDIStt10->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+    else
+        ui->lbDIStt10->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+    if ((DIgroup2 & 4) == 4)
+        ui->lbDIStt11->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+    else
+        ui->lbDIStt11->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+    if ((DIgroup2 & 8) == 8)
+        ui->lbDIStt12->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+    else
+        ui->lbDIStt12->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+    if ((DIgroup2 & 16) == 16)
+        ui->lbDIStt13->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+    else
+        ui->lbDIStt13->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+    if ((DIgroup2 & 32) == 32)
+        ui->lbDIStt14->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+    else
+        ui->lbDIStt14->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+    if ((DIgroup2 & 64) == 64)
+        ui->lbDIStt15->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+    else
+        ui->lbDIStt15->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+    if ((DIgroup2 & 128) == 128)
+        ui->lbDIStt16->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+    else
+        ui->lbDIStt16->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
 
 
-        std::string strIOsig = IOsig.toStdString();
-        int i = 0;
-        char* p;
-        char* str = new char[strIOsig.length() + 1];
-        strcpy(str, strIOsig.c_str());
-        p = strtok(str, ",");
-        while (p != NULL)
-        {
-            p = strtok(NULL, ",");
-            if (p != NULL)
-            {
-                nIOarg[i] = std::stoi(p);
-                i++;
-                // nIOarg[0] = group number
-                // nIOarg[1] = bit number
-                // nIOarg[2] = bit status
-            }
-        }
-//        qDebug() << AckDI;
 
 
+}
 
-
-    }
-//    qDebug() << IOsig;
-
-
-
-
-
+void MainWindow::ReadDO(UA_Client *client)
+{
+    QPixmap offpix("./IOpics/Pilot light 2 (off).png");
+    QPixmap onpix("./IOpics/Green pilot light 2.png");
+    // group 1
+    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/DOgroup1"), &value);
+    DOgroup1  =  *(UA_Byte*)value.data ;
+    if ((DOgroup1 & 1) == 1)
+        ui->lbDOStt1->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+    else
+        ui->lbDOStt1->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+    if ((DOgroup1 & 2) == 2)
+        ui->lbDOStt2->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+    else
+        ui->lbDOStt2->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+    if ((DOgroup1 & 4) == 4)
+        ui->lbDOStt3->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+    else
+        ui->lbDOStt3->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+    if ((DOgroup1 & 8) == 8)
+        ui->lbDOStt4->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+    else
+        ui->lbDOStt4->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+    if ((DOgroup1 & 16) == 16)
+        ui->lbDOStt5->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+    else
+        ui->lbDOStt5->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+    if ((DOgroup1 & 32) == 32)
+        ui->lbDOStt6->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+    else
+        ui->lbDOStt6->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+    if ((DOgroup1 & 64) == 64)
+        ui->lbDOStt7->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+    else
+        ui->lbDOStt7->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+    if ((DOgroup1 & 128) == 128)
+        ui->lbDOStt8->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+    else
+        ui->lbDOStt8->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+    // group 2
+    UA_Client_readValueAttribute(client, UA_NODEID("ns=4;s=Robot1/DOgroup2"), &value);
+    DOgroup2  =  *(UA_Byte*)value.data ;
+    if ((DOgroup2 & 1) == 1)
+        ui->lbDOStt9->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+    else
+        ui->lbDOStt9->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+    if ((DOgroup2 & 2) == 2)
+        ui->lbDOStt10->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+    else
+        ui->lbDOStt10->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+    if ((DOgroup2 & 4) == 4)
+        ui->lbDOStt11->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+    else
+        ui->lbDOStt11->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+    if ((DOgroup2 & 8) == 8)
+        ui->lbDOStt12->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+    else
+        ui->lbDOStt12->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+    if ((DOgroup2 & 16) == 16)
+        ui->lbDOStt13->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+    else
+        ui->lbDOStt13->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+    if ((DOgroup2 & 32) == 32)
+        ui->lbDOStt14->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+    else
+        ui->lbDOStt14->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+    if ((DOgroup2 & 64) == 64)
+        ui->lbDOStt15->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+    else
+        ui->lbDOStt15->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+    if ((DOgroup2 & 128) == 128)
+        ui->lbDOStt16->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+    else
+        ui->lbDOStt16->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
 
 }
 
@@ -1080,77 +1194,394 @@ void MainWindow::DisplayDI()
 {
     QPixmap offpix("./IOpics/Pilot light 2 (off).png");
     QPixmap onpix("./IOpics/Green pilot light 2.png");
-    if (nIOarg[0] == nDIgroup)
+    if (nDIgroup == 1)
     {
-        switch(nIOarg[1])
-        {
-        case 0:
-        {
-            if (nIOarg[2] == 1)
-                ui->lbDI0->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-            else
-                ui->lbDI0->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-            break;
-        }
-        case 1:
-        {
-            if (nIOarg[2] == 1)
-                ui->lbDI1->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-            else
-                ui->lbDI1->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-            break;
-        }
-        case 2:
-        {
-            if (nIOarg[2] == 1)
-                ui->lbDI2->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-            else
-                ui->lbDI2->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-            break;
-        }
-        case 3:
-        {
-            if (nIOarg[2] == 1)
-                ui->lbDI3->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-            else
-                ui->lbDI3->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-            break;
-        }
-        case 4:
-        {
-            if (nIOarg[2] == 1)
-                ui->lbDI4->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-            else
-                ui->lbDI4->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-            break;
-        }
-        case 5:
-        {
-            if (nIOarg[2] == 1)
-                ui->lbDI5->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-            else
-                ui->lbDI5->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-            break;
-        }
-        case 6:
-        {
-            if (nIOarg[2] == 1)
-                ui->lbDI6->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-            else
-                ui->lbDI6->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-            break;
-        }
-        case 7:
-        {
-            if (nIOarg[2] == 1)
-                ui->lbDI7->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-            else
-                ui->lbDI7->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-            break;
-        }
-        default:
-            break;
+        QString DIdecval1 = QString::number(DIgroup1);
+        ui->lnEDIdecval->setText(DIdecval1);
+        QString hexval1 = QString("%1").arg(DIgroup1, 4, 16, QLatin1Char( '0' ));
+        ui->lnEhexval->setText(hexval1);
+        if ((DIgroup1 & 1) == 1)
+            ui->lbDI0->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+        else
+            ui->lbDI0->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+        if ((DIgroup1 & 2) == 2)
+            ui->lbDI1->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+        else
+            ui->lbDI1->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+        if ((DIgroup1 & 4) == 4)
+            ui->lbDI2->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+        else
+            ui->lbDI2->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+        if ((DIgroup1 & 8) == 8)
+            ui->lbDI3->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+        else
+            ui->lbDI3->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+        if ((DIgroup1 & 16) == 16)
+            ui->lbDI4->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+        else
+            ui->lbDI4->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+        if ((DIgroup1 & 32) == 32)
+            ui->lbDI5->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+        else
+            ui->lbDI5->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+        if ((DIgroup1 & 64) == 64)
+            ui->lbDI6->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+        else
+            ui->lbDI6->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+        if ((DIgroup1 & 128) == 128)
+            ui->lbDI7->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+        else
+            ui->lbDI7->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+    }
+    if (nDIgroup == 2)
+    {
+        QString DIdecval2 = QString::number(DIgroup2);
+        ui->lnEDIdecval->setText(DIdecval2);
+        QString hexval2 = QString("%1").arg(DIgroup2, 4, 16, QLatin1Char( '0' ));
+        ui->lnEhexval->setText(hexval2);
+        if ((DIgroup2 & 1) == 1)
+            ui->lbDI0->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+        else
+            ui->lbDI0->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+        if ((DIgroup2 & 2) == 2)
+            ui->lbDI1->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+        else
+            ui->lbDI1->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+        if ((DIgroup2 & 4) == 4)
+            ui->lbDI2->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+        else
+            ui->lbDI2->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+        if ((DIgroup2 & 8) == 8)
+            ui->lbDI3->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+        else
+            ui->lbDI3->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+        if ((DIgroup2 & 16) == 16)
+            ui->lbDI4->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+        else
+            ui->lbDI4->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+        if ((DIgroup2 & 32) == 32)
+            ui->lbDI5->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+        else
+            ui->lbDI5->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+        if ((DIgroup2 & 64) == 64)
+            ui->lbDI6->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+        else
+            ui->lbDI6->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+        if ((DIgroup2 & 128) == 128)
+            ui->lbDI7->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+        else
+            ui->lbDI7->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+    }
 
+}
+
+void MainWindow::DisplayDO()
+{
+    QPixmap offpix("./IOpics/Pilot light 2 (off).png");
+    QPixmap onpix("./IOpics/Green pilot light 2.png");
+    if (nDOgroup == 1)
+    {
+        QString DOdecval1 = QString::number(DOgroup1);
+        ui->lnEDODec->setText(DOdecval1);
+        QString DOhexval1 = QString("%1").arg(DOgroup1, 4, 16, QLatin1Char( '0' ));
+        ui->lnEDOHex->setText(DOhexval1);
+        if ((DOgroup1 & 1) == 1)
+        {
+            ui->lbDO0->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+            if (bToggleDO)
+            {
+                ui->btnDO1->setCheckable(true);
+                ui->btnDO1->setIcon(QIcon("./IOpics/onbtn.jpg"));
+            }
+        }
+        else
+        {
+            ui->lbDO0->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+            if (bToggleDO)
+            {
+                ui->btnDO1->setCheckable(false);
+                ui->btnDO1->setIcon(QIcon("./IOpics/offbtn.jpg"));
+            }
+
+        }
+        if ((DOgroup1 & 2) == 2)
+        {
+            ui->lbDO1->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+            if (bToggleDO)
+            {
+                ui->btnDO2->setCheckable(true);
+                ui->btnDO2->setIcon(QIcon("./IOpics/onbtn.jpg"));
+            }
+        }
+        else
+        {
+            ui->lbDI1->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+            if (bToggleDO)
+            {
+                ui->btnDO2->setCheckable(false);
+                ui->btnDO2->setIcon(QIcon("./IOpics/offbtn.jpg"));
+            }
+        }
+        if ((DOgroup1 & 4) == 4)
+        {
+            ui->lbDO2->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+            if (bToggleDO)
+            {
+                ui->btnDO3->setCheckable(true);
+                ui->btnDO3->setIcon(QIcon("./IOpics/onbtn.jpg"));
+            }
+        }
+        else
+        {
+            ui->lbDO2->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+            if (bToggleDO)
+            {
+                ui->btnDO3->setCheckable(false);
+                ui->btnDO3->setIcon(QIcon("./IOpics/offbtn.jpg"));
+            }
+        }
+        if ((DOgroup1 & 8) == 8)
+        {
+            ui->lbDO3->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+            if (bToggleDO)
+            {
+                ui->btnDO4->setCheckable(true);
+                ui->btnDO4->setIcon(QIcon("./IOpics/onbtn.jpg"));
+            }
+        }
+        else
+        {
+            ui->lbDO3->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+            if (bToggleDO)
+            {
+                ui->btnDO4->setCheckable(false);
+                ui->btnDO4->setIcon(QIcon("./IOpics/offbtn.jpg"));
+            }
+        }
+        if ((DOgroup1 & 16) == 16)
+        {
+            ui->lbDO4->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+            if (bToggleDO)
+            {
+                ui->btnDO5->setCheckable(true);
+                ui->btnDO5->setIcon(QIcon("./IOpics/onbtn.jpg"));
+            }
+        }
+        else
+        {
+            ui->lbDO4->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+            if (bToggleDO)
+            {
+                ui->btnDO5->setCheckable(false);
+                ui->btnDO5->setIcon(QIcon("./IOpics/offbtn.jpg"));
+            }
+        }
+        if ((DOgroup1 & 32) == 32)
+        {
+            ui->lbDO5->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+            if (bToggleDO)
+            {
+                ui->btnDO6->setCheckable(true);
+                ui->btnDO6->setIcon(QIcon("./IOpics/onbtn.jpg"));
+            }
+        }
+        else
+        {
+            ui->lbDO5->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+            if (bToggleDO)
+            {
+                ui->btnDO6->setCheckable(false);
+                ui->btnDO6->setIcon(QIcon("./IOpics/offbtn.jpg"));
+            }
+        }
+        if ((DOgroup1 & 64) == 64)
+        {
+            ui->lbDO6->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+            if (bToggleDO)
+            {
+                ui->btnDO7->setCheckable(true);
+                ui->btnDO7->setIcon(QIcon("./IOpics/onbtn.jpg"));
+            }
+        }
+        else
+        {
+            ui->lbDO6->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+            if (bToggleDO)
+            {
+                ui->btnDO7->setCheckable(false);
+                ui->btnDO7->setIcon(QIcon("./IOpics/offbtn.jpg"));
+            }
+        }
+        if ((DOgroup1 & 128) == 128)
+        {
+            ui->lbDO7->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+            if (bToggleDO)
+            {
+                ui->btnDO8->setCheckable(true);
+                ui->btnDO8->setIcon(QIcon("./IOpics/onbtn.jpg"));
+            }
+        }
+        else
+        {
+            ui->lbDO7->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+            if (bToggleDO)
+            {
+                ui->btnDO8->setCheckable(false);
+                ui->btnDO8->setIcon(QIcon("./IOpics/offbtn.jpg"));
+            }
+        }
+    }
+
+    if (nDOgroup == 2)
+    {
+        QString DOdecval2 = QString::number(DOgroup2);
+        ui->lnEDODec->setText(DOdecval2);
+        QString DOhexval2 = QString("%1").arg(DOgroup2, 4, 16, QLatin1Char( '0' ));
+        ui->lnEDOHex->setText(DOhexval2);
+        if ((DOgroup2 & 1) == 1)
+        {
+            ui->lbDO0->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+            if (bToggleDO)
+            {
+                ui->btnDO1->setCheckable(true);
+                ui->btnDO1->setIcon(QIcon("./IOpics/onbtn.jpg"));
+            }
+        }
+        else
+        {
+            ui->lbDO0->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+            if (bToggleDO)
+            {
+                ui->btnDO1->setCheckable(false);
+                ui->btnDO1->setIcon(QIcon("./IOpics/offbtn.jpg"));
+            }
+
+        }
+        if ((DOgroup2 & 2) == 2)
+        {
+            ui->lbDO1->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+            if (bToggleDO)
+            {
+                ui->btnDO2->setCheckable(true);
+                ui->btnDO2->setIcon(QIcon("./IOpics/onbtn.jpg"));
+            }
+        }
+        else
+        {
+            ui->lbDI1->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+            if (bToggleDO)
+            {
+                ui->btnDO2->setCheckable(false);
+                ui->btnDO2->setIcon(QIcon("./IOpics/offbtn.jpg"));
+            }
+        }
+        if ((DOgroup2 & 4) == 4)
+        {
+            ui->lbDO2->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+            if (bToggleDO)
+            {
+                ui->btnDO3->setCheckable(true);
+                ui->btnDO3->setIcon(QIcon("./IOpics/onbtn.jpg"));
+            }
+        }
+        else
+        {
+            ui->lbDO2->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+            if (bToggleDO)
+            {
+                ui->btnDO3->setCheckable(false);
+                ui->btnDO3->setIcon(QIcon("./IOpics/offbtn.jpg"));
+            }
+        }
+        if ((DOgroup2 & 8) == 8)
+        {
+            ui->lbDO3->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+            if (bToggleDO)
+            {
+                ui->btnDO4->setCheckable(true);
+                ui->btnDO4->setIcon(QIcon("./IOpics/onbtn.jpg"));
+            }
+        }
+        else
+        {
+            ui->lbDO3->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+            if (bToggleDO)
+            {
+                ui->btnDO4->setCheckable(false);
+                ui->btnDO4->setIcon(QIcon("./IOpics/offbtn.jpg"));
+            }
+        }
+        if ((DOgroup2 & 16) == 16)
+        {
+            ui->lbDO4->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+            if (bToggleDO)
+            {
+                ui->btnDO5->setCheckable(true);
+                ui->btnDO5->setIcon(QIcon("./IOpics/onbtn.jpg"));
+            }
+        }
+        else
+        {
+            ui->lbDO4->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+            if (bToggleDO)
+            {
+                ui->btnDO5->setCheckable(false);
+                ui->btnDO5->setIcon(QIcon("./IOpics/offbtn.jpg"));
+            }
+        }
+        if ((DOgroup2 & 32) == 32)
+        {
+            ui->lbDO5->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+            if (bToggleDO)
+            {
+                ui->btnDO6->setCheckable(true);
+                ui->btnDO6->setIcon(QIcon("./IOpics/onbtn.jpg"));
+            }
+        }
+        else
+        {
+            ui->lbDO5->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+            if (bToggleDO)
+            {
+                ui->btnDO6->setCheckable(false);
+                ui->btnDO6->setIcon(QIcon("./IOpics/offbtn.jpg"));
+            }
+        }
+        if ((DOgroup2 & 64) == 64)
+        {
+            ui->lbDO6->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+            if (bToggleDO)
+            {
+                ui->btnDO7->setCheckable(true);
+                ui->btnDO7->setIcon(QIcon("./IOpics/onbtn.jpg"));
+            }
+        }
+        else
+        {
+            ui->lbDO6->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+            if (bToggleDO)
+            {
+                ui->btnDO7->setCheckable(false);
+                ui->btnDO7->setIcon(QIcon("./IOpics/offbtn.jpg"));
+            }
+        }
+        if ((DOgroup2 & 128) == 128)
+        {
+            ui->lbDO7->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+            if (bToggleDO)
+            {
+                ui->btnDO8->setCheckable(true);
+                ui->btnDO8->setIcon(QIcon("./IOpics/onbtn.jpg"));
+            }
+        }
+        else
+        {
+            ui->lbDO7->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+            if (bToggleDO)
+            {
+                ui->btnDO8->setCheckable(false);
+                ui->btnDO8->setIcon(QIcon("./IOpics/offbtn.jpg"));
+            }
         }
     }
 
@@ -1176,7 +1607,7 @@ void MainWindow::on_btnSaveIP_clicked()
 
 void MainWindow::on_btnStart_clicked()
 {
-    QMessageBox::StandardButton ans = QMessageBox::question(this, "Information", "1. Check the server status!!!\n"
+    QMessageBox::StandardButton ans = QMessageBox::question(this, "Information", "1. Check the server status!!!/n"
                                                                                  "2. Choose the robot to control",
                                                             QMessageBox::Yes | QMessageBox::No);
     if (ans == QMessageBox::Yes)
@@ -2557,7 +2988,7 @@ void MainWindow::on_chbDIgr1_stateChanged(int arg1)
         ui->lnEDIin7->setText("07");
         ui->lnEDIin8->setText("08");
 
-        IOAlarmTick();
+//        IOAlarmTick();
 
 
 
@@ -2576,6 +3007,8 @@ void MainWindow::on_chbDIgr1_stateChanged(int arg1)
         ui->lnEDIin6->clear();
         ui->lnEDIin7->clear();
         ui->lnEDIin8->clear();
+        ui->lnEDIdecval->clear();
+        ui->lnEhexval->clear();
 
         QPixmap offpix("./IOpics/Pilot light 2 (off).png");
         ui->lbDI7->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
@@ -2587,10 +3020,7 @@ void MainWindow::on_chbDIgr1_stateChanged(int arg1)
         ui->lbDI1->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
         ui->lbDI0->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
 
-
-
     }
-
 
 }
 
@@ -2638,6 +3068,8 @@ void MainWindow::on_chbDIgr2_stateChanged(int arg1)
         ui->lnEDIin6->clear();
         ui->lnEDIin7->clear();
         ui->lnEDIin8->clear();
+        ui->lnEDIdecval->clear();
+        ui->lnEhexval->clear();
 
         QPixmap offpix("./IOpics/Pilot light 2 (off).png");
         ui->lbDI7->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
@@ -2648,12 +3080,7 @@ void MainWindow::on_chbDIgr2_stateChanged(int arg1)
         ui->lbDI2->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
         ui->lbDI1->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
         ui->lbDI0->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-
-
-
     }
-
-
 
 }
 
@@ -3152,10 +3579,6 @@ void MainWindow::on_chbDIgr10_stateChanged(int arg1)
 
 
 
-
-
-
-
 // DO TAB
 
 
@@ -3205,22 +3628,7 @@ void MainWindow::on_chbDOgr1_stateChanged(int arg1)
         ui->chbDOgr9->setChecked(false);
         ui->chbDOgr10->setChecked(false);
 
-        ui->btnDO1->setChecked(false);
-        ui->btnDO2->setChecked(false);
-        ui->btnDO3->setChecked(false);
-        ui->btnDO4->setChecked(false);
-        ui->btnDO5->setChecked(false);
-        ui->btnDO6->setChecked(false);
-        ui->btnDO7->setChecked(false);
-        ui->btnDO8->setChecked(false);
-        ui->btnDO1->setIcon(QIcon("./IOpics/offbtn.jpg"));
-        ui->btnDO2->setIcon(QIcon("./IOpics/offbtn.jpg"));
-        ui->btnDO3->setIcon(QIcon("./IOpics/offbtn.jpg"));
-        ui->btnDO4->setIcon(QIcon("./IOpics/offbtn.jpg"));
-        ui->btnDO5->setIcon(QIcon("./IOpics/offbtn.jpg"));
-        ui->btnDO6->setIcon(QIcon("./IOpics/offbtn.jpg"));
-        ui->btnDO7->setIcon(QIcon("./IOpics/offbtn.jpg"));
-        ui->btnDO8->setIcon(QIcon("./IOpics/offbtn.jpg"));
+
 
         nDOgroup = 1;
 
@@ -3237,7 +3645,7 @@ void MainWindow::on_chbDOgr1_stateChanged(int arg1)
     }
     else
     {
-        nDIgroup = 0;
+        nDOgroup = 0;
 
         ui->lnEDOgr->clear();
         ui->lnEDO->clear();
@@ -3260,14 +3668,6 @@ void MainWindow::on_chbDOgr1_stateChanged(int arg1)
         ui->lbDO2->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
         ui->lbDO1->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
 
-        ui->lbDOStt1->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt2->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt3->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt4->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt5->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt6->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt7->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt8->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
 
 
     }
@@ -3291,22 +3691,7 @@ void MainWindow::on_chbDOgr2_stateChanged(int arg1)
            ui->chbDOgr9->setChecked(false);
            ui->chbDOgr10->setChecked(false);
 
-           ui->btnDO1->setChecked(false);
-           ui->btnDO2->setChecked(false);
-           ui->btnDO3->setChecked(false);
-           ui->btnDO4->setChecked(false);
-           ui->btnDO5->setChecked(false);
-           ui->btnDO6->setChecked(false);
-           ui->btnDO7->setChecked(false);
-           ui->btnDO8->setChecked(false);
-           ui->btnDO1->setIcon(QIcon("./IOpics/offbtn.jpg"));
-           ui->btnDO2->setIcon(QIcon("./IOpics/offbtn.jpg"));
-           ui->btnDO3->setIcon(QIcon("./IOpics/offbtn.jpg"));
-           ui->btnDO4->setIcon(QIcon("./IOpics/offbtn.jpg"));
-           ui->btnDO5->setIcon(QIcon("./IOpics/offbtn.jpg"));
-           ui->btnDO6->setIcon(QIcon("./IOpics/offbtn.jpg"));
-           ui->btnDO7->setIcon(QIcon("./IOpics/offbtn.jpg"));
-           ui->btnDO8->setIcon(QIcon("./IOpics/offbtn.jpg"));
+
 
            nDOgroup = 2;
 
@@ -3323,6 +3708,7 @@ void MainWindow::on_chbDOgr2_stateChanged(int arg1)
         }
     else
     {
+        nDOgroup = 0;
         ui->lnEDOgr->clear();
         ui->lnEDO->clear();
         ui->lnEDO1->clear();
@@ -3344,14 +3730,6 @@ void MainWindow::on_chbDOgr2_stateChanged(int arg1)
         ui->lbDO2->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
         ui->lbDO1->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
 
-        ui->lbDOStt9->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt10->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt11->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt12->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt13->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt14->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt15->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt16->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
 
     }
 
@@ -3372,22 +3750,6 @@ void MainWindow::on_chbDOgr3_stateChanged(int arg1)
         ui->chbDOgr9->setChecked(false);
         ui->chbDOgr10->setChecked(false);
 
-        ui->btnDO1->setChecked(false);
-        ui->btnDO2->setChecked(false);
-        ui->btnDO3->setChecked(false);
-        ui->btnDO4->setChecked(false);
-        ui->btnDO5->setChecked(false);
-        ui->btnDO6->setChecked(false);
-        ui->btnDO7->setChecked(false);
-        ui->btnDO8->setChecked(false);
-        ui->btnDO1->setIcon(QIcon("./IOpics/offbtn.jpg"));
-        ui->btnDO2->setIcon(QIcon("./IOpics/offbtn.jpg"));
-        ui->btnDO3->setIcon(QIcon("./IOpics/offbtn.jpg"));
-        ui->btnDO4->setIcon(QIcon("./IOpics/offbtn.jpg"));
-        ui->btnDO5->setIcon(QIcon("./IOpics/offbtn.jpg"));
-        ui->btnDO6->setIcon(QIcon("./IOpics/offbtn.jpg"));
-        ui->btnDO7->setIcon(QIcon("./IOpics/offbtn.jpg"));
-        ui->btnDO8->setIcon(QIcon("./IOpics/offbtn.jpg"));
 
         nDOgroup = 3;
 
@@ -3404,6 +3766,7 @@ void MainWindow::on_chbDOgr3_stateChanged(int arg1)
     }
     else
     {
+        nDOgroup = 0;
         ui->lnEDOgr->clear();
         ui->lnEDO->clear();
         ui->lnEDO1->clear();
@@ -3425,14 +3788,7 @@ void MainWindow::on_chbDOgr3_stateChanged(int arg1)
         ui->lbDO2->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
         ui->lbDO1->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
 
-        ui->lbDOStt17->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt18->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt19->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt20->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt21->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt22->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt23->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt24->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+
     }
 
 
@@ -3455,22 +3811,6 @@ void MainWindow::on_chbDOgr4_stateChanged(int arg1)
             ui->chbDOgr9->setChecked(false);
             ui->chbDOgr10->setChecked(false);
 
-            ui->btnDO1->setChecked(false);
-            ui->btnDO2->setChecked(false);
-            ui->btnDO3->setChecked(false);
-            ui->btnDO4->setChecked(false);
-            ui->btnDO5->setChecked(false);
-            ui->btnDO6->setChecked(false);
-            ui->btnDO7->setChecked(false);
-            ui->btnDO8->setChecked(false);
-            ui->btnDO1->setIcon(QIcon("./IOpics/offbtn.jpg"));
-            ui->btnDO2->setIcon(QIcon("./IOpics/offbtn.jpg"));
-            ui->btnDO3->setIcon(QIcon("./IOpics/offbtn.jpg"));
-            ui->btnDO4->setIcon(QIcon("./IOpics/offbtn.jpg"));
-            ui->btnDO5->setIcon(QIcon("./IOpics/offbtn.jpg"));
-            ui->btnDO6->setIcon(QIcon("./IOpics/offbtn.jpg"));
-            ui->btnDO7->setIcon(QIcon("./IOpics/offbtn.jpg"));
-            ui->btnDO8->setIcon(QIcon("./IOpics/offbtn.jpg"));
 
             nDOgroup = 4;
 
@@ -3487,6 +3827,7 @@ void MainWindow::on_chbDOgr4_stateChanged(int arg1)
     }
     else
     {
+        nDOgroup = 0;
         ui->lnEDOgr->clear();
         ui->lnEDO->clear();
         ui->lnEDO1->clear();
@@ -3508,14 +3849,6 @@ void MainWindow::on_chbDOgr4_stateChanged(int arg1)
         ui->lbDO2->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
         ui->lbDO1->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
 
-        ui->lbDOStt25->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt26->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt27->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt28->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt29->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt30->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt31->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt32->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
     }
 }
 
@@ -3534,22 +3867,7 @@ void MainWindow::on_chbDOgr5_stateChanged(int arg1)
             ui->chbDOgr9->setChecked(false);
             ui->chbDOgr10->setChecked(false);
 
-            ui->btnDO1->setChecked(false);
-            ui->btnDO2->setChecked(false);
-            ui->btnDO3->setChecked(false);
-            ui->btnDO4->setChecked(false);
-            ui->btnDO5->setChecked(false);
-            ui->btnDO6->setChecked(false);
-            ui->btnDO7->setChecked(false);
-            ui->btnDO8->setChecked(false);
-            ui->btnDO1->setIcon(QIcon("./IOpics/offbtn.jpg"));
-            ui->btnDO2->setIcon(QIcon("./IOpics/offbtn.jpg"));
-            ui->btnDO3->setIcon(QIcon("./IOpics/offbtn.jpg"));
-            ui->btnDO4->setIcon(QIcon("./IOpics/offbtn.jpg"));
-            ui->btnDO5->setIcon(QIcon("./IOpics/offbtn.jpg"));
-            ui->btnDO6->setIcon(QIcon("./IOpics/offbtn.jpg"));
-            ui->btnDO7->setIcon(QIcon("./IOpics/offbtn.jpg"));
-            ui->btnDO8->setIcon(QIcon("./IOpics/offbtn.jpg"));
+
 
             nDOgroup = 5;
 
@@ -3566,6 +3884,7 @@ void MainWindow::on_chbDOgr5_stateChanged(int arg1)
         }
     else
     {
+        nDOgroup = 0;
         ui->lnEDOgr->clear();
         ui->lnEDO->clear();
         ui->lnEDO1->clear();
@@ -3587,14 +3906,7 @@ void MainWindow::on_chbDOgr5_stateChanged(int arg1)
         ui->lbDO2->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
         ui->lbDO1->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
 
-        ui->lbDOStt33->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt34->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt35->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt36->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt37->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt38->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt39->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt40->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+
 
     }
 }
@@ -3615,22 +3927,7 @@ void MainWindow::on_chbDOgr6_stateChanged(int arg1)
             ui->chbDOgr9->setChecked(false);
             ui->chbDOgr10->setChecked(false);
 
-            ui->btnDO1->setChecked(false);
-            ui->btnDO2->setChecked(false);
-            ui->btnDO3->setChecked(false);
-            ui->btnDO4->setChecked(false);
-            ui->btnDO5->setChecked(false);
-            ui->btnDO6->setChecked(false);
-            ui->btnDO7->setChecked(false);
-            ui->btnDO8->setChecked(false);
-            ui->btnDO1->setIcon(QIcon("./IOpics/offbtn.jpg"));
-            ui->btnDO2->setIcon(QIcon("./IOpics/offbtn.jpg"));
-            ui->btnDO3->setIcon(QIcon("./IOpics/offbtn.jpg"));
-            ui->btnDO4->setIcon(QIcon("./IOpics/offbtn.jpg"));
-            ui->btnDO5->setIcon(QIcon("./IOpics/offbtn.jpg"));
-            ui->btnDO6->setIcon(QIcon("./IOpics/offbtn.jpg"));
-            ui->btnDO7->setIcon(QIcon("./IOpics/offbtn.jpg"));
-            ui->btnDO8->setIcon(QIcon("./IOpics/offbtn.jpg"));
+
 
             nDOgroup = 6;
 
@@ -3648,6 +3945,7 @@ void MainWindow::on_chbDOgr6_stateChanged(int arg1)
         }
     else
     {
+        nDOgroup = 0;
         ui->lnEDOgr->clear();
         ui->lnEDO->clear();
         ui->lnEDO1->clear();
@@ -3669,14 +3967,7 @@ void MainWindow::on_chbDOgr6_stateChanged(int arg1)
         ui->lbDO2->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
         ui->lbDO1->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
 
-        ui->lbDOStt41->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt42->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt43->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt44->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt45->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt46->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt47->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt48->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+
 
 
     }
@@ -3698,22 +3989,7 @@ void MainWindow::on_chbDOgr7_stateChanged(int arg1)
            ui->chbDOgr9->setChecked(false);
            ui->chbDOgr10->setChecked(false);
 
-           ui->btnDO1->setChecked(false);
-           ui->btnDO2->setChecked(false);
-           ui->btnDO3->setChecked(false);
-           ui->btnDO4->setChecked(false);
-           ui->btnDO5->setChecked(false);
-           ui->btnDO6->setChecked(false);
-           ui->btnDO7->setChecked(false);
-           ui->btnDO8->setChecked(false);
-           ui->btnDO1->setIcon(QIcon("./IOpics/offbtn.jpg"));
-           ui->btnDO2->setIcon(QIcon("./IOpics/offbtn.jpg"));
-           ui->btnDO3->setIcon(QIcon("./IOpics/offbtn.jpg"));
-           ui->btnDO4->setIcon(QIcon("./IOpics/offbtn.jpg"));
-           ui->btnDO5->setIcon(QIcon("./IOpics/offbtn.jpg"));
-           ui->btnDO6->setIcon(QIcon("./IOpics/offbtn.jpg"));
-           ui->btnDO7->setIcon(QIcon("./IOpics/offbtn.jpg"));
-           ui->btnDO8->setIcon(QIcon("./IOpics/offbtn.jpg"));
+
 
            nDOgroup = 7;
 
@@ -3730,6 +4006,7 @@ void MainWindow::on_chbDOgr7_stateChanged(int arg1)
     }
     else
     {
+        nDOgroup = 0;
         ui->lnEDOgr->clear();
         ui->lnEDO->clear();
         ui->lnEDO1->clear();
@@ -3751,14 +4028,7 @@ void MainWindow::on_chbDOgr7_stateChanged(int arg1)
         ui->lbDO2->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
         ui->lbDO1->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
 
-        ui->lbDOStt49->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt50->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt51->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt52->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt53->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt54->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt55->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt56->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+
     }
 }
 
@@ -3778,22 +4048,7 @@ void MainWindow::on_chbDOgr8_stateChanged(int arg1)
             ui->chbDOgr9->setChecked(false);
             ui->chbDOgr10->setChecked(false);
 
-            ui->btnDO1->setChecked(false);
-            ui->btnDO2->setChecked(false);
-            ui->btnDO3->setChecked(false);
-            ui->btnDO4->setChecked(false);
-            ui->btnDO5->setChecked(false);
-            ui->btnDO6->setChecked(false);
-            ui->btnDO7->setChecked(false);
-            ui->btnDO8->setChecked(false);
-            ui->btnDO1->setIcon(QIcon("./IOpics/offbtn.jpg"));
-            ui->btnDO2->setIcon(QIcon("./IOpics/offbtn.jpg"));
-            ui->btnDO3->setIcon(QIcon("./IOpics/offbtn.jpg"));
-            ui->btnDO4->setIcon(QIcon("./IOpics/offbtn.jpg"));
-            ui->btnDO5->setIcon(QIcon("./IOpics/offbtn.jpg"));
-            ui->btnDO6->setIcon(QIcon("./IOpics/offbtn.jpg"));
-            ui->btnDO7->setIcon(QIcon("./IOpics/offbtn.jpg"));
-            ui->btnDO8->setIcon(QIcon("./IOpics/offbtn.jpg"));
+
 
             nDOgroup = 8;
 
@@ -3811,6 +4066,7 @@ void MainWindow::on_chbDOgr8_stateChanged(int arg1)
         }
     else
     {
+        nDOgroup = 0;
         ui->lnEDOgr->clear();
         ui->lnEDO->clear();
         ui->lnEDO1->clear();
@@ -3832,14 +4088,7 @@ void MainWindow::on_chbDOgr8_stateChanged(int arg1)
         ui->lbDO2->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
         ui->lbDO1->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
 
-        ui->lbDOStt57->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt58->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt59->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt60->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt61->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt62->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt63->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt64->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+
     }
 }
 
@@ -3859,22 +4108,7 @@ void MainWindow::on_chbDOgr9_stateChanged(int arg1)
             ui->chbDOgr8->setChecked(false);
             ui->chbDOgr10->setChecked(false);
 
-            ui->btnDO1->setChecked(false);
-            ui->btnDO2->setChecked(false);
-            ui->btnDO3->setChecked(false);
-            ui->btnDO4->setChecked(false);
-            ui->btnDO5->setChecked(false);
-            ui->btnDO6->setChecked(false);
-            ui->btnDO7->setChecked(false);
-            ui->btnDO8->setChecked(false);
-            ui->btnDO1->setIcon(QIcon("./IOpics/offbtn.jpg"));
-            ui->btnDO2->setIcon(QIcon("./IOpics/offbtn.jpg"));
-            ui->btnDO3->setIcon(QIcon("./IOpics/offbtn.jpg"));
-            ui->btnDO4->setIcon(QIcon("./IOpics/offbtn.jpg"));
-            ui->btnDO5->setIcon(QIcon("./IOpics/offbtn.jpg"));
-            ui->btnDO6->setIcon(QIcon("./IOpics/offbtn.jpg"));
-            ui->btnDO7->setIcon(QIcon("./IOpics/offbtn.jpg"));
-            ui->btnDO8->setIcon(QIcon("./IOpics/offbtn.jpg"));
+
 
             nDOgroup = 9;
 
@@ -3892,6 +4126,7 @@ void MainWindow::on_chbDOgr9_stateChanged(int arg1)
         }
     else
     {
+        nDOgroup = 0;
         ui->lnEDOgr->clear();
         ui->lnEDO->clear();
         ui->lnEDO1->clear();
@@ -3913,14 +4148,7 @@ void MainWindow::on_chbDOgr9_stateChanged(int arg1)
         ui->lbDO2->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
         ui->lbDO1->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
 
-        ui->lbDOStt65->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt66->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt67->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt68->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt69->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt70->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt71->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt72->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+
     }
 }
 
@@ -3940,22 +4168,7 @@ void MainWindow::on_chbDOgr10_stateChanged(int arg1)
            ui->chbDOgr8->setChecked(false);
            ui->chbDOgr9->setChecked(false);
 
-           ui->btnDO1->setChecked(false);
-           ui->btnDO2->setChecked(false);
-           ui->btnDO3->setChecked(false);
-           ui->btnDO4->setChecked(false);
-           ui->btnDO5->setChecked(false);
-           ui->btnDO6->setChecked(false);
-           ui->btnDO7->setChecked(false);
-           ui->btnDO8->setChecked(false);
-           ui->btnDO1->setIcon(QIcon("./IOpics/offbtn.jpg"));
-           ui->btnDO2->setIcon(QIcon("./IOpics/offbtn.jpg"));
-           ui->btnDO3->setIcon(QIcon("./IOpics/offbtn.jpg"));
-           ui->btnDO4->setIcon(QIcon("./IOpics/offbtn.jpg"));
-           ui->btnDO5->setIcon(QIcon("./IOpics/offbtn.jpg"));
-           ui->btnDO6->setIcon(QIcon("./IOpics/offbtn.jpg"));
-           ui->btnDO7->setIcon(QIcon("./IOpics/offbtn.jpg"));
-           ui->btnDO8->setIcon(QIcon("./IOpics/offbtn.jpg"));
+
 
            nDOgroup = 10;
 
@@ -3973,6 +4186,7 @@ void MainWindow::on_chbDOgr10_stateChanged(int arg1)
        }
     else
     {
+        nDOgroup = 0;
         ui->lnEDOgr->clear();
         ui->lnEDO->clear();
         ui->lnEDO1->clear();
@@ -3994,14 +4208,7 @@ void MainWindow::on_chbDOgr10_stateChanged(int arg1)
         ui->lbDO2->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
         ui->lbDO1->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
 
-        ui->lbDOStt73->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt74->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt75->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt76->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt77->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt78->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt79->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-        ui->lbDOStt80->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
+
     }
 
 }
@@ -4011,7 +4218,10 @@ void MainWindow::on_chbDOgr10_stateChanged(int arg1)
 
 void MainWindow::on_btnDO1_toggled(bool checked)
 {
-    nDObit = 0;
+    if (nDOgroup == 1)
+        nDObit = 0;
+    else if (nDOgroup == 2)
+        nDObit = 8;
     QPixmap offpix("./IOpics/Pilot light 2 (off).png");
     QPixmap onpix("./IOpics/Green pilot light 2.png");
     if (bToggleDO == 1)
@@ -4020,124 +4230,16 @@ void MainWindow::on_btnDO1_toggled(bool checked)
         {
             ui->btnDO1->setIcon(QIcon("./IOpics/onbtn.jpg"));
             ui->lbDO0->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-            switch(nDOgroup)
-            {
-            case 1:
-            {
-                ui->lbDOStt1->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 2:
-            {
-                ui->lbDOStt9->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 3:
-            {
-                ui->lbDOStt17->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 4:
-            {
-                ui->lbDOStt25->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 5:
-            {
-                ui->lbDOStt33->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 6:
-            {
-                ui->lbDOStt41->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 7:
-            {
-                ui->lbDOStt49->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 8:
-            {
-                ui->lbDOStt57->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 9:
-            {
-                ui->lbDOStt65->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 10:
-            {
-                ui->lbDOStt73->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            default:
-                break;
-            }
+
         }
         else
         {
             ui->btnDO1->setIcon(QIcon("./IOpics/offbtn.jpg"));
             ui->lbDO0->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-            switch(nDOgroup)
-            {
-            case 1:
-            {
-                ui->lbDOStt1->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 2:
-            {
-                ui->lbDOStt9->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 3:
-            {
-                ui->lbDOStt17->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 4:
-            {
-                ui->lbDOStt25->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 5:
-            {
-                ui->lbDOStt33->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 6:
-            {
-                ui->lbDOStt41->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 7:
-            {
-                ui->lbDOStt49->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 8:
-            {
-                ui->lbDOStt57->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 9:
-            {
-                ui->lbDOStt65->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 10:
-            {
-                ui->lbDOStt73->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            default:
-                break;
-            }
+
         }
         SendDO(client,nDOgroup,nDObit,checked);
-//        CheckCMDAck();
+        CheckCMDAck();
     }
     else
         ui->btnDO1->setChecked(false);
@@ -4148,7 +4250,10 @@ void MainWindow::on_btnDO1_toggled(bool checked)
 
 void MainWindow::on_btnDO2_toggled(bool checked)
 {
-    nDObit = 1;
+    if (nDOgroup == 1)
+        nDObit = 1;
+    else if (nDOgroup == 2)
+        nDObit = 9;
     QPixmap offpix("./IOpics/Pilot light 2 (off).png");
     QPixmap onpix("./IOpics/Green pilot light 2.png");
     if (bToggleDO == 1)
@@ -4157,121 +4262,13 @@ void MainWindow::on_btnDO2_toggled(bool checked)
         {
             ui->btnDO2->setIcon(QIcon("./IOpics/onbtn.jpg"));
             ui->lbDO1->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-            switch(nDOgroup)
-            {
-            case 1:
-            {
-                ui->lbDOStt2->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 2:
-            {
-                ui->lbDOStt10->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 3:
-            {
-                ui->lbDOStt18->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 4:
-            {
-                ui->lbDOStt26->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 5:
-            {
-                ui->lbDOStt34->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 6:
-            {
-                ui->lbDOStt42->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 7:
-            {
-                ui->lbDOStt50->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 8:
-            {
-                ui->lbDOStt58->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 9:
-            {
-                ui->lbDOStt66->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 10:
-            {
-                ui->lbDOStt74->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            default:
-                break;
-            }
+
         }
         else
         {
             ui->btnDO2->setIcon(QIcon("./IOpics/offbtn.jpg"));
             ui->lbDO1->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-            switch(nDOgroup)
-            {
-            case 1:
-            {
-                ui->lbDOStt2->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 2:
-            {
-                ui->lbDOStt10->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 3:
-            {
-                ui->lbDOStt18->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 4:
-            {
-                ui->lbDOStt26->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 5:
-            {
-                ui->lbDOStt34->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 6:
-            {
-                ui->lbDOStt42->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 7:
-            {
-                ui->lbDOStt50->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 8:
-            {
-                ui->lbDOStt58->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 9:
-            {
-                ui->lbDOStt66->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 10:
-            {
-                ui->lbDOStt74->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            default:
-                break;
-            }
+
 
         }
         SendDO(client,nDOgroup,nDObit,checked);
@@ -4285,7 +4282,10 @@ void MainWindow::on_btnDO2_toggled(bool checked)
 
 void MainWindow::on_btnDO3_toggled(bool checked)
 {
-    nDObit = 2;
+    if (nDOgroup == 1)
+        nDObit = 2;
+    else if (nDOgroup == 2)
+        nDObit = 10;
     QPixmap offpix("./IOpics/Pilot light 2 (off).png");
     QPixmap onpix("./IOpics/Green pilot light 2.png");
     if (bToggleDO == 1)
@@ -4294,121 +4294,13 @@ void MainWindow::on_btnDO3_toggled(bool checked)
         {
             ui->btnDO3->setIcon(QIcon("./IOpics/onbtn.jpg"));
             ui->lbDO2->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-            switch(nDOgroup)
-            {
-            case 1:
-            {
-                ui->lbDOStt3->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 2:
-            {
-                ui->lbDOStt11->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 3:
-            {
-                ui->lbDOStt19->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 4:
-            {
-                ui->lbDOStt27->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 5:
-            {
-                ui->lbDOStt35->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 6:
-            {
-                ui->lbDOStt43->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 7:
-            {
-                ui->lbDOStt51->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 8:
-            {
-                ui->lbDOStt59->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 9:
-            {
-                ui->lbDOStt67->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 10:
-            {
-                ui->lbDOStt75->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            default:
-                break;
-            }
+
         }
         else
         {
             ui->btnDO3->setIcon(QIcon("./IOpics/offbtn.jpg"));
             ui->lbDO2->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-            switch(nDOgroup)
-            {
-            case 1:
-            {
-                ui->lbDOStt3->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 2:
-            {
-                ui->lbDOStt11->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 3:
-            {
-                ui->lbDOStt19->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 4:
-            {
-                ui->lbDOStt27->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 5:
-            {
-                ui->lbDOStt35->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 6:
-            {
-                ui->lbDOStt43->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 7:
-            {
-                ui->lbDOStt51->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 8:
-            {
-                ui->lbDOStt59->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 9:
-            {
-                ui->lbDOStt67->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 10:
-            {
-                ui->lbDOStt75->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            default:
-                break;
-            }
+
 
         }
         SendDO(client,nDOgroup,nDObit,checked);
@@ -4422,7 +4314,10 @@ void MainWindow::on_btnDO3_toggled(bool checked)
 
 void MainWindow::on_btnDO4_toggled(bool checked)
 {
-    nDObit = 3;
+    if (nDOgroup == 1)
+        nDObit = 3;
+    else if (nDOgroup == 2)
+        nDObit = 11;
     QPixmap offpix("./IOpics/Pilot light 2 (off).png");
     QPixmap onpix("./IOpics/Green pilot light 2.png");
     if (bToggleDO == 1)
@@ -4431,121 +4326,13 @@ void MainWindow::on_btnDO4_toggled(bool checked)
         {
             ui->btnDO4->setIcon(QIcon("./IOpics/onbtn.jpg"));
             ui->lbDO3->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-            switch(nDOgroup)
-            {
-            case 1:
-            {
-                ui->lbDOStt4->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 2:
-            {
-                ui->lbDOStt12->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 3:
-            {
-                ui->lbDOStt20->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 4:
-            {
-                ui->lbDOStt28->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 5:
-            {
-                ui->lbDOStt36->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 6:
-            {
-                ui->lbDOStt44->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 7:
-            {
-                ui->lbDOStt52->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 8:
-            {
-                ui->lbDOStt60->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 9:
-            {
-                ui->lbDOStt68->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 10:
-            {
-                ui->lbDOStt76->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            default:
-                break;
-            }
+
         }
         else
         {
             ui->btnDO4->setIcon(QIcon("./IOpics/offbtn.jpg"));
             ui->lbDO3->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-            switch(nDOgroup)
-            {
-            case 1:
-            {
-                ui->lbDOStt4->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 2:
-            {
-                ui->lbDOStt12->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 3:
-            {
-                ui->lbDOStt20->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 4:
-            {
-                ui->lbDOStt28->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 5:
-            {
-                ui->lbDOStt36->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 6:
-            {
-                ui->lbDOStt44->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 7:
-            {
-                ui->lbDOStt52->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 8:
-            {
-                ui->lbDOStt60->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 9:
-            {
-                ui->lbDOStt68->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 10:
-            {
-                ui->lbDOStt76->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            default:
-                break;
-            }
+
 
         }
         SendDO(client,nDOgroup,nDObit,checked);
@@ -4560,7 +4347,10 @@ void MainWindow::on_btnDO4_toggled(bool checked)
 
 void MainWindow::on_btnDO5_toggled(bool checked)
 {
-    nDObit = 4;
+    if (nDOgroup == 1)
+        nDObit = 4;
+    else if (nDOgroup == 2)
+        nDObit = 12;
     QPixmap offpix("./IOpics/Pilot light 2 (off).png");
     QPixmap onpix("./IOpics/Green pilot light 2.png");
     if (bToggleDO == 1)
@@ -4569,121 +4359,13 @@ void MainWindow::on_btnDO5_toggled(bool checked)
         {
             ui->btnDO5->setIcon(QIcon("./IOpics/onbtn.jpg"));
             ui->lbDO4->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-            switch(nDOgroup)
-            {
-            case 1:
-            {
-                ui->lbDOStt5->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 2:
-            {
-                ui->lbDOStt13->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 3:
-            {
-                ui->lbDOStt21->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 4:
-            {
-                ui->lbDOStt29->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 5:
-            {
-                ui->lbDOStt37->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 6:
-            {
-                ui->lbDOStt45->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 7:
-            {
-                ui->lbDOStt53->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 8:
-            {
-                ui->lbDOStt61->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 9:
-            {
-                ui->lbDOStt69->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 10:
-            {
-                ui->lbDOStt77->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            default:
-                break;
-            }
+
         }
         else
         {
             ui->btnDO5->setIcon(QIcon("./IOpics/offbtn.jpg"));
             ui->lbDO4->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-            switch(nDOgroup)
-            {
-            case 1:
-            {
-                ui->lbDOStt5->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 2:
-            {
-                ui->lbDOStt13->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 3:
-            {
-                ui->lbDOStt21->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 4:
-            {
-                ui->lbDOStt29->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 5:
-            {
-                ui->lbDOStt37->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 6:
-            {
-                ui->lbDOStt45->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 7:
-            {
-                ui->lbDOStt53->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 8:
-            {
-                ui->lbDOStt61->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 9:
-            {
-                ui->lbDOStt69->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 10:
-            {
-                ui->lbDOStt77->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            default:
-                break;
-            }
+
 
         }
         SendDO(client,nDOgroup,nDObit,checked);
@@ -4698,7 +4380,10 @@ void MainWindow::on_btnDO5_toggled(bool checked)
 
 void MainWindow::on_btnDO6_toggled(bool checked)
 {
-    nDObit = 5;
+    if (nDOgroup == 1)
+        nDObit = 5;
+    else if (nDOgroup == 2)
+        nDObit = 13;
     QPixmap offpix("./IOpics/Pilot light 2 (off).png");
     QPixmap onpix("./IOpics/Green pilot light 2.png");
     if (bToggleDO == 1)
@@ -4707,121 +4392,12 @@ void MainWindow::on_btnDO6_toggled(bool checked)
         {
             ui->btnDO6->setIcon(QIcon("./IOpics/onbtn.jpg"));
             ui->lbDO5->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-            switch(nDOgroup)
-            {
-            case 1:
-            {
-                ui->lbDOStt6->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 2:
-            {
-                ui->lbDOStt14->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 3:
-            {
-                ui->lbDOStt22->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 4:
-            {
-                ui->lbDOStt30->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 5:
-            {
-                ui->lbDOStt38->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 6:
-            {
-                ui->lbDOStt46->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 7:
-            {
-                ui->lbDOStt54->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 8:
-            {
-                ui->lbDOStt62->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 9:
-            {
-                ui->lbDOStt70->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 10:
-            {
-                ui->lbDOStt78->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            default:
-                break;
-            }
+
         }
         else
         {
             ui->btnDO6->setIcon(QIcon("./IOpics/offbtn.jpg"));
             ui->lbDO5->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-            switch(nDOgroup)
-            {
-            case 1:
-            {
-                ui->lbDOStt6->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 2:
-            {
-                ui->lbDOStt14->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 3:
-            {
-                ui->lbDOStt22->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 4:
-            {
-                ui->lbDOStt30->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 5:
-            {
-                ui->lbDOStt38->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 6:
-            {
-                ui->lbDOStt46->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 7:
-            {
-                ui->lbDOStt54->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 8:
-            {
-                ui->lbDOStt62->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 9:
-            {
-                ui->lbDOStt70->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 10:
-            {
-                ui->lbDOStt78->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            default:
-                break;
-            }
 
         }
         SendDO(client,nDOgroup,nDObit,checked);
@@ -4835,7 +4411,10 @@ void MainWindow::on_btnDO6_toggled(bool checked)
 
 void MainWindow::on_btnDO7_toggled(bool checked)
 {
-    nDObit = 6;
+    if (nDOgroup == 1)
+        nDObit = 6;
+    else if (nDOgroup == 2)
+        nDObit = 14;
     QPixmap offpix("./IOpics/Pilot light 2 (off).png");
     QPixmap onpix("./IOpics/Green pilot light 2.png");
     if (bToggleDO == 1)
@@ -4844,121 +4423,13 @@ void MainWindow::on_btnDO7_toggled(bool checked)
         {
             ui->btnDO7->setIcon(QIcon("./IOpics/onbtn.jpg"));
             ui->lbDO6->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-            switch(nDOgroup)
-            {
-            case 1:
-            {
-                ui->lbDOStt7->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 2:
-            {
-                ui->lbDOStt15->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 3:
-            {
-                ui->lbDOStt23->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 4:
-            {
-                ui->lbDOStt31->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 5:
-            {
-                ui->lbDOStt39->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 6:
-            {
-                ui->lbDOStt47->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 7:
-            {
-                ui->lbDOStt55->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 8:
-            {
-                ui->lbDOStt63->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 9:
-            {
-                ui->lbDOStt71->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 10:
-            {
-                ui->lbDOStt79->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            default:
-                break;
-            }
+
         }
         else
         {
             ui->btnDO7->setIcon(QIcon("./IOpics/offbtn.jpg"));
             ui->lbDO6->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-            switch(nDOgroup)
-            {
-            case 1:
-            {
-                ui->lbDOStt7->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 2:
-            {
-                ui->lbDOStt15->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 3:
-            {
-                ui->lbDOStt23->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 4:
-            {
-                ui->lbDOStt31->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 5:
-            {
-                ui->lbDOStt39->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 6:
-            {
-                ui->lbDOStt47->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 7:
-            {
-                ui->lbDOStt55->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 8:
-            {
-                ui->lbDOStt63->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 9:
-            {
-                ui->lbDOStt71->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 10:
-            {
-                ui->lbDOStt79->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            default:
-                break;
-            }
+
 
         }
         SendDO(client,nDOgroup,nDObit,checked);
@@ -4972,7 +4443,10 @@ void MainWindow::on_btnDO7_toggled(bool checked)
 
 void MainWindow::on_btnDO8_toggled(bool checked)
 {
-    nDObit = 7;
+    if (nDOgroup == 1)
+        nDObit = 7;
+    else if (nDOgroup == 2)
+        nDObit = 15;
     QPixmap offpix("./IOpics/Pilot light 2 (off).png");
     QPixmap onpix("./IOpics/Green pilot light 2.png");
     if (bToggleDO == 1)
@@ -4981,121 +4455,13 @@ void MainWindow::on_btnDO8_toggled(bool checked)
         {
             ui->btnDO8->setIcon(QIcon("./IOpics/onbtn.jpg"));
             ui->lbDO7->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-            switch(nDOgroup)
-            {
-            case 1:
-            {
-                ui->lbDOStt8->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 2:
-            {
-                ui->lbDOStt16->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 3:
-            {
-                ui->lbDOStt24->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 4:
-            {
-                ui->lbDOStt32->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 5:
-            {
-                ui->lbDOStt40->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 6:
-            {
-                ui->lbDOStt48->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 7:
-            {
-                ui->lbDOStt56->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 8:
-            {
-                ui->lbDOStt64->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 9:
-            {
-                ui->lbDOStt72->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 10:
-            {
-                ui->lbDOStt80->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            default:
-                break;
-            }
+
         }
         else
         {
             ui->btnDO8->setIcon(QIcon("./IOpics/offbtn.jpg"));
             ui->lbDO7->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-            switch(nDOgroup)
-            {
-            case 1:
-            {
-                ui->lbDOStt8->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 2:
-            {
-                ui->lbDOStt16->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 3:
-            {
-                ui->lbDOStt24->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 4:
-            {
-                ui->lbDOStt32->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 5:
-            {
-                ui->lbDOStt40->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 6:
-            {
-                ui->lbDOStt48->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 7:
-            {
-                ui->lbDOStt56->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 8:
-            {
-                ui->lbDOStt64->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 9:
-            {
-                ui->lbDOStt72->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            case 10:
-            {
-                ui->lbDOStt80->setPixmap(offpix.scaled(31,31,Qt::KeepAspectRatio));
-                break;
-            }
-            default:
-                break;
-            }
+
 
         }
         SendDO(client,nDOgroup,nDObit,checked);
@@ -5173,7 +4539,12 @@ void MainWindow::on_btnOkpass_clicked()
     }
 }
 
-
+void MainWindow::on_btnSimRB_clicked()
+{
+    QProcess *process = new QProcess(this);
+    QString file = "D:/Study/NCKH/5_SIMULATION/SD-SA600K-main-Teaching/build/debug/Display3DModel.exe" ;
+    process->start(file);
+}
 
 
 
@@ -5240,6 +4611,9 @@ void MainWindow::on_btnRBCLock_toggled(bool checked)
 
 
 }
+
+
+
 
 
 

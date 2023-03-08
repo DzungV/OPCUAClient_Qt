@@ -65,7 +65,7 @@
       </rect>
      </property>
      <property name="currentIndex">
-      <number>3</number>
+      <number>4</number>
      </property>
      <widget class="QWidget" name="tab_Jog">
       <attribute name="title">
@@ -1229,7 +1229,7 @@
         </rect>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="tab_11">
         <attribute name="title">
@@ -5426,6 +5426,19 @@
        <width>131</width>
        <height>41</height>
       </size>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btnSimRB">
+     <property name="geometry">
+      <rect>
+       <x>280</x>
+       <y>110</y>
+       <width>121</width>
+       <height>29</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Simulate robot</string>
      </property>
     </widget>
    </widget>
