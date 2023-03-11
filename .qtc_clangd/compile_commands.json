@@ -1622,10 +1622,10 @@
         "-ferror-limit=1000",
         "-x",
         "c++-header",
-        "D:\\Study\\NCKH\\5_SIMULATION\\opcuaqt\\qtopcua\\ui_mainwindow.h"
+        "D:\\Study\\NCKH\\5_SIMULATION\\opcuaqt\\qtopcua\\ui_alarmdialog.h"
     ],
     "directory": "D:/Study/NCKH/5_SIMULATION/opcuaqt/qtopcua/.qtc_clangd",
-    "file": "D:/Study/NCKH/5_SIMULATION/opcuaqt/qtopcua/ui_mainwindow.h"
+    "file": "D:/Study/NCKH/5_SIMULATION/opcuaqt/qtopcua/ui_alarmdialog.h"
 },
 {
     "arguments": [
@@ -1696,10 +1696,10 @@
         "-ferror-limit=1000",
         "-x",
         "c++-header",
-        "D:\\Study\\NCKH\\5_SIMULATION\\opcuaqt\\qtopcua\\ui_alarmdialog.h"
+        "D:\\Study\\NCKH\\5_SIMULATION\\opcuaqt\\qtopcua\\ui_mainwindow.h"
     ],
     "directory": "D:/Study/NCKH/5_SIMULATION/opcuaqt/qtopcua/.qtc_clangd",
-    "file": "D:/Study/NCKH/5_SIMULATION/opcuaqt/qtopcua/ui_alarmdialog.h"
+    "file": "D:/Study/NCKH/5_SIMULATION/opcuaqt/qtopcua/ui_mainwindow.h"
 },
 {
     "arguments": [

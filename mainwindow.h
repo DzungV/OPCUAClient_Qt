@@ -59,6 +59,8 @@ public slots:
     void JogProcess(int number);
     void SetSttbar(bool bset);
     void CheckCMDAck();
+    void HistoryEvents();
+
 
 
 private slots:

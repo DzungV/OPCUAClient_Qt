@@ -22,6 +22,7 @@
 std::string sName;
 byte len;
 QString strAlarm;
+QString strAlarmpre = "0";
 std::string sAlarm;
 byte bAlarm;
 std::string strIO;
@@ -44,6 +45,12 @@ int pointlist[10];
 QTableWidgetItem *jpoint;
 QTableWidgetItem *wpoint;
 QTableWidgetItem *getpoint;
+
+QTableWidgetItem *operevent;
+QTableWidgetItem *alaevent;
+
+int nopereventcnt;
+int nalaeventcnt;
 //jpoint = new QTableWidgetItem;
 
 const char* nodeid;
@@ -114,6 +121,14 @@ bool brbmode;
 int nseclevel;
 bool blockrbc;
 
+
+bool bservosttpre;
+int nsystemsttpre;
+bool brbmodepre;
+int nseclevelpre;
+bool blockrbcpre;
+
+
 bool bCMDflag;
 bool bCMDcheck;
 
@@ -124,6 +139,8 @@ byte DIgroup2;
 byte DOgroup1;
 byte DOgroup2;
 
+QDateTime date = QDateTime::currentDateTime();
+QString formattedtime = date.toString("dd.MM.yyyy hh:mm:ss");
 
 
 
@@ -682,6 +699,7 @@ void MainWindow::UpdateTimerTick()
     ReadData(client);
     ReadDeltaData(client);
     Alarm(client);
+    HistoryEvents();
 }
 
 void MainWindow::IOAlarmTick()
@@ -689,7 +707,7 @@ void MainWindow::IOAlarmTick()
     ReadDI(client);
     ReadDO(client);
     DisplayDI();
-    DisplayDO();
+//    DisplayDO();
 
 }
 
@@ -702,6 +720,8 @@ void MainWindow::Clock()
 {
     QTime time = QTime::currentTime();
     QString time_text = time.toString("hh : mm : ss");
+//    QDateTime date = QDateTime::currentDateTime();
+//    QString time_text = date.toString("dd.MM.yyyy hh:mm:ss");
     ui->lnETime->setText(time_text);
 }
 
@@ -834,6 +854,132 @@ void MainWindow::CheckCMDAck()
     }
     else
         qDebug() << "Send CMD successfully";
+}
+
+void MainWindow::HistoryEvents()
+{
+
+
+
+
+//    qDebug()  << bservosttpre << bservostt;
+    if (bservostt != bservosttpre)
+    {
+        bservosttpre = bservostt;
+
+        for (int j=0; j<ui->tabOperHis->columnCount();j++)
+        {
+
+            operevent  = new QTableWidgetItem;
+
+
+            if (j==0)
+            {
+                operevent->setText(formattedtime);
+            }
+            if (j==1)
+            {
+                if (bservostt)
+                    operevent->setText("Servo is turned on");
+                else
+                    operevent->setText("Servo is turned off");
+            }
+            ui->tabOperHis->setItem(nopereventcnt,j,operevent);
+        }
+        nopereventcnt++;
+    }
+    if (brbmode != brbmodepre)
+    {
+        brbmodepre = brbmode;
+        for (int j=0; j<ui->tabOperHis->columnCount();j++)
+        {
+            operevent  = new QTableWidgetItem;
+            if (j==0)
+            {
+                operevent->setText(formattedtime);
+            }
+            if (j==1)
+            {
+                if (brbmode)
+                    operevent->setText("Controller is changed to Repeat Mode");
+                else
+                    operevent->setText("Controller is changed to Teach Mode");
+            }
+            ui->tabOperHis->setItem(nopereventcnt,j,operevent);
+        }
+        nopereventcnt++;
+    }
+    if (blockrbc != blockrbcpre)
+    {
+        blockrbcpre = blockrbc;
+        for (int j=0; j<ui->tabOperHis->columnCount();j++)
+        {
+            operevent  = new QTableWidgetItem;
+            if (j==0)
+            {
+                operevent->setText(formattedtime);
+            }
+            if (j==1)
+            {
+                if (blockrbc)
+                    operevent->setText("The controller is unlocked");
+                else
+                    operevent->setText("The controller is locked");
+            }
+            ui->tabOperHis->setItem(nopereventcnt,j,operevent);
+        }
+        nopereventcnt++;
+    }
+    if (nseclevel != nseclevelpre)
+    {
+        nseclevelpre = nseclevel;
+        for (int j=0; j<ui->tabOperHis->columnCount();j++)
+        {
+            operevent  = new QTableWidgetItem;
+            if (j==0)
+            {
+                operevent->setText(formattedtime);
+            }
+            if (j==1)
+            {
+                if (nseclevel == 0)
+                    operevent->setText("The controller is OPERATION");
+                else if (nseclevel == 1)
+                    operevent->setText("The controller is EDIT");
+                else if (nseclevel == 2)
+                    operevent->setText("The controller is MANAGEMENT");
+            }
+            ui->tabOperHis->setItem(nopereventcnt,j,operevent);
+        }
+        nopereventcnt++;
+    }
+//    qDebug() << strAlarm << strAlarmpre;
+    if (strAlarm != "0")
+    {
+        if (strAlarmpre == "0")
+        {
+            for (int j=0; j<ui->tabAlarmHis->columnCount();j++)
+            {
+                alaevent  = new QTableWidgetItem;
+                if (j==0)
+                {
+                    alaevent->setText(formattedtime);
+                }
+                if (j==1)
+                {
+                    alaevent->setText(strAlarm);
+                }
+                ui->tabAlarmHis->setItem(nalaeventcnt,j,alaevent);
+            }
+            nalaeventcnt++;
+            strAlarmpre = strAlarm;
+        }
+    }
+    else if (strAlarm == "0")
+        strAlarmpre = strAlarm;
+
+
+
 }
 
 
@@ -1016,14 +1162,9 @@ void MainWindow::Alarm(UA_Client *client)
     bAlarm = getlength(&value);
     strAlarm = QString::fromStdString(sAlarm);
     strAlarm.resize(bAlarm);
-    if (strAlarm != "No Errors")
+    if (strAlarm != "0")
     {
-        //strAlarm = CheckCrc(strAlarm);
-        QString ffind = ";";
-        strAlarm = strAlarm.left(strAlarm.indexOf(ffind));
-        strAlarm.remove(0,5);
-        qDebug() << strAlarm;
-
+//        strAlarmpre = strAlarm;
 
     }
     ui->lnERB1Ala->setText(strAlarm);
@@ -1607,7 +1748,7 @@ void MainWindow::on_btnSaveIP_clicked()
 
 void MainWindow::on_btnStart_clicked()
 {
-    QMessageBox::StandardButton ans = QMessageBox::question(this, "Information", "1. Check the server status!!!/n"
+    QMessageBox::StandardButton ans = QMessageBox::question(this, "Information", "1. Check the server status!!!\n"
                                                                                  "2. Choose the robot to control",
                                                             QMessageBox::Yes | QMessageBox::No);
     if (ans == QMessageBox::Yes)
@@ -1738,13 +1879,13 @@ void MainWindow::on_chbCoords_currentTextChanged(const QString &arg1)
 {
 
     if (arg1 == "Joint Coordinates")
-        coords = "1";
+        coords = "0";
     else if (arg1 == "Cartesian Coordinates")
-        coords = "2";
+        coords = "1";
     else if (arg1 == "Tool Coordinates")
-        coords = "3";
+        coords = "2";
     else if (arg1 == "User Coordinates")
-        coords = "4";
+        coords = "3";
     else
         QMessageBox::critical(this, "Notice", "Please Choose Coordinate");
 
@@ -1753,7 +1894,7 @@ void MainWindow::on_chbCoords_currentTextChanged(const QString &arg1)
 
 void MainWindow::on_btnJ1_neg_pressed()
 {
-    no_joint = "1";
+    no_joint = "0";
     direction = "-1";
     coords = ChooseCoords(coords);
     if (coords == NULL)
@@ -1782,7 +1923,7 @@ void MainWindow::on_btnJ1_neg_released()
     QMessageBox::critical(this, "Notice", "Please Choose Coordinate");
     else
     {
-        no_joint = "1";
+        no_joint = "0";
         StrPacketData = QString("%1STOP,%2%3").arg(STX,no_joint,ETX);
         chPacketData = PackData(StrPacketData);
         set_str_to_variant(myVariant,chPacketData);
@@ -1799,7 +1940,7 @@ void MainWindow::on_btnJ1_neg_released()
 
 void MainWindow::on_btnJ1_pos_pressed()
 {
-    no_joint = "1";
+    no_joint = "0";
     direction = "+1";
     coords = ChooseCoords(coords);
     if (coords == NULL)
@@ -1826,7 +1967,7 @@ void MainWindow::on_btnJ1_pos_released()
     QMessageBox::critical(this, "Notice", "Please Choose Coordinate");
     else
     {
-        no_joint = "1";
+        no_joint = "0";
         StrPacketData = QString("%1STOP,%2%3").arg(STX,no_joint,ETX);
         chPacketData = PackData(StrPacketData);
         set_str_to_variant(myVariant,chPacketData);
@@ -1842,7 +1983,7 @@ void MainWindow::on_btnJ1_pos_released()
 
 void MainWindow::on_btnJ2_neg_pressed()
 {
-    no_joint = "2";
+    no_joint = "1";
     direction = "-1";
     coords = ChooseCoords(coords);
     if (coords == NULL)
@@ -1869,7 +2010,7 @@ void MainWindow::on_btnJ2_neg_released()
     QMessageBox::critical(this, "Notice", "Please Choose Coordinate");
     else
     {
-        no_joint = "2";
+        no_joint = "1";
         StrPacketData = QString("%1STOP,%2%3").arg(STX,no_joint,ETX);
         chPacketData = PackData(StrPacketData);
         set_str_to_variant(myVariant,chPacketData);
@@ -1884,7 +2025,7 @@ void MainWindow::on_btnJ2_neg_released()
 
 void MainWindow::on_btnJ2_pos_pressed()
 {
-    no_joint = "2";
+    no_joint = "1";
     direction = "+1";
     coords = ChooseCoords(coords);
     if (coords == NULL)
@@ -1909,7 +2050,7 @@ void MainWindow::on_btnJ2_pos_released()
     QMessageBox::critical(this, "Notice", "Please Choose Coordinate");
     else
     {
-        no_joint = "2";
+        no_joint = "1";
         StrPacketData = QString("%1STOP,%2%3").arg(STX,no_joint,ETX);
         chPacketData = PackData(StrPacketData);
         set_str_to_variant(myVariant,chPacketData);
@@ -1924,7 +2065,7 @@ void MainWindow::on_btnJ2_pos_released()
 
 void MainWindow::on_btnJ3_neg_pressed()
 {
-    no_joint = "3";
+    no_joint = "2";
     direction = "-1";
     coords = ChooseCoords(coords);
     if (coords == NULL)
@@ -1949,7 +2090,7 @@ void MainWindow::on_btnJ3_neg_released()
     QMessageBox::critical(this, "Notice", "Please Choose Coordinate");
     else
     {
-        no_joint = "3";
+        no_joint = "2";
         StrPacketData = QString("%1STOP,%2%3").arg(STX,no_joint,ETX);
         chPacketData = PackData(StrPacketData);
         set_str_to_variant(myVariant,chPacketData);
@@ -1964,7 +2105,7 @@ void MainWindow::on_btnJ3_neg_released()
 
 void MainWindow::on_btnJ3_pos_pressed()
 {
-    no_joint = "3";
+    no_joint = "2";
     direction = "+1";
     coords = ChooseCoords(coords);
     if (coords == NULL)
@@ -1989,7 +2130,7 @@ void MainWindow::on_btnJ3_pos_released()
     QMessageBox::critical(this, "Notice", "Please Choose Coordinate");
     else
     {
-        no_joint = "3";
+        no_joint = "2";
         StrPacketData = QString("%1STOP,%2%3").arg(STX,no_joint,ETX);
         chPacketData = PackData(StrPacketData);
         set_str_to_variant(myVariant,chPacketData);
@@ -2004,7 +2145,7 @@ void MainWindow::on_btnJ3_pos_released()
 
 void MainWindow::on_btnJ4_neg_pressed()
 {
-    no_joint = "4";
+    no_joint = "3";
     direction = "-1";
     coords = ChooseCoords(coords);
     if (coords == NULL)
@@ -2029,7 +2170,7 @@ void MainWindow::on_btnJ4_neg_released()
     QMessageBox::critical(this, "Notice", "Please Choose Coordinate");
     else
     {
-        no_joint = "4";
+        no_joint = "3";
         StrPacketData = QString("%1STOP,%2%3").arg(STX,no_joint,ETX);
         chPacketData = PackData(StrPacketData);
         set_str_to_variant(myVariant,chPacketData);
@@ -2044,7 +2185,7 @@ void MainWindow::on_btnJ4_neg_released()
 
 void MainWindow::on_btnJ4_pos_pressed()
 {
-    no_joint = "4";
+    no_joint = "3";
     direction = "+1";
     coords = ChooseCoords(coords);
     if (coords == NULL)
@@ -2070,7 +2211,7 @@ void MainWindow::on_btnJ4_pos_released()
     QMessageBox::critical(this, "Notice", "Please Choose Coordinate");
     else
     {
-        no_joint = "4";
+        no_joint = "3";
         StrPacketData = QString("%1STOP,%2%3").arg(STX,no_joint,ETX);
         chPacketData = PackData(StrPacketData);
         set_str_to_variant(myVariant,chPacketData);
@@ -2084,7 +2225,7 @@ void MainWindow::on_btnJ4_pos_released()
 
 void MainWindow::on_btnJ5_neg_pressed()
 {
-    no_joint = "5";
+    no_joint = "4";
     direction = "-1";
     coords = ChooseCoords(coords);
     if (coords == NULL)
@@ -2109,7 +2250,7 @@ void MainWindow::on_btnJ5_neg_released()
     QMessageBox::critical(this, "Notice", "Please Choose Coordinate");
     else
     {
-        no_joint = "5";
+        no_joint = "4";
         StrPacketData = QString("%1STOP,%2%3").arg(STX,no_joint,ETX);
         chPacketData = PackData(StrPacketData);
         set_str_to_variant(myVariant,chPacketData);
@@ -2123,7 +2264,7 @@ void MainWindow::on_btnJ5_neg_released()
 
 void MainWindow::on_btnJ5_pos_pressed()
 {
-    no_joint = "5";
+    no_joint = "4";
     direction = "+1";
     coords = ChooseCoords(coords);
     if (coords == NULL)
@@ -2148,7 +2289,7 @@ void MainWindow::on_btnJ5_pos_released()
     QMessageBox::critical(this, "Notice", "Please Choose Coordinate");
     else
     {
-        no_joint = "5";
+        no_joint = "4";
         StrPacketData = QString("%1STOP,%2%3").arg(STX,no_joint,ETX);
         chPacketData = PackData(StrPacketData);
         set_str_to_variant(myVariant,chPacketData);
@@ -2163,7 +2304,7 @@ void MainWindow::on_btnJ5_pos_released()
 
 void MainWindow::on_btnJ6_neg_pressed()
 {
-    no_joint = "6";
+    no_joint = "5";
     direction = "-1";
     coords = ChooseCoords(coords);
     if (coords == NULL)
@@ -2188,7 +2329,7 @@ void MainWindow::on_btnJ6_neg_released()
     QMessageBox::critical(this, "Notice", "Please Choose Coordinate");
     else
     {
-        no_joint = "6";
+        no_joint = "5";
         StrPacketData = QString("%1STOP,%2%3").arg(STX,no_joint,ETX);
         chPacketData = PackData(StrPacketData);
         set_str_to_variant(myVariant,chPacketData);
@@ -2204,7 +2345,7 @@ void MainWindow::on_btnJ6_neg_released()
 
 void MainWindow::on_btnJ6_pos_pressed()
 {
-    no_joint = "6";
+    no_joint = "5";
     direction = "+1";
     coords = ChooseCoords(coords);
     if (coords == NULL)
@@ -2229,7 +2370,7 @@ void MainWindow::on_btnJ6_pos_released()
     QMessageBox::critical(this, "Notice", "Please Choose Coordinate");
     else
     {
-        no_joint = "6";
+        no_joint = "5";
         StrPacketData = QString("%1STOP,%2%3").arg(STX,no_joint,ETX);
         chPacketData = PackData(StrPacketData);
         set_str_to_variant(myVariant,chPacketData);
@@ -2247,7 +2388,7 @@ void MainWindow::on_btnJ6_pos_released()
 
 void MainWindow::on_btnSpeed_low_clicked()
 {
-    speed = "1";
+    speed = "0";
     StrPacketData = QString("%1SPED,%2%3").arg(STX,speed,ETX);
     chPacketData = PackData(StrPacketData);
     set_str_to_variant(myVariant,chPacketData);
@@ -2262,7 +2403,7 @@ void MainWindow::on_btnSpeed_low_clicked()
 
 void MainWindow::on_btnSpeed_med_clicked()
 {
-    speed = "2";
+    speed = "1";
     StrPacketData = QString("%1SPED,%2%3").arg(STX,speed,ETX);
     chPacketData = PackData(StrPacketData);
     set_str_to_variant(myVariant,chPacketData);
@@ -2277,7 +2418,7 @@ void MainWindow::on_btnSpeed_med_clicked()
 
 void MainWindow::on_btnSpeed_high_clicked()
 {
-    speed = "3";
+    speed = "2";
     StrPacketData = QString("%1SPED,%2%3").arg(STX,speed,ETX);
     chPacketData = PackData(StrPacketData);
     set_str_to_variant(myVariant,chPacketData);
@@ -2290,7 +2431,7 @@ void MainWindow::on_btnSpeed_high_clicked()
 
 void MainWindow::on_btnSpeed_top_clicked()
 {
-    speed = "4";
+    speed = "3";
     StrPacketData = QString("%1SPED,%2%3").arg(STX,speed,ETX);
     chPacketData = PackData(StrPacketData);
     set_str_to_variant(myVariant,chPacketData);
@@ -2344,6 +2485,21 @@ void MainWindow::on_btnSendProg_clicked()
           if (nosend == 100)
           {
               QMessageBox::critical(this, "Caution", "Send Program Failed!!!");
+              for (int j=0; j<ui->tabOperHis->columnCount();j++)
+              {
+                  operevent  = new QTableWidgetItem;
+                  if (j==0)
+                  {
+                      operevent->setText(formattedtime);
+                  }
+                  if (j==1)
+                  {
+                      operevent->setText("Program is sent failed."
+                                         " Please send it again.");
+                  }
+                  ui->tabOperHis->setItem(nopereventcnt,j,operevent);
+              }
+              nopereventcnt++;
               return;
           }
           else
@@ -2354,11 +2510,26 @@ void MainWindow::on_btnSendProg_clicked()
 
        inputFile.close();
 
+
        StrPacketData = QString("%1SEPG,DONE %2%3").arg(STX,strCurJobName,ETX); //  finish sending program
        chPacketData = PackData(StrPacketData);
        set_str_to_variant(myVariant,chPacketData);
        UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
        QMessageBox::information(this, "Information", "Send Program OK!");
+       for (int j=0; j<ui->tabOperHis->columnCount();j++)
+       {
+           operevent  = new QTableWidgetItem;
+           if (j==0)
+           {
+               operevent->setText(formattedtime);
+           }
+           if (j==1)
+           {
+               operevent->setText("Program is sent succesfully.");
+           }
+           ui->tabOperHis->setItem(nopereventcnt,j,operevent);
+       }
+       nopereventcnt++;
 
     }
     else
@@ -2380,6 +2551,20 @@ void MainWindow::on_btnWriteProg_clicked()
 
 void MainWindow::on_btnCompProg_clicked()
 {
+    for (int j=0; j<ui->tabOperHis->columnCount();j++)
+    {
+        operevent  = new QTableWidgetItem;
+        if (j==0)
+        {
+            operevent->setText(formattedtime);
+        }
+        if (j==1)
+        {
+            operevent->setText("Program is compiling...");
+        }
+        ui->tabOperHis->setItem(nopereventcnt,j,operevent);
+    }
+    nopereventcnt++;
     strCurJobName = ui->lnEProgName->displayText();
 
     QProcess* pCompileProcess = new QProcess(this);
@@ -2399,10 +2584,42 @@ void MainWindow::on_btnCompProg_clicked()
     if(!inputFile.exists())
     {
         QMessageBox::critical(this, "Caution", "Compile NG");
+        for (int j=0; j<ui->tabOperHis->columnCount();j++)
+        {
+            operevent  = new QTableWidgetItem;
+            if (j==0)
+            {
+                operevent->setText(formattedtime);
+            }
+            if (j==1)
+            {
+                operevent->setText("Program is compiled NG."
+                                   " Please check program syntax.");
+            }
+            ui->tabOperHis->setItem(nopereventcnt,j,operevent);
+        }
+        nopereventcnt++;
+
         return;
     }
     else
+    {
         QMessageBox::information(this, "Information", "Compile OK");
+        for (int j=0; j<ui->tabOperHis->columnCount();j++)
+        {
+            operevent  = new QTableWidgetItem;
+            if (j==0)
+            {
+                operevent->setText(formattedtime);
+            }
+            if (j==1)
+            {
+                operevent->setText("Program is compiled OK.");
+            }
+            ui->tabOperHis->setItem(nopereventcnt,j,operevent);
+        }
+        nopereventcnt++;
+    }
 
 }
 
@@ -2415,6 +2632,20 @@ void MainWindow::on_btnRunprg_clicked()
     nodeid = ChooseRobot(robotnum);
     UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
     CheckCMDAck();
+    for (int j=0; j<ui->tabOperHis->columnCount();j++)
+    {
+        operevent  = new QTableWidgetItem;
+        if (j==0)
+        {
+            operevent->setText(formattedtime);
+        }
+        if (j==1)
+        {
+            operevent->setText("Program is started in AUTOMATIC mode");
+        }
+        ui->tabOperHis->setItem(nopereventcnt,j,operevent);
+    }
+    nopereventcnt++;
 
 
 }
@@ -2442,6 +2673,20 @@ void MainWindow::on_btnStopprg_clicked()
     nodeid = ChooseRobot(robotnum);
     UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
     CheckCMDAck();
+    for (int j=0; j<ui->tabOperHis->columnCount();j++)
+    {
+        operevent  = new QTableWidgetItem;
+        if (j==0)
+        {
+            operevent->setText(formattedtime);
+        }
+        if (j==1)
+        {
+            operevent->setText("Program is stopped");
+        }
+        ui->tabOperHis->setItem(nopereventcnt,j,operevent);
+    }
+    nopereventcnt++;
 }
 
 
@@ -2724,6 +2969,21 @@ void MainWindow::on_btnSendPoints_clicked()
           if (nosend == 100)
           {
               QMessageBox::critical(this, "Caution", "Send Taught Points Failed!!!");
+              for (int j=0; j<ui->tabOperHis->columnCount();j++)
+              {
+                  operevent  = new QTableWidgetItem;
+                  if (j==0)
+                  {
+                      operevent->setText(formattedtime);
+                  }
+                  if (j==1)
+                  {
+                      operevent->setText("Teaching points data is sent failed."
+                                         " Please send it again.");
+                  }
+                  ui->tabOperHis->setItem(nopereventcnt,j,operevent);
+              }
+              nopereventcnt++;
               return;
           }
           else
@@ -2736,6 +2996,19 @@ void MainWindow::on_btnSendPoints_clicked()
        set_str_to_variant(myVariant,chPacketData);
        UA_Client_writeValueAttribute(client, UA_NODEID(nodeid), myVariant);
        QMessageBox::information(this, "Information", "Send Taught Points OK!");
+       for (int j=0; j<ui->tabOperHis->columnCount();j++)
+       {
+           operevent  = new QTableWidgetItem;
+           if (j==0)
+           {
+               operevent->setText(formattedtime);
+           }
+           if (j==1)
+           {
+               operevent->setText("Teaching points data is sent OK.");
+           }
+           ui->tabOperHis->setItem(nopereventcnt,j,operevent);
+       }
     }
     else
     {
@@ -4226,10 +4499,12 @@ void MainWindow::on_btnDO1_toggled(bool checked)
     QPixmap onpix("./IOpics/Green pilot light 2.png");
     if (bToggleDO == 1)
     {
+        qDebug() << 'b';
         if (checked)
         {
             ui->btnDO1->setIcon(QIcon("./IOpics/onbtn.jpg"));
             ui->lbDO0->setPixmap(onpix.scaled(31,31,Qt::KeepAspectRatio));
+            qDebug() << 'a';
 
         }
         else
